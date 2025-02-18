@@ -26,7 +26,7 @@ int	main(void)
 	(void)data;
 	while (1)
 	{
-		buf = readline("B_bros > ");
+		buf = readline("B_Bros > ");
 		add_history(buf);
 		if (!ft_strcmp(buf, "exit"))
 			exit(0);
