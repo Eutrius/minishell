@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 int	main(void)
 {
@@ -30,9 +31,13 @@ int	main(void)
 		add_history(buf);
 		if (!ft_strcmp(buf, "exit"))
 			exit(0);
-		data.cmd = parse_cmd(buf);
-		print_tokens(data.cmd);
-		free(buf);
+		if (!ft_strcmp(buf, "pwd"))
+		{
+			buf = getcwd(NULL, 0);
+			printf("%s\n", buf);
+		}
+		if (!ft_strcmp(buf, "cd"))
+			chdir("/home/doge/lonulli");
 	}
 	return (0);
 }

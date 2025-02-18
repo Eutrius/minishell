@@ -19,11 +19,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-int	executor(t_token *token)
-{
-	if (token->type == FILENAME)
-		printf("token is a file.\n");
-	else
-		printf("Is not a file.\n");
-	return (0);
-}
+// int	executor(t_token **token)
+// {
+//
+// }
