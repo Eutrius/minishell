@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lonulli <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/18 14:04:28 by lonulli           #+#    #+#             */
-/*   Updated: 2025/02/18 14:04:29 by lonulli          ###   ########.fr       */
+/*   Created: 2025/02/18 14:08:15 by lonulli           #+#    #+#             */
+/*   Updated: 2025/02/18 14:08:16 by lonulli          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-void		free_paths(char **path, char error);
+void		free_paths(char **path, char *error);
 int			is_path_given(char *full_path);
 
 static char	**get_paths(char **env)
@@ -44,7 +44,7 @@ char	*pathfinder(const char *cmd, char **env)
 		len = ft_strlen((char *)cmd) + ft_strlen(path[i]) + 2;
 		return_path = ft_calloc(sizeof(char), (len));
 		if (!return_path)
-			free_paths(path, 'Y');
+			free_paths(path, "ERROR");
 		ft_strlcat(return_path, path[i], len);
 		return_path[ft_strlen(path[i++])] = '/';
 		ft_strlcat(return_path, cmd, len);
@@ -54,7 +54,7 @@ char	*pathfinder(const char *cmd, char **env)
 	}
 	if (path && !path[i])
 		return_path = ft_strdup("");
-	free_paths(path, 'N');
+	free_paths(path, "NO_ERROR");
 	return (return_path);
 }
 
@@ -74,7 +74,7 @@ int	is_path_given(char *full_path)
 	return (0);
 }
 
-void	free_paths(char **path, char error)
+void	free_paths(char **path, char *error)
 {
 	int	i;
 
@@ -83,7 +83,7 @@ void	free_paths(char **path, char error)
 		free(path[i]);
 	if (path)
 		free(path);
-	if (error == 'Y')
+	if (ft_strcmp(error, "ERROR"))
 		exit(1);
 }
 
