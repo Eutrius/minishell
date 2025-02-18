@@ -11,10 +11,10 @@
 /* ************************************************************************** */
 
 #include "../libft/libft.h"
+#include <readline/readline.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <readline/readline.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -86,10 +86,4 @@ void	free_paths(char **path, char *error)
 		free(path);
 	if (ft_strcmp(error, "ERROR"))
 		exit(1);
-}
-
-int	main(int ac, char **av)
-{
-	if (is_path_given(av[1]))
-		printf("%s\n", av[1]);
 }

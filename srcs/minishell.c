@@ -30,6 +30,9 @@ int	main(void)
 		add_history(buf);
 		if (!ft_strcmp(buf, "exit"))
 			exit(0);
+		data.cmd = parse_cmd(buf);
+		print_tokens(data.cmd);
+		free(buf);
 	}
 	return (0);
 }

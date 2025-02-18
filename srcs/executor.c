@@ -10,29 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/minishell.h"
 #include "../libft/libft.h"
+#include <readline/readline.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <readline/readline.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "../includes/minishell.h"
 
-
-
-int executor(t_token *token)
+int	executor(t_token *token)
 {
 	if (token->type == FILENAME)
 		printf("token is a file.\n");
 	else
 		printf("Is not a file.\n");
-	return 0;
-}
-
-int main()
-{
-	t_token token;
-	token.type = CMD;
-	executor(&token);
+	return (0);
 }

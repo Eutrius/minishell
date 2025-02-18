@@ -23,12 +23,15 @@ typedef enum e_type
 	FLAG,
 	OPERATOR,
 	WILDCARD,
+	VARIABLE,
+	OTHERS,
 }						t_type;
 
 // General struct
 typedef struct s_data
 {
 	char				**env;
+	t_token				**cmd;
 
 }						t_data;
 
@@ -39,4 +42,9 @@ typedef struct s_token
 	t_type				type;
 
 }						t_token;
+
+t_token					**parse_cmd(char *cmd);
+char					*pathfinder(const char *cmd, char **env);
+void					print_tokens(t_token **tokens);
+
 #endif // !
