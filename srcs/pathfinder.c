@@ -1,15 +1,24 @@
-#include <stdio.h>
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <string.h>
-#include "../includes/minishell.h"
-#include "../libft/libft.h"
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/stat.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pathfinder.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lonulli <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/18 14:04:28 by lonulli           #+#    #+#             */
+/*   Updated: 2025/02/18 14:04:29 by lonulli          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	free_paths(char **path, char error);
-int is_path_given(char *full_path);
+#include "../libft/libft.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+void		free_paths(char **path, char error);
+int			is_path_given(char *full_path);
 
 static char	**get_paths(char **env)
 {
@@ -33,10 +42,9 @@ char	*pathfinder(const char *cmd, char **env)
 	while (path && path[i])
 	{
 		len = ft_strlen((char *)cmd) + ft_strlen(path[i]) + 2;
-		return_path = malloc(sizeof(char) * (len));
+		return_path = ft_calloc(sizeof(char), (len));
 		if (!return_path)
 			free_paths(path, 'Y');
-		ft_memset(return_path, '\0', len);
 		ft_strlcat(return_path, path[i], len);
 		return_path[ft_strlen(path[i++])] = '/';
 		ft_strlcat(return_path, cmd, len);
@@ -52,17 +60,18 @@ char	*pathfinder(const char *cmd, char **env)
 
 /*Function to check if command is given as full path*/
 
-int is_path_given(char *full_path)
+int	is_path_given(char *full_path)
 {
-	struct stat buf;
+	struct stat	buf;
+
 	if (stat(full_path, &buf) == 0)
 	{
 		if (!S_ISREG(buf.st_mode) || S_ISDIR(buf.st_mode))
-			return 0;
+			return (0);
 	}
 	if (access(full_path, F_OK | X_OK) == 0)
-		return 1;
-	return 0;
+		return (1);
+	return (0);
 }
 
 void	free_paths(char **path, char error)
@@ -78,8 +87,8 @@ void	free_paths(char **path, char error)
 		exit(1);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
 	if (is_path_given(av[1]))
-		printf("%s\n",av[1]);
+		printf("%s\n", av[1]);
 }
