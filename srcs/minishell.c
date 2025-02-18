@@ -9,7 +9,7 @@
 int main()
 {
 	char *buf;
-	t_data data;
+	// t_data data;
 
 	while(1)
 	{
@@ -23,4 +23,6 @@ int main()
 	}
 	return 0;
 }
+
+//pathfinder (const char *cmd, char **env)
 
