@@ -11,17 +11,17 @@ RM = rm -rf
 SRC_DIR = srcs
 OBJ_DIR = objs
 
-SRC = $(SRC_DIR)/minishell.c
+SRC = minishell.c \
 
-OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+OBJS = $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
 
 
 $(NAME): $(LIBFT) $(OBJS)
-	@$(CC) $(CFLAGS) -o $@ $^ $(LIBFT_FLAGS)
+	@$(CC) $(CFLAGS) -o $@ $^ $(LIBFT_FLAGS) -lreadline
 	@echo "LETS GO BASH BROS!"
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	@$(CC) $(CFLAGS) -c $< -o $@
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@$(CC) $(CFLAGS) -c $< -o $@ 
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
