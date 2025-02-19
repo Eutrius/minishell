@@ -19,7 +19,38 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-// int	executor(t_token **token)
-// {
-//
-// }
+void	custom_echo(char *buf, void *content)
+{
+	if (!ft_strcmp(buf, "echo"))
+		printf("%s\n", (char *)content);
+}
+
+void	clean_exit(char *buf)
+{
+	if (!ft_strcmp(buf, "exit"))
+		exit(0);
+}
+
+void	custom_pwd(char *buf)
+{
+	if (!ft_strcmp(buf, "pwd"))
+	{
+		buf = getcwd(NULL, 0);
+		if (buf == NULL)
+		{
+			perror("Error");
+			return ;
+		}
+		printf("%s\n", buf);
+		free(buf);
+	}
+}
+
+void	custom_chdir(char *buf, char *path)
+{
+	if (!ft_strcmp(buf, "cd"))
+	{
+		if (chdir(path) == -1)
+			perror("Error");
+	}
+}

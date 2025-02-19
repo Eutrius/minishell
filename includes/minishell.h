@@ -13,6 +13,9 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# define NONEWLINE 'N'
+# define NEWLINE 'n'
+
 typedef struct s_data	t_data;
 typedef struct s_token	t_token;
 
@@ -46,5 +49,12 @@ typedef struct s_token
 t_token					**parse_cmd(char *cmd);
 char					*pathfinder(const char *cmd, char **env);
 void					print_tokens(t_token **tokens);
+
+// Built ins
+
+void					custom_echo(char *buf, void *content);
+void					clean_exit(char *buf);
+void					custom_pwd(char *buf);
+void					custom_chdir(char *buf, char *path);
 
 #endif // !

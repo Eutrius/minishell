@@ -13,7 +13,7 @@ OBJ_DIR = objs
 
 SRC = minishell.c \
 	  parsing.c \
-	  executor.c\
+	  builtins.c\
 	  pathfinder.c
 
 OBJS = $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
