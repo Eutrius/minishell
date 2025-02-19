@@ -11,10 +11,12 @@ RM = rm -rf
 SRC_DIR = srcs
 OBJ_DIR = objs
 
+
 SRC = minishell.c \
 	  parsing.c \
 	  builtins.c\
 	  pathfinder.c
+
 
 OBJS = $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
 
