@@ -29,4 +29,10 @@ typedef struct s_token
 	t_type				type;
 
 }						t_token;
+
+t_token					*create_token(void *content, t_type type);
+t_token					**parse_cmd(char *cmd);
+t_token					*assign_token(t_token **tokens, char *str, int index);
+void					print_tokens(t_token **tokens);
+char					*get_enum(t_type type);
 #endif // !

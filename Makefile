@@ -11,7 +11,7 @@ RM = rm -rf
 SRC_DIR = srcs
 OBJ_DIR = objs
 
-SRC = minishell.c \
+SRC = minishell.c basic_parse.c \
 
 OBJS = $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
 
