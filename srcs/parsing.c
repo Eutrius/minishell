@@ -9,10 +9,10 @@ void	print_tokens(t_token **tokens)
 
 	i = 0;
 	while (tokens[i] != NULL)
-	{
 		printf("content: %s, %s\n", (char *)tokens[i]->content,
+	{
 			get_enum(tokens[i]->type));
-		i++;
+			i++;
 	}
 }
 
@@ -29,7 +29,7 @@ char	*get_enum(t_type type)
 	return ("OTHERS");
 }
 
-t_token	**parse_cmd(char *cmd)
+t_token	**parse_cmd(t_data *data, char *cmd)
 {
 	char	**strs;
 	t_token	**tokens;
