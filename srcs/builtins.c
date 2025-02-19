@@ -38,3 +38,18 @@ void	custom_chdir(char *buf, char *path)
 			perror("Error");
 	}
 }
+
+void	custom_env(char *buf, char **env)
+{
+	int	i;
+
+	i = 0;
+	if (!ft_strcmp(buf, "env"))
+	{
+		while (env[i] != NULL)
+		{
+			printf("%s\n", env[i]);
+			i++;
+		}
+	}
+}

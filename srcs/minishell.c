@@ -7,8 +7,9 @@
 
 int	main(void)
 {
-	char	*buf;
-	t_data	data;
+	char		*buf;
+	t_data		data;
+	extern char	**environ;
 
 	(void)data;
 	while (1)
@@ -21,7 +22,7 @@ int	main(void)
 		clean_exit(buf);
 		custom_pwd(buf);
 		custom_chdir(buf, data.cmd[0]->content);
+		custom_env(buf, environ);
 		free(buf);
-		return (0);
 	}
 }
