@@ -9,13 +9,12 @@ typedef struct s_token	t_token;
 
 typedef enum e_type
 {
-	FILENAME,
+	NAME,
 	CMD,
 	FLAG,
 	OPERATOR,
 	WILDCARD,
 	VARIABLE,
-	OTHERS,
 }						t_type;
 
 // General struct

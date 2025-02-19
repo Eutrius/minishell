@@ -1,28 +1,7 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pathfinder.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lonulli <marvin@42.fr>                     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/18 14:08:15 by lonulli           #+#    #+#             */
-/*   Updated: 2025/02/18 14:08:16 by lonulli          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/minishell.h"
 #include "../libft/libft.h"
-#include <readline/history.h>
-#include <readline/readline.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-t_token	*create_token(void *content, t_type type);
-t_token	**parse_cmd(char *cmd);
-t_token	*assign_token(t_token **tokens, char *str, int index);
-void	print_tokens(t_token **tokens);
-char	*get_enum(t_type type);
 
 void	print_tokens(t_token **tokens)
 {
@@ -39,8 +18,8 @@ void	print_tokens(t_token **tokens)
 
 char	*get_enum(t_type type)
 {
-	if (type == FILENAME)
-		return ("FILENAME");
+	if (type == NAME)
+		return ("NAME");
 	if (type == CMD)
 		return ("CMD");
 	if (type == FLAG)
@@ -100,7 +79,7 @@ t_token	*assign_token(t_token **tokens, char *str, int index)
 	else if (index != 0 && !ft_strcmp(tokens[index - 1]->content, "&&"))
 		return (create_token(str, CMD));
 	else
-		return (create_token(str, FILENAME));
+		return (create_token(str, NAME));
 }
 
 t_token	*create_token(void *content, t_type type)
