@@ -5,7 +5,7 @@ LIBFT = $(LIBFT_PATH)/libft.a
 LIBFT_FLAGS = -L$(LIBFT_PATH) -lft
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_PATH) -Iincludes 
+CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_PATH) -Iincludes -g -O3
 RM = rm -rf
 
 SRC_DIR = srcs

@@ -18,20 +18,24 @@ typedef enum e_type
 }						t_type;
 
 // General struct
+
 typedef struct s_data
 {
 	char				**env;
-	t_token				**cmd;
+	t_token				**token;
 
 }						t_data;
 
 // Token struct
+
 typedef struct s_token
 {
 	void				*content;
 	t_type				type;
 
 }						t_token;
+
+// Built-in Utils
 
 t_token					**parse_cmd(char *cmd);
 char					*pathfinder(const char *cmd, char **env);
