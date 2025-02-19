@@ -1,26 +1,23 @@
-#include <stdio.h>
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <string.h>
 #include "../includes/minishell.h"
 #include "../libft/libft.h"
+#include <readline/history.h>
+#include <readline/readline.h>
 #include <stdlib.h>
 
-int main()
+int	main(void)
 {
-	char *buf;
-	t_data data;
+	char	*buf;
+	t_data	data;
 
-	while(1)
+	while (1)
 	{
 		buf = readline("B_bros > ");
-		add_history(buf);
-		if (!ft_strcmp(buf,"exit"))
+		if (!buf || !ft_strcmp(buf, "exit"))
 			exit(0);
-
-		// Parse
-		// Execute
+		add_history(buf);
+		data.cmd = parse_cmd(buf);
+		print_tokens(data.cmd);
+		free(buf);
 	}
-	return 0;
+	return (0);
 }
-
