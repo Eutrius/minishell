@@ -9,6 +9,7 @@
 typedef struct s_data		t_data;
 typedef struct s_token		t_token;
 typedef struct s_operators	t_operators;
+typedef struct s_parser		t_parser;
 
 typedef enum e_type
 {
@@ -28,8 +29,14 @@ typedef struct s_data
 	char					**variables;
 	t_token					***cmd_lines;
 	char					*buffer;
+	t_parser				*parser;
 
 }							t_data;
+
+typedef struct s_parser
+{
+	char					**strs;
+}							t_parser;
 
 // Token struct
 typedef struct s_token
@@ -53,7 +60,7 @@ typedef struct s_operators
 
 // Init
 
-void						init(t_data *data, t_operators *operators);
+void						init(t_data *data, t_parser *parser);
 void						init_operators(t_operators *operators);
 
 // Parse

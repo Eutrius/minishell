@@ -13,23 +13,24 @@
 #include "../../includes/minishell.h"
 #include "../../libft/libft.h"
 
-static char	*extract_pipe(char *str, int *index);
-static char	*extract_less(char *str, int *index);
-static char	*extract_more(char *str, int *index);
-static char	*extract_and(char *str, int *index);
+static char	*extract(char *str, int *index, char *twice, char *once);
 
 void	extract_op(char ***strs, char *str, int *index, int *skipped)
 {
 	char	*tmp;
 
 	if (str[*index] == '|')
-		tmp = extract_pipe(str, index);
+		tmp = extract(str, index, "||", "|");
+	else if (str[*index] == '(')
+		tmp = ft_strdup("(");
+	else if (str[*index] == ')')
+		tmp = ft_strdup(")");
 	else if (str[*index] == '>')
-		tmp = extract_more(str, index);
+		tmp = extract(str, index, ">>", ">");
 	else if (str[*index] == '<')
-		tmp = extract_less(str, index);
+		tmp = extract(str, index, "<<", "<");
 	else
-		tmp = extract_and(str, index);
+		tmp = extract(str, index, "&&", "&");
 	if (!tmp)
 		return (parse_strs_error(strs, ERR_MALLOC));
 	(*index)++;
@@ -39,46 +40,13 @@ void	extract_op(char ***strs, char *str, int *index, int *skipped)
 		print_error(ERR_MALLOC);
 }
 
-static char	*extract_pipe(char *str, int *index)
+static char	*extract(char *str, int *index, char *twice, char *once)
 {
-	if (!ft_strcmp(&str[*index], "||"))
+	if (!ft_strncmp(&str[*index], twice, 2))
 	{
 		(*index)++;
-		return (ft_strdup("||"));
+		return (ft_strdup(twice));
 	}
 	else
-		return (ft_strdup("|"));
-}
-
-static char	*extract_and(char *str, int *index)
-{
-	if (!ft_strcmp(&str[*index], "&&"))
-	{
-		(*index)++;
-		return (ft_strdup("&&"));
-	}
-	else
-		return (ft_strdup("&"));
-}
-
-static char	*extract_less(char *str, int *index)
-{
-	if (!ft_strcmp(&str[*index], "<<"))
-	{
-		(*index)++;
-		return (ft_strdup("<<"));
-	}
-	else
-		return (ft_strdup("<"));
-}
-
-static char	*extract_more(char *str, int *index)
-{
-	if (!ft_strcmp(&str[*index], ">>"))
-	{
-		(*index)++;
-		return (ft_strdup(">>"));
-	}
-	else
-		return (ft_strdup(">"));
+		return (ft_strdup(once));
 }

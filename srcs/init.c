@@ -13,10 +13,9 @@
 #include "../includes/minishell.h"
 #include "../libft/libft.h"
 
-void	init(t_data *data, t_operators *operators)
+void	init(t_data *data, t_parser *parser)
 {
-	data->operators = operators;
-	init_operators(operators);
+	data->parser = parser;
 }
 
 void	init_operators(t_operators *operators)

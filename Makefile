@@ -11,7 +11,7 @@ RM = rm -rf
 OBJS_DIR = objs
 SRCS_DIR = srcs
 
-SRC = srcs/minishell.c \
+SRC = srcs/main.c \
 	  srcs/init.c \
 	  srcs/parse/parse.c \
 	  srcs/parse/utils.c \
@@ -47,6 +47,9 @@ fclean:
 	@$(RM) $(OBJS_DIR)
 	@$(RM) $(NAME)
 	@$(MAKE) -C $(LIBFT_PATH) fclean --no-print-directory
+
+run: $(NAME)
+	@./$(NAME)
 
 re: fclean all
 

@@ -10,10 +10,10 @@ static void	read_line(t_data *data);
 
 int	main(void)
 {
-	static t_data		data;
-	static t_operators	operators;
+	static t_data	data;
+	static t_parser	parser;
 
-	init(&data, &operators);
+	init(&data, &parser);
 	while (1)
 	{
 		read_line(&data);

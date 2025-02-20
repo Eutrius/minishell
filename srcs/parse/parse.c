@@ -38,8 +38,8 @@ void	join_last(char ***strs, char *str)
 	char	*last_str;
 
 	len = ft_strslen(*strs);
-	last_str = *strs[len - 1];
-	*strs[len - 1] = ft_strjoin(last_str, str);
+	last_str = (*strs)[len - 1];
+	(*strs)[len - 1] = ft_strjoin(last_str, str);
 	if (!(*strs[len - 1]))
 		parse_strs_error(strs, ERR_MALLOC);
 	free(last_str);
