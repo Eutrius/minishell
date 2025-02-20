@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
-#include "../libft/libft.h"
+#include "../../includes/minishell.h"
+#include "../../libft/libft.h"
 
 static char	*extract_pipe(char *str, int *index);
 static char	*extract_less(char *str, int *index);

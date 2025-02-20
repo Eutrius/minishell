@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
-#include "../libft/libft.h"
+#include "../../includes/minishell.h"
+#include "../../libft/libft.h"
 
 static void	extract_name(char ***strs, char *str, int *index, int *skipped);
 static void	extract_dquote(char ***strs, char *str, int *index, int *skipped);

@@ -1,8 +1,9 @@
 #include "../includes/minishell.h"
-#include "../libft/libft.h"
+// clang-format off
+#include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
-#include <stdio.h>
+// clang-format on
 #include <stdlib.h>
 
 static void	read_line(t_data *data);
