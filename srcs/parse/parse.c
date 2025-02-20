@@ -31,4 +31,6 @@ void	parse_cmd(t_data *data)
 		i++;
 	}
 	free(parser->buffer);
+	ft_free_strs(parser->strs);
+	parser->strs = NULL;
 }

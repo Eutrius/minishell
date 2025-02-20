@@ -1,4 +1,5 @@
 #include "../includes/minishell.h"
+#include "../libft/libft.h"
 // clang-format off
 #include <stdio.h>
 #include <readline/history.h>
@@ -17,6 +18,8 @@ int	main(void)
 	while (1)
 	{
 		read_line(&data);
+		if (!ft_strcmp(parser.buffer, "exit"))
+			exit(1);
 		parse_cmd(&data);
 	}
 	exit(0);

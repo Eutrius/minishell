@@ -10,6 +10,8 @@ typedef struct s_data		t_data;
 typedef struct s_token		t_token;
 typedef struct s_operators	t_operators;
 typedef struct s_parser		t_parser;
+typedef enum e_type			t_type;
+typedef enum e_mode			t_mode;
 
 typedef enum e_type
 {
@@ -52,18 +54,6 @@ typedef struct s_token
 	t_type					type;
 
 }							t_token;
-
-typedef struct s_operators
-{
-	char					pipe[2];
-	char					r_in[2];
-	char					r_out[2];
-	char					cmd_or[3];
-	char					cmd_and[3];
-	char					append[3];
-	char					here_doc[3];
-
-}							t_operators;
 
 // Init
 
