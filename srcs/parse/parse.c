@@ -17,31 +17,18 @@
 
 void	parse_cmd(t_data *data)
 {
-	char	**strs;
-	int		i;
+	int			i;
+	t_parser	*parser;
 
-	strs = split_cmd(data);
-	if (!strs)
+	parser = data->parser;
+	split_cmd(parser);
+	if (!parser->strs)
 		return ;
 	i = 0;
-	while (strs[i] != NULL)
+	while (parser->strs[i] != NULL)
 	{
-		printf("%s\n", strs[i]);
+		printf("%s\n", parser->strs[i]);
 		i++;
 	}
-	free(data->buffer);
-}
-
-void	join_last(char ***strs, char *str)
-{
-	int		len;
-	char	*last_str;
-
-	len = ft_strslen(*strs);
-	last_str = (*strs)[len - 1];
-	(*strs)[len - 1] = ft_strjoin(last_str, str);
-	if (!(*strs[len - 1]))
-		parse_strs_error(strs, ERR_MALLOC);
-	free(last_str);
-	free(str);
+	free(parser->buffer);
 }

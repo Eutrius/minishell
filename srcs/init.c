@@ -16,15 +16,5 @@
 void	init(t_data *data, t_parser *parser)
 {
 	data->parser = parser;
-}
-
-void	init_operators(t_operators *operators)
-{
-	ft_memcpy(operators->pipe, "|", 2);
-	ft_memcpy(operators->r_in, "<", 2);
-	ft_memcpy(operators->r_out, ">", 2);
-	ft_memcpy(operators->cmd_and, "&&", 3);
-	ft_memcpy(operators->cmd_or, "||", 3);
-	ft_memcpy(operators->here_doc, "<<", 3);
-	ft_memcpy(operators->append, ">>", 3);
+	parser->data = data;
 }

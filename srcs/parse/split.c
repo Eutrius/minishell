@@ -12,116 +12,40 @@
 
 #include "../../includes/minishell.h"
 #include "../../libft/libft.h"
-#include <stdio.h>
 
-static void	extract_name(char ***strs, char *str, int *index, int *skipped);
-static void	extract_dquote(char ***strs, char *str, int *index, int *skipped);
-static void	extract_quote(char ***strs, char *str, int *index, int *skipped);
-static int	skip_space(char *str, int *index, int *skipped);
+static int	skip_space(t_parser *parser, int *index);
 
-char	**split_cmd(t_data *data)
+void	split_cmd(t_parser *parser)
 {
-	char	**strs;
-	int		skipped;
-	int		i;
+	int	i;
 
-	strs = ft_calloc(1, sizeof(char *));
-	if (strs == NULL)
-		parse_strs_error(&strs, ERR_MALLOC);
+	parser->strs = ft_calloc(1, sizeof(char *));
+	if (parser->strs == NULL)
+		parse_strs_error(&parser->strs, ERR_MALLOC);
 	i = 0;
-	skipped = 1;
-	while (strs && data->buffer[i] != '\0')
+	parser->skipped = 1;
+	while (parser->strs && parser->buffer[i] != '\0')
 	{
-		if (skip_space(data->buffer, &i, &skipped))
+		if (skip_space(parser, &i))
 			continue ;
-		if (data->buffer[i] == '"')
-			extract_dquote(&strs, data->buffer, &i, &skipped);
-		else if (data->buffer[i] == '\'')
-			extract_quote(&strs, data->buffer, &i, &skipped);
-		else if (is_special(data->buffer[i]))
-			extract_op(&strs, data->buffer, &i, &skipped);
+		if (is_dquote(parser->buffer[i]))
+			extract_str(parser, &i, is_dquote, DQUOTE);
+		else if (is_quote(parser->buffer[i]))
+			extract_str(parser, &i, is_quote, QUOTE);
+		else if (is_special(parser->buffer[i]))
+			extract_op(parser, &i);
 		else
-			extract_name(&strs, data->buffer, &i, &skipped);
+			extract_str(parser, &i, is_special, NORMAL);
 	}
-	return (strs);
 }
 
-static int	skip_space(char *str, int *index, int *skipped)
+static int	skip_space(t_parser *parser, int *index)
 {
-	if (str[*index] == ' ')
+	if (parser->buffer[*index] == ' ')
 	{
 		(*index)++;
-		*skipped = 1;
+		parser->skipped = 1;
 		return (1);
 	}
 	return (0);
-}
-
-static void	extract_name(char ***strs, char *str, int *index, int *skipped)
-{
-	int		i;
-	char	*tmp;
-
-	i = *index;
-	while (str[i] != '\0' && !is_special(str[i]))
-		i++;
-	tmp = ft_strndup(&str[*index], i - *index);
-	if (tmp == NULL)
-		return (parse_strs_error(strs, ERR_MALLOC));
-	if (!(*skipped))
-		join_last(strs, tmp);
-	else
-		*strs = ft_strscat(*strs, tmp);
-	if (*strs == NULL)
-		print_error(ERR_MALLOC);
-	*skipped = 0;
-	*index = i;
-}
-
-static void	extract_quote(char ***strs, char *str, int *index, int *skipped)
-{
-	int		i;
-	char	*tmp;
-
-	(*index)++;
-	i = *index;
-	while (str[i] != '\0' && str[i] != '\'')
-		i++;
-	if (str[i] == '\0')
-		return (parse_strs_error(strs, ERR_SYNTAX));
-	tmp = ft_strndup(&str[*index], i - *index);
-	if (!tmp)
-		return (parse_strs_error(strs, ERR_MALLOC));
-	if (!(*skipped))
-		join_last(strs, tmp);
-	else
-		*strs = ft_strscat(*strs, tmp);
-	if (*strs == NULL)
-		print_error(ERR_MALLOC);
-	*skipped = 0;
-	*index = i + 1;
-}
-
-static void	extract_dquote(char ***strs, char *str, int *index, int *skipped)
-{
-	int		i;
-	char	*tmp;
-
-	(*index)++;
-	i = *index;
-	while (str[i] != '\0' && str[i] != '"')
-		i++;
-	if (str[i] == '\0')
-		return (parse_strs_error(strs, ERR_SYNTAX));
-	tmp = ft_strndup(&str[*index], i - *index);
-	if (!tmp)
-		return (parse_strs_error(strs, ERR_MALLOC));
-	if (!(*skipped))
-		join_last(strs, tmp);
-	else
-		*strs = ft_strscat(*strs, tmp);
-	if (*strs == NULL)
-		print_error(ERR_MALLOC);
-	*skipped = 0;
-	*index = i + 1;
 }

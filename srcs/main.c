@@ -24,6 +24,6 @@ int	main(void)
 
 static void	read_line(t_data *data)
 {
-	data->buffer = readline("B_Bros > ");
-	add_history(data->buffer);
+	data->parser->buffer = readline("B_Bros > ");
+	add_history(data->parser->buffer);
 }

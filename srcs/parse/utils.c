@@ -39,13 +39,27 @@ int	is_special(int c)
 		return (1);
 	else if (c == '>')
 		return (1);
-	else if (c == '\'')
+	else if (is_quote(c))
 		return (1);
-	else if (c == '"')
+	else if (is_dquote(c))
 		return (1);
 	else if (c == '(')
 		return (1);
 	else if (c == ')')
+		return (1);
+	return (0);
+}
+
+int	is_quote(int c)
+{
+	if (c == '\'')
+		return (1);
+	return (0);
+}
+
+int	is_dquote(int c)
+{
+	if (c == '"')
 		return (1);
 	return (0);
 }

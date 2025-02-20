@@ -21,21 +21,28 @@ typedef enum e_type
 	VARIABLE,
 }							t_type;
 
+typedef enum e_mode
+{
+	NORMAL,
+	QUOTE,
+	DQUOTE,
+}							t_mode;
+
 // General struct
 typedef struct s_data
 {
 	char					**env;
-	t_operators				*operators;
-	char					**variables;
 	t_token					***cmd_lines;
-	char					*buffer;
 	t_parser				*parser;
 
 }							t_data;
 
 typedef struct s_parser
 {
+	t_data					*data;
+	char					*buffer;
 	char					**strs;
+	int						skipped;
 }							t_parser;
 
 // Token struct
@@ -65,12 +72,14 @@ void						init_operators(t_operators *operators);
 
 // Parse
 
-char						**split_cmd(t_data *data);
+void						split_cmd(t_parser *parser);
 void						parse_cmd(t_data *data);
-void						join_last(char ***strs, char *str);
 int							is_special(int c);
-void						extract_op(char ***strs, char *str, int *index,
-								int *skipped);
+int							is_dquote(int c);
+int							is_quote(int c);
+void						extract_str(t_parser *parser, int *index,
+								int (*f)(int), t_mode mode);
+void						extract_op(t_parser *parser, int *index);
 void						parse_strs_error(char ***strs, char *msg);
 void						print_error(char *msg);
 
