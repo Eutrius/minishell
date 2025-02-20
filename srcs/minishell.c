@@ -5,24 +5,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static void	read_line(t_data *data);
+
 int	main(void)
 {
-	char		*buf;
-	t_data		data;
-	extern char	**environ;
+	static t_data		data;
+	static t_operators	operators;
 
-	(void)data;
+	init(&data, &operators);
 	while (1)
 	{
-		buf = readline("B_Bros > ");
-		add_history(buf);
-		data.cmd = parse_cmd(buf);
-		print_tokens(data.cmd);
-		custom_echo(buf, data.cmd[0]->content);
-		clean_exit(buf);
-		custom_pwd(buf);
-		custom_chdir(buf, data.cmd[0]->content);
-		custom_env(buf, environ);
-		free(buf);
+		read_line(&data);
+		parse_cmd(&data);
 	}
+	exit(0);
+}
+
+static void	read_line(t_data *data)
+{
+	data->buffer = readline("B_Bros > ");
+	add_history(data->buffer);
 }

@@ -13,7 +13,11 @@ OBJ_DIR = objs
 
 
 SRC = minishell.c \
-	  parsing.c \
+	  init.c \
+	  parse/parse.c \
+	  parse/utils.c \
+	  parse/split.c \
+	  parse/extract_op.c \
 	  builtins.c\
 	  pathfinder.c
 
