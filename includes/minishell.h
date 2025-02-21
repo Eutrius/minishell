@@ -34,6 +34,7 @@ typedef struct s_data
 {
 	char					**env;
 	t_token					***cmd_lines;
+	t_token					**cmd_line;
 	t_parser				*parser;
 
 }							t_data;
@@ -77,7 +78,7 @@ void						print_error(char *msg);
 
 char						*pathfinder(const char *cmd, char **env);
 
-// Built in 
+// Built in
 
 void						custom_echo(t_data *data);
 void						clean_exit(t_data *data);

@@ -76,56 +76,56 @@ void	print_error(char *msg)
 	ft_putstr_fd(msg, 2);
 }
 
-/*void	print_tokens(t_token **tokens)*/
-/*{*/
-/*	int	i;*/
-/**/
-/*	i = 0;*/
-/*	while (tokens[i] != NULL)*/
-/*	{*/
-/*		printf("content: %s, %s\n", (char *)tokens[i]->content,*/
-/*			get_enum(tokens[i]->type));*/
-/*		i++;*/
-/*	}*/
-/*}*/
-/**/
-/*char	*get_enum(t_type type)*/
-/*{*/
-/*	if (type == NAME)*/
-/*		return ("NAME");*/
-/*	if (type == CMD)*/
-/*		return ("CMD");*/
-/*	if (type == FLAG)*/
-/*		return ("FLAG");*/
-/*	if (type == WILDCARD)*/
-/*		return ("WILDCARD");*/
-/*	return ("OTHERS");*/
-/*}*/
-/**/
-/*t_token	*assign_token(t_token **tokens, char *str, int index)*/
-/*{*/
-/*	if (str[0] == '-' && ft_strlen(str) != 0)*/
-/*		return (create_token(str, FLAG));*/
-/*	else if (str[0] == '*')*/
-/*		return (create_token(str, WILDCARD));*/
-/*	else if (str[0] == '$')*/
-/*		return (create_token(str, VARIABLE));*/
-/*	else if (!ft_strcmp(str, ";"))*/
-/*		return (create_token(str, OPERATOR));*/
-/*	else if (!ft_strcmp(str, "|"))*/
-/*		return (create_token(str, OPERATOR));*/
-/*	else if (!ft_strcmp(str, "&&"))*/
-/*		return (create_token(str, OPERATOR));*/
-/*	else if (!ft_strcmp(str, "||"))*/
-/*		return (create_token(str, OPERATOR));*/
-/*	else if (index == 0)*/
-/*		return (create_token(str, CMD));*/
-/*	else if (index != 0 && !ft_strcmp(tokens[index - 1]->content, ";"))*/
-/*		return (create_token(str, CMD));*/
-/*	else if (index != 0 && !ft_strcmp(tokens[index - 1]->content, "|"))*/
-/*		return (create_token(str, CMD));*/
-/*	else if (index != 0 && !ft_strcmp(tokens[index - 1]->content, "&&"))*/
-/*		return (create_token(str, CMD));*/
-/*	else*/
-/*		return (create_token(str, NAME));*/
-/*}*/
+void	print_tokens(t_token **tokens)
+{
+	int	i;
+
+	i = 0;
+	while (tokens[i] != NULL)
+	{
+		printf("content: %s, %s\n", (char *)tokens[i]->content,
+			get_enum(tokens[i]->type));
+		i++;
+	}
+}
+
+char	*get_enum(t_type type)
+{
+	if (type == NAME)
+		return ("NAME");
+	if (type == CMD)
+		return ("CMD");
+	if (type == FLAG)
+		return ("FLAG");
+	if (type == WILDCARD)
+		return ("WILDCARD");
+	return ("OTHERS");
+}
+
+t_token	*assign_token(t_token **tokens, char *str, int index)
+{
+	if (str[0] == '-' && ft_strlen(str) != 0)
+		return (create_token(str, FLAG));
+	else if (str[0] == '*')
+		return (create_token(str, WILDCARD));
+	else if (str[0] == '$')
+		return (create_token(str, VARIABLE));
+	else if (!ft_strcmp(str, ";"))
+		return (create_token(str, OPERATOR));
+	else if (!ft_strcmp(str, "|"))
+		return (create_token(str, OPERATOR));
+	else if (!ft_strcmp(str, "&&"))
+		return (create_token(str, OPERATOR));
+	else if (!ft_strcmp(str, "||"))
+		return (create_token(str, OPERATOR));
+	else if (index == 0)
+		return (create_token(str, CMD));
+	else if (index != 0 && !ft_strcmp(tokens[index - 1]->content, ";"))
+		return (create_token(str, CMD));
+	else if (index != 0 && !ft_strcmp(tokens[index - 1]->content, "|"))
+		return (create_token(str, CMD));
+	else if (index != 0 && !ft_strcmp(tokens[index - 1]->content, "&&"))
+		return (create_token(str, CMD));
+	else
+		return (create_token(str, NAME));
+}
