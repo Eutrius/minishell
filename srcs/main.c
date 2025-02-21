@@ -19,6 +19,7 @@ int	main(void)
 	{
 		read_line(&data);
 		parse_cmd(&data);
+    custom_echo(&data);
 	}
 	exit(0);
 }

@@ -78,6 +78,9 @@ void						print_error(char *msg);
 
 char						*pathfinder(const char *cmd, char **env);
 
+// Built in utils
+void find_guard(void *content);
+
 // Built in
 
 void						custom_echo(t_data *data);

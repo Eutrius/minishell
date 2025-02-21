@@ -6,9 +6,16 @@
 
 void	custom_echo(t_data *data)
 {
-  (void )data;
-	// if (!ft_strcmp(data->cmd_lines->, "echo"))
-		// printf("%s\n", (char *)content);
+  t_token **token = data->cmd_line;
+  if (!token || !token[0])
+    return ;
+  if (token[0] && !token[1])
+  {
+    printf("\n");
+    return;
+  }
+  find_guard(token[1]->content);
+  printf("%s\n",(char *)token[1]->content);
 }
 
 void	clean_exit(t_data *data)
