@@ -10,8 +10,6 @@ typedef struct s_data		t_data;
 typedef struct s_token		t_token;
 typedef struct s_operators	t_operators;
 typedef struct s_parser		t_parser;
-typedef enum e_type			t_type;
-typedef enum e_mode			t_mode;
 
 typedef enum e_type
 {
@@ -31,6 +29,7 @@ typedef enum e_mode
 }							t_mode;
 
 // General struct
+
 typedef struct s_data
 {
 	char					**env;
@@ -48,6 +47,7 @@ typedef struct s_parser
 }							t_parser;
 
 // Token struct
+
 typedef struct s_token
 {
 	void					*content;
@@ -76,20 +76,19 @@ void						print_error(char *msg);
 // Execute
 
 char						*pathfinder(const char *cmd, char **env);
-void						print_tokens(t_token **tokens);
 
-// Built ins
+// Built in 
 
-void						custom_echo(char *buf, void *content);
-void						clean_exit(char *buf);
-void						custom_pwd(char *buf);
-void						custom_chdir(char *buf, char *path);
+void						custom_echo(t_data *data);
+void						clean_exit(t_data *data);
+void						custom_pwd(t_data *data);
+void						custom_chdir(t_data *data);
+void						custom_env(t_data *data);
 
 t_token						*create_token(void *content, t_type type);
 t_token						*assign_token(t_token **tokens, char *str,
 								int index);
 void						print_tokens(t_token **tokens);
 char						*get_enum(t_type type);
-void						custom_env(char *buf, char **env);
 
 #endif // !

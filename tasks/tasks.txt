@@ -4,3 +4,7 @@ To fix:
 
 I.e -> echo "hello" will set "hello" as filename, when it should be defined as content.
 
+To do:
+
+function to distinguish built in
+
