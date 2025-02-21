@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "libft.h"
 
 static int	skip_space(t_parser *parser, int *index);
 

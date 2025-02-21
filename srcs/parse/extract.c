@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
-#include "../../libft/libft.h"
+#include "minishell.h"
+#include "libft.h"
 #include <stdlib.h>
 
 static char	*if_double(char *str, int *index, char *twice, char *once);

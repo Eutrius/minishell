@@ -1,5 +1,5 @@
-#include "../includes/minishell.h"
-#include "../libft/libft.h"
+#include "libft.h"
+#include "minishell.h"
 // clang-format off
 #include <stdio.h>
 #include <readline/history.h>
@@ -23,6 +23,12 @@ int	main(void)
 		parse_cmd(&data);
 		custom_echo(&data);
 		clean_exit(&data);
+		custom_pwd(&data);
+		custom_chdir(&data);
+		custom_env(&data);
+		custom_export(&data);
+		free(data.parser->buffer);
+		ft_free_strs(data.parser->strs);
 	}
 	exit(0);
 }

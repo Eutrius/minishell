@@ -1,0 +1,6 @@
+# Ignore these files
+*.cache
+*.json
+*.out
+*.o
+*.a
