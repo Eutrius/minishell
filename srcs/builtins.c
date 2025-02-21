@@ -6,9 +6,11 @@
 
 void	custom_echo(t_data *data)
 {
-  (void )data;
-	// if (!ft_strcmp(data->cmd_lines->, "echo"))
-		// printf("%s\n", (char *)content);
+  t_token **tokens = data->cmd_line;
+  printf("%s\n",(char *)(tokens[1]->content));
+  if (!tokens || !tokens[0] || !tokens[1])
+    return ;
+  printf("%s\n",(char *)(tokens[1]->content));
 }
 
 void	clean_exit(t_data *data)
@@ -21,28 +23,29 @@ void	clean_exit(t_data *data)
 
 void	custom_pwd(t_data *data)
 {
-  (void )data;
-	// if (!ft_strcmp(buf, "pwd"))
-	// {
-	// 	buf = getcwd(NULL, 0);
-	// 	if (buf == NULL)
-	// 	{
-	// 		perror("Error");
-	// 		return ;
-	// 	}
-	// 	printf("%s\n", buf);
-	// 	free(buf);
-	// }
+  char *buf = data->parser->buffer;
+	if (!ft_strcmp(buf, "pwd"))
+	{
+		buf = getcwd(NULL, 0);
+		if (buf == NULL)
+		{
+			perror("Error");
+			return ;
+		}
+		printf("%s\n", buf);
+		free(buf);
+	}
 }
 
 void	custom_chdir(t_data *data)
 {
-  (void )data;
-	// if (!ft_strcmp(buf, "cd"))
-	// {
-	// 	if (chdir(path) == -1)
-	// 		perror("Error");
-	// }
+  char *buf = data->parser->buffer;
+
+	if (!ft_strcmp(buf, "cd"))
+	{
+		if (chdir("..") == -1)
+			perror("Error");
+	}
 }
 
 void	custom_env(t_data *data)

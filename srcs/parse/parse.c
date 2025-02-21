@@ -25,8 +25,17 @@ void	parse_cmd(t_data *data)
 	split_cmd(parser);
 	if (!parser->strs)
 		return ;
+<<<<<<< Updated upstream
 	tokenize(data);
 	print_tokens(data->cmd_line);
+=======
+	i = 0;
+	while (parser->strs[i] != NULL)
+	{
+		// printf("%s\n", parser->strs[i]);
+		i++;
+	}
+>>>>>>> Stashed changes
 	free(parser->buffer);
 	ft_free_strs(parser->strs);
 	parser->strs = NULL;
