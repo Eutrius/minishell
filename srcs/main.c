@@ -6,6 +6,8 @@
 #include <readline/readline.h>
 // clang-format on
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 static void	read_line(t_data *data);
 
@@ -29,6 +31,7 @@ int	main(void)
 		custom_export(&data);
 		free(data.parser->buffer);
 		ft_free_strs(data.parser->strs);
+		parser.strs = NULL;
 	}
 	exit(0);
 }

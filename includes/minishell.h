@@ -84,7 +84,11 @@ char						*pathfinder(const char *cmd, char **env);
 
 int							is_str_numeric(char *str);
 int							count_tokens(t_token **token);
-void						print_export(t_data *data);
+int							is_builtin(char *buf);
+void						print_string_array(char **strs);
+
+// Pathfinder
+char						*pathfinder(const char *cmd, char **env);
 
 // Built in
 

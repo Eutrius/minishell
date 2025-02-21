@@ -26,10 +26,9 @@ void	parse_cmd(t_data *data)
 	if (!parser->strs)
 		return ;
 	tokenize(data);
-	// print_tokens(data->cmd_line);
 	// free(parser->buffer);
 	// ft_free_strs(parser->strs);
-	parser->strs = NULL;
+	// parser->strs = NULL;
 }
 
 static void	tokenize(t_data *data)
