@@ -102,30 +102,18 @@ char	*get_enum(t_type type)
 	return ("OTHERS");
 }
 
-t_token	*assign_token(t_token **tokens, char *str, int index)
+t_token	*assign_token(char *str)
 {
 	if (str[0] == '-' && ft_strlen(str) != 0)
 		return (create_token(str, FLAG));
 	else if (str[0] == '*')
 		return (create_token(str, WILDCARD));
-	else if (str[0] == '$')
-		return (create_token(str, VARIABLE));
-	else if (!ft_strcmp(str, ";"))
-		return (create_token(str, OPERATOR));
 	else if (!ft_strcmp(str, "|"))
-		return (create_token(str, OPERATOR));
+		return (create_token(str, PIPE));
 	else if (!ft_strcmp(str, "&&"))
-		return (create_token(str, OPERATOR));
+		return (create_token(str, AND));
 	else if (!ft_strcmp(str, "||"))
-		return (create_token(str, OPERATOR));
-	else if (index == 0)
-		return (create_token(str, CMD));
-	else if (index != 0 && !ft_strcmp(tokens[index - 1]->content, ";"))
-		return (create_token(str, CMD));
-	else if (index != 0 && !ft_strcmp(tokens[index - 1]->content, "|"))
-		return (create_token(str, CMD));
-	else if (index != 0 && !ft_strcmp(tokens[index - 1]->content, "&&"))
-		return (create_token(str, CMD));
+		return (create_token(str, OR));
 	else
 		return (create_token(str, NAME));
 }

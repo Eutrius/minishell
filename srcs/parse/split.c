@@ -37,6 +37,7 @@ void	split_cmd(t_parser *parser)
 		else
 			extract_str(parser, &i, is_special, NORMAL);
 	}
+	parser->skipped = 1;
 }
 
 static int	skip_space(t_parser *parser, int *index)

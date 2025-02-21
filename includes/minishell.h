@@ -16,9 +16,15 @@ typedef enum e_type
 	NAME,
 	CMD,
 	FLAG,
-	OPERATOR,
 	WILDCARD,
 	VARIABLE,
+	PIPE,
+	OR,
+	AND,
+	HERE_DOC,
+	APPEND,
+	R_IN,
+	R_OUT,
 }							t_type;
 
 typedef enum e_mode
@@ -87,8 +93,7 @@ void						custom_chdir(t_data *data);
 void						custom_env(t_data *data);
 
 t_token						*create_token(void *content, t_type type);
-t_token						*assign_token(t_token **tokens, char *str,
-								int index);
+t_token						*assign_token(char *str);
 void						print_tokens(t_token **tokens);
 char						*get_enum(t_type type);
 

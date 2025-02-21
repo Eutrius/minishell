@@ -20,7 +20,6 @@ static void	tokenize(t_data *data);
 void	parse_cmd(t_data *data)
 {
 	t_parser	*parser;
-  int       i;
 
 	parser = data->parser;
 	split_cmd(parser);
@@ -28,14 +27,8 @@ void	parse_cmd(t_data *data)
 		return ;
 	tokenize(data);
 	print_tokens(data->cmd_line);
-	i = 0;
-	while (parser->strs[i] != NULL)
-	{
-		// printf("%s\n", parser->strs[i]);
-		i++;
-	}
 	free(parser->buffer);
-	ft_free_strs(parser->strs);
+	// ft_free_strs(parser->strs);
 	parser->strs = NULL;
 }
 
@@ -43,15 +36,24 @@ static void	tokenize(t_data *data)
 {
 	t_parser	*parser;
 	int			i;
+	char		*content;
 
 	parser = data->parser;
 	data->cmd_line = ft_calloc(ft_strslen(parser->strs) + 1, sizeof(t_token *));
 	if (!data->cmd_line)
 		return ;
 	i = 0;
-	while (parser->strs[i] != NULL)
+	content = parser->strs[i];
+	while (content != NULL)
 	{
-		data->cmd_line[i] = assign_token(data->cmd_line, parser->strs[i], i);
+		content = parser->strs[i];
+		if (parser->skipped)
+		{
+			data->cmd_line[i] = create_token(content, CMD);
+			parser->skipped = 0;
+		}
+		else
+			data->cmd_line[i] = assign_token(parser->strs[i]);
 		i++;
 	}
 }
