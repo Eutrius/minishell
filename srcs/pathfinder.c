@@ -24,7 +24,7 @@ char	*pathfinder(const char *cmd, char **env)
 	size_t	len;
 
 	return_path = NULL;
-  i = 0;
+	i = 0;
 	path = get_paths(env);
 	while (path && path[i])
 	{

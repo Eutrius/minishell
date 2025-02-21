@@ -1,31 +1,31 @@
-#include <stdio.h>
+#include "../includes/minishell.h"
 #include "../libft/libft.h"
+#include <stdio.h>
 #include <unistd.h>
 
-
-void find_guard(char *content)
+int	is_str_numeric(char *str)
 {
-  int i = 0;
-  int j = 0;
-  while(content[i])
-  {
-    if (content[i] == '\\' && content[i + 1] == '\\')
-    {
-      content[j] = '\\';
-      i+=2;
-    }
-    else if (content[i] == '\\' && content[i + 1] != '\\')
-      i++;
-    else
-    {
-      content[j] = content[i];
-      i++;
-      j++;
-    }
-  }
-  content[j] = '\0';
+	while (*str)
+	{
+		if (ft_isdigit(*str))
+			str++;
+		else
+			break ;
+	}
+	if (!(*str))
+		return (1);
+	return (0);
 }
 
+int	token_count(t_token **token)
+{
+	int	i;
+
+	i = 0;
+	while (token[i])
+		i++;
+	return (i);
+}
 
 int	is_builtin(char *buf)
 {

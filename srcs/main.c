@@ -9,6 +9,8 @@
 
 static void	read_line(t_data *data);
 
+int			g_status;
+
 int	main(void)
 {
 	static t_data	data;
@@ -19,7 +21,8 @@ int	main(void)
 	{
 		read_line(&data);
 		parse_cmd(&data);
-    custom_echo(&data);
+		custom_echo(&data);
+		clean_exit(&data);
 	}
 	exit(0);
 }

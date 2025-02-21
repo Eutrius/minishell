@@ -11,6 +11,8 @@ typedef struct s_token		t_token;
 typedef struct s_operators	t_operators;
 typedef struct s_parser		t_parser;
 
+extern int					g_status;
+
 typedef enum e_type
 {
 	NAME,
@@ -78,8 +80,9 @@ void						print_error(char *msg);
 
 char						*pathfinder(const char *cmd, char **env);
 
-// Built in utils
-void find_guard(void *content);
+// Built in Utils
+int							is_str_numeric(char *str);
+int							token_count(t_token **token);
 
 // Built in
 
