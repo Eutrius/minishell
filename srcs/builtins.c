@@ -6,18 +6,22 @@
 
 void	custom_echo(t_data *data)
 {
+  (void )data;
 	// if (!ft_strcmp(data->cmd_lines->, "echo"))
 		// printf("%s\n", (char *)content);
 }
 
 void	clean_exit(t_data *data)
 {
+
+  (void )data;
 	// if (!ft_strcmp(buf, "exit"))
 		// exit(0);
 }
 
 void	custom_pwd(t_data *data)
 {
+  (void )data;
 	// if (!ft_strcmp(buf, "pwd"))
 	// {
 	// 	buf = getcwd(NULL, 0);
@@ -33,6 +37,7 @@ void	custom_pwd(t_data *data)
 
 void	custom_chdir(t_data *data)
 {
+  (void )data;
 	// if (!ft_strcmp(buf, "cd"))
 	// {
 	// 	if (chdir(path) == -1)
@@ -42,6 +47,7 @@ void	custom_chdir(t_data *data)
 
 void	custom_env(t_data *data)
 {
+  (void )data;
 	// int	i;
 
 	// i = 0;
