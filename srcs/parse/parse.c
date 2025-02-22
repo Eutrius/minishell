@@ -6,16 +6,13 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 17:30:35 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/20 17:50:53 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/22 12:22:05 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
-#include "../../libft/libft.h"
-#include <stdio.h>
+#include "libft.h"
+#include "minishell.h"
 #include <stdlib.h>
-
-static void	tokenize(t_data *data);
 
 void	parse_cmd(t_data *data)
 {
@@ -23,37 +20,45 @@ void	parse_cmd(t_data *data)
 
 	parser = data->parser;
 	split_cmd(parser);
-	if (!parser->strs)
-		return ;
-	tokenize(data);
-	print_tokens(data->cmd_line);
+	if (parser->tokens != NULL)
+		print_tokens(parser->tokens);
 	free(parser->buffer);
-	// ft_free_strs(parser->strs);
-	parser->strs = NULL;
 }
 
-static void	tokenize(t_data *data)
+void	parse_error(t_parser *parser)
 {
-	t_parser	*parser;
-	int			i;
-	char		*content;
-
-	parser = data->parser;
-	data->cmd_line = ft_calloc(ft_strslen(parser->strs) + 1, sizeof(t_token *));
-	if (!data->cmd_line)
-		return ;
-	i = 0;
-	content = parser->strs[i];
-	while (content != NULL)
+	free_tokens(parser->tokens);
+	parser->tokens = NULL;
+	if (parser->str != NULL)
 	{
-		content = parser->strs[i];
-		if (parser->skipped)
-		{
-			data->cmd_line[i] = create_token(content, CMD);
-			parser->skipped = 0;
-		}
-		else
-			data->cmd_line[i] = assign_token(parser->strs[i]);
-		i++;
+		free(parser->str);
+		parser->str = NULL;
 	}
+}
+
+int	gen_token(t_parser *parser, t_mode mode)
+{
+	if (mode != OPERATOR)
+		parser->token = create_token(parser->str, NAME);
+	else if (!ft_strcmp(parser->str, "||"))
+		parser->token = create_token(parser->str, OR);
+	else if (!ft_strcmp(parser->str, "|"))
+		parser->token = create_token(parser->str, PIPE);
+	else if (!ft_strcmp(parser->str, "&&"))
+		parser->token = create_token(parser->str, AND);
+	else if (!ft_strcmp(parser->str, "("))
+		parser->token = create_token(parser->str, OPEN);
+	else if (!ft_strcmp(parser->str, ")"))
+		parser->token = create_token(parser->str, CLOSE);
+	else if (!ft_strcmp(parser->str, "<<"))
+		parser->token = create_token(parser->str, HERE_DOC);
+	else if (!ft_strcmp(parser->str, "<"))
+		parser->token = create_token(parser->str, R_IN);
+	else if (!ft_strcmp(parser->str, ">>"))
+		parser->token = create_token(parser->str, APPEND);
+	else
+		parser->token = create_token(parser->str, R_OUT);
+	if (parser->token == NULL)
+		return (print_error(ERR_MALLOC));
+	return (0);
 }

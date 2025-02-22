@@ -1,104 +1,90 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   extract_op.c                                       :+:      :+:    :+:   */
+/*   extract.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:55:33 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/20 17:34:57 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/22 12:23:05 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
-#include "../../libft/libft.h"
+#include "libft.h"
+#include "minishell.h"
 #include <stdlib.h>
 
-static char	*if_double(char *str, int *index, char *twice, char *once);
-static void	join_last(t_parser *parser, char *str);
-static char	*expand_variable(t_parser *parser, char *str);
+static int	extract_op(t_parser *parser, int *index);
+static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
+				t_mode mode);
 
-void	extract_str(t_parser *parser, int *index, int (*f)(int), t_mode mode)
+void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 {
-	int		i;
-	char	*tmp;
+	if (mode == OPERATOR)
+		extract_op(parser, index);
+	else
+		extract_str(parser, index, ctrl, mode);
+	if (parser->str == NULL)
+		return (parse_error(parser));
+	if (!parser->skipped && mode != OPERATOR)
+		return (join_last(parser));
+	if (gen_token(parser, mode))
+		return (parse_error(parser));
+	parser->str = NULL;
+	parser->tokens = add_token(parser->tokens, parser->token);
+	if (parser->tokens == NULL)
+	{
+		free_token(parser->token);
+		parser->token = NULL;
+		print_error(ERR_MALLOC);
+		return (parse_error(parser));
+	}
+	parser->skipped = 0;
+}
 
-	if (mode != NORMAL)
-		(*index)++;
+static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
+		t_mode mode)
+{
+	int	i;
+
 	i = *index;
-	while (parser->buffer[i] != '\0' && !(*f)(parser->buffer[i]))
+	if (mode != NORMAL)
+		i++;
+	while (parser->buffer[i] != '\0' && !(*ctrl)(parser->buffer[i]))
 		i++;
 	if (parser->buffer[i] == '\0' && mode != NORMAL)
-		return (parse_strs_error(&parser->strs, ERR_SYNTAX));
-	tmp = ft_strndup(&parser->buffer[*index], i - *index);
-	if (mode == DQUOTE)
-		tmp = expand_variable(parser, tmp);
-	if (!tmp)
-		return (parse_strs_error(&parser->strs, ERR_MALLOC));
-	if (!parser->skipped)
-		join_last(parser, tmp);
-	else
-		parser->strs = ft_strscat(parser->strs, tmp);
-	if (parser->strs == NULL)
-		print_error(ERR_MALLOC);
-	parser->skipped = 0;
-	*index = i;
+		return (print_error1(ERR_SYNTAX, " unclosed quotes"));
 	if (mode != NORMAL)
-		(*index)++;
+		i++;
+	parser->str = ft_strndup(&parser->buffer[*index], i - *index);
+	*index = i;
+	if (parser->str == NULL)
+		return (print_error(ERR_MALLOC));
+	return (0);
 }
 
-void	extract_op(t_parser *parser, int *index)
+static int	extract_op(t_parser *parser, int *index)
 {
-	char	*tmp;
-
-	if (parser->buffer[*index] == '|')
-		tmp = if_double(parser->buffer, index, "||", "|");
-	else if (parser->buffer[*index] == '(')
-		tmp = ft_strdup("(");
-	else if (parser->buffer[*index] == ')')
-		tmp = ft_strdup(")");
-	else if (parser->buffer[*index] == '>')
-		tmp = if_double(parser->buffer, index, ">>", ">");
-	else if (parser->buffer[*index] == '<')
-		tmp = if_double(parser->buffer, index, "<<", "<");
-	else
-		tmp = if_double(parser->buffer, index, "&&", "&");
-	if (!tmp)
-		return (parse_strs_error(&parser->strs, ERR_MALLOC));
-	(*index)++;
 	parser->skipped = 1;
-	parser->strs = ft_strscat(parser->strs, tmp);
-	if (parser->strs == NULL)
-		print_error(ERR_MALLOC);
-}
-
-static char	*if_double(char *str, int *index, char *twice, char *once)
-{
-	if (!ft_strncmp(&str[*index], twice, 2))
+	if (parser->buffer[*index] == '|')
+		parser->str = if_double(parser->buffer, index, "||", "|");
+	else if (parser->buffer[*index] == '(')
+		parser->str = ft_strdup("(");
+	else if (parser->buffer[*index] == ')')
+		parser->str = ft_strdup(")");
+	else if (parser->buffer[*index] == '>')
+		parser->str = if_double(parser->buffer, index, ">>", ">");
+	else if (parser->buffer[*index] == '<')
+		parser->str = if_double(parser->buffer, index, "<<", "<");
+	else if (!ft_strcmp(&parser->buffer[*index], "&&"))
 	{
 		(*index)++;
-		return (ft_strdup(twice));
+		parser->str = ft_strdup("&&");
 	}
 	else
-		return (ft_strdup(once));
-}
-
-static void	join_last(t_parser *parser, char *str)
-{
-	int		len;
-	char	*last_str;
-
-	len = ft_strslen(parser->strs);
-	last_str = parser->strs[len - 1];
-	parser->strs[len - 1] = ft_strjoin(last_str, str);
-	if (parser->strs == NULL)
-		parse_strs_error(&parser->strs, ERR_MALLOC);
-	free(last_str);
-	free(str);
-}
-
-static char	*expand_variable(t_parser *parser, char *str)
-{
-	(void)parser;
-	return (str);
+		return (print_error1(ERR_SYNTAX, " near unexpected token `&'"));
+	(*index)++;
+	if (parser->str == NULL)
+		return (print_error(ERR_MALLOC));
+	return (0);
 }
