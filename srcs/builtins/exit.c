@@ -1,13 +1,15 @@
 #include "libft.h"
 #include "minishell.h"
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 void	clean_exit(t_data *data)
 {
-	int	is_exit;
-	int	num_token;
+	int			is_exit;
+	int			num_token;
+	long long	code;
 
 	is_exit = ft_strcmp(data->cmd_line[0]->content, "exit");
 	if (!is_exit)
@@ -20,7 +22,8 @@ void	clean_exit(t_data *data)
 			g_status = 255;
 			return ;
 		}
-		if (data->cmd_line[1] && !is_str_numeric(data->cmd_line[1]->content))
+		if ((data->cmd_line[1] && !is_str_numeric(data->cmd_line[1]->content))
+			|| (!ft_atoll(data->cmd_line[1]->content, &code)))
 		{
 			printf("B_Bros: exit: %s: numeric argument required\n",
 				(char *)data->cmd_line[1]->content);

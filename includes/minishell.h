@@ -82,6 +82,7 @@ char						*pathfinder(const char *cmd, char **env);
 
 // Built in Utils
 
+int							ft_atoll(char *str, long long *result);
 int							is_str_numeric(char *str);
 int							count_tokens(t_token **token);
 int							is_builtin(char *buf);
@@ -98,6 +99,7 @@ void						custom_pwd(t_data *data);
 void						custom_chdir(t_data *data);
 void						custom_env(t_data *data);
 void						custom_export(t_data *data);
+void						custom_unset(t_data *data);
 
 t_token						*create_token(void *content, t_type type);
 t_token						*assign_token(t_token **tokens, char *str,

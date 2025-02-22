@@ -1,10 +1,10 @@
 To fix:
 
---Parsing
+-- Leaks when exiting with a different code than 0.
+-- Overflow check on exit
 
-I.e -> echo "hello" will set "hello" as filename, when it should be defined as content.
+TO do:
+unset
+handle () || 
 
-To do:
-
-function to distinguish built in
 

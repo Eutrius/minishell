@@ -29,6 +29,7 @@ int	main(void)
 		custom_chdir(&data);
 		custom_env(&data);
 		custom_export(&data);
+		custom_unset(&data);
 		free(data.parser->buffer);
 		ft_free_strs(data.parser->strs);
 		parser.strs = NULL;
