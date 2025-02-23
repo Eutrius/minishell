@@ -13,16 +13,18 @@ typedef struct s_parser		t_parser;
 
 typedef enum e_type
 {
-	NAME,
-	PIPE,
-	OR,
-	AND,
-	OPEN,
-	CLOSE,
-	HERE_DOC,
-	R_IN,
-	APPEND,
-	R_OUT,
+	NAME = 1 << 0,
+	PIPE = 1 << 1,
+	OR = 1 << 2,
+	AND = 1 << 3,
+	OPEN = 1 << 4,
+	CLOSE = 1 << 5,
+	HERE_DOC = 1 << 6,
+	R_IN = 1 << 7,
+	APPEND = 1 << 8,
+	R_OUT = 1 << 9,
+	END = 1 << 10,
+	START = 1 << 11,
 }							t_type;
 
 typedef enum e_mode
@@ -47,10 +49,13 @@ typedef struct s_parser
 {
 	t_data					*data;
 	char					*buffer;
-	int						skipped;
+	// split
 	t_token					**tokens;
+	int						skipped;
 	char					*str;
 	t_token					*token;
+	// check
+	int						parentesis;
 }							t_parser;
 
 // Token struct
@@ -75,8 +80,9 @@ void						init_operators(t_operators *operators);
 
 // Parse
 
-int							split_cmd(t_parser *parser);
 void						parse_cmd(t_data *data);
+int							split_cmd(t_parser *parser);
+int							check_cmd(t_parser *parser);
 void						parse_error(t_parser *parser);
 int							gen_token(t_parser *parser, t_mode mode);
 int							is_special(int c);
@@ -115,5 +121,7 @@ char						*get_enum(t_type type);
 int							print_error(char *msg);
 int							print_error1(char *msg, char *msg1);
 int							print_error2(char *msg, char *msg1, char *msg2);
+int							print_error3(char *msg, char *msg1, char *msg2,
+								char *msg3);
 
 #endif // !

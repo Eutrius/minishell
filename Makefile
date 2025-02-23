@@ -17,6 +17,7 @@ SRC = srcs/main.c \
 	  srcs/parse/utils.c \
 	  srcs/parse/split.c \
 	  srcs/parse/extract.c \
+	  srcs/parse/check.c \
 	  srcs/parse/extract_utils.c \
 	  srcs/parse/token.c \
 	  srcs/builtins.c\

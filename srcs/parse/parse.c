@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 17:30:35 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/22 12:22:05 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/23 13:07:00 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@ void	parse_cmd(t_data *data)
 	t_parser	*parser;
 
 	parser = data->parser;
-	split_cmd(parser);
-	if (parser->tokens != NULL)
-		print_tokens(parser->tokens);
+	if (split_cmd(parser))
+		return ;
+	if (check_cmd(parser))
+		return ;
+	print_tokens(parser->tokens);
 	free(parser->buffer);
 }
 
@@ -29,11 +31,10 @@ void	parse_error(t_parser *parser)
 {
 	free_tokens(parser->tokens);
 	parser->tokens = NULL;
-	if (parser->str != NULL)
-	{
-		free(parser->str);
-		parser->str = NULL;
-	}
+	free(parser->str);
+	parser->str = NULL;
+	free(parser->buffer);
+	parser->str = NULL;
 }
 
 int	gen_token(t_parser *parser, t_mode mode)

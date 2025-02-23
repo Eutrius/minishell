@@ -6,12 +6,12 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 16:01:15 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/22 12:22:19 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/23 11:33:48 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
-#include "../../libft/libft.h"
+#include "libft.h"
+#include "minishell.h"
 
 static int	skip_space(t_parser *parser, int *index);
 
@@ -19,13 +19,15 @@ int	split_cmd(t_parser *parser)
 {
 	int	i;
 
+	i = 0;
+	parser->skipped = 1;
 	parser->tokens = ft_calloc(1, sizeof(t_token *));
 	if (parser->tokens == NULL)
 		return (print_error(ERR_MALLOC));
-	i = 0;
-	parser->skipped = 1;
-	while (parser->tokens != NULL && parser->buffer[i] != '\0')
+	while (parser->buffer[i] != '\0')
 	{
+		if (parser->tokens == NULL)
+			return (1);
 		if (skip_space(parser, &i))
 			continue ;
 		if (is_dquote(parser->buffer[i]))
