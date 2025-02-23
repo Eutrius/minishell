@@ -1,23 +1,19 @@
-#include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-void	custom_pwd(t_data *data)
+void	custom_pwd(void)
 {
 	char	*buf;
 
-	if (!ft_strcmp(data->cmd_line[0]->content, "pwd"))
+	buf = getcwd(NULL, 0);
+	if (buf == NULL)
 	{
-		buf = getcwd(NULL, 0);
-		if (buf == NULL)
-		{
-			perror("Error");
-			g_status = 1;
-			return ;
-		}
-		printf("%s\n", buf);
-		free(buf);
+		perror("Error");
+		g_status = 1;
+		return ;
 	}
+	printf("%s\n", buf);
+	free(buf);
 }

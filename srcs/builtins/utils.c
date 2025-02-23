@@ -7,12 +7,14 @@ static void	handle_sign(char *str, int *i, int *sign);
 
 #include <limits.h>
 
-int	ft_atoll(char *str, long long *result)
+int	check_exit_value(char *str)
 {
 	long long	num;
 	int			sign;
 	int			i;
 
+	if (!ft_strcmp(str, "--"))
+		return (1);
 	num = 0;
 	sign = 1;
 	i = 0;
@@ -21,14 +23,15 @@ int	ft_atoll(char *str, long long *result)
 	handle_sign(str, &i, &sign);
 	if (!str[i] || (str[i] < '0' || str[i] > '9'))
 		return (0);
-	while (str[i] >= '0' && str[i] <= '9')
+	while (str[i])
 	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
 		if (num > (LLONG_MAX - (str[i] - '0')) / 10)
 			return (0);
 		num = (num * 10) + (str[i] - '0');
 		i++;
 	}
-	*result = num * sign;
 	return (1);
 }
 
@@ -54,22 +57,6 @@ void	print_string_array(char **strs)
 	}
 }
 
-int	is_str_numeric(char *str)
-{
-	while (*str)
-	{
-		if (str[0] == '-' || str[0] == '+')
-			str++;
-		if (ft_isdigit(*str))
-			str++;
-		else
-			break ;
-	}
-	if (!(*str))
-		return (1);
-	return (0);
-}
-
 int	count_tokens(t_token **token)
 {
 	int	i;
@@ -80,21 +67,21 @@ int	count_tokens(t_token **token)
 	return (i);
 }
 
-int	is_builtin(char *buf)
+int	is_builtin(char *buf, t_data *data)
 {
 	if (!ft_strcmp(buf, "echo"))
-		return (1);
+		custom_echo(data);
 	if (!ft_strcmp(buf, "cd"))
-		return (1);
+		custom_chdir(data);
 	if (!ft_strcmp(buf, "pwd"))
-		return (1);
+		custom_pwd();
 	if (!ft_strcmp(buf, "export"))
-		return (1);
+		custom_export(data);
 	if (!ft_strcmp(buf, "unset"))
-		return (1);
+		custom_unset(data);
 	if (!ft_strcmp(buf, "env"))
-		return (1);
+		custom_env(data);
 	if (!ft_strcmp(buf, "exit"))
-		return (1);
+		clean_exit(data);
 	return (0);
 }

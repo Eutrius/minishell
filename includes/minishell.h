@@ -82,11 +82,13 @@ char						*pathfinder(const char *cmd, char **env);
 
 // Built in Utils
 
-int							ft_atoll(char *str, long long *result);
-int							is_str_numeric(char *str);
+int							check_exit_value(char *str);
 int							count_tokens(t_token **token);
-int							is_builtin(char *buf);
+int							is_builtin(char *buf, t_data *data);
+int							strs_count(char **strs);
 void						print_string_array(char **strs);
+int							is_valid_identifier(char *str);
+int							find_eq_i(char *str);
 
 // Pathfinder
 char						*pathfinder(const char *cmd, char **env);
@@ -95,7 +97,7 @@ char						*pathfinder(const char *cmd, char **env);
 
 void						custom_echo(t_data *data);
 void						clean_exit(t_data *data);
-void						custom_pwd(t_data *data);
+void						custom_pwd(void);
 void						custom_chdir(t_data *data);
 void						custom_env(t_data *data);
 void						custom_export(t_data *data);

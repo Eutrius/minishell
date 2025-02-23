@@ -23,13 +23,7 @@ int	main(void)
 	{
 		read_line(&data);
 		parse_cmd(&data);
-		custom_echo(&data);
-		clean_exit(&data);
-		custom_pwd(&data);
-		custom_chdir(&data);
-		custom_env(&data);
-		custom_export(&data);
-		custom_unset(&data);
+		is_builtin(data.cmd_line[0]->content, &data);
 		free(data.parser->buffer);
 		ft_free_strs(data.parser->strs);
 		parser.strs = NULL;
