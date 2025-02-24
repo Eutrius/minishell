@@ -33,7 +33,6 @@ typedef enum e_mode
 {
 	NORMAL,
 	QUOTE,
-	DQUOTE,
 	OPERATOR,
 }							t_mode;
 
@@ -64,7 +63,7 @@ typedef struct s_parser
 
 typedef struct s_token
 {
-	char					*content;
+	void					*content;
 	t_type					type;
 }							t_token;
 

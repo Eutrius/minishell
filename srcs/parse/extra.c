@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:11:27 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 12:13:20 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 19:52:37 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ void	print_tokens(t_token **tokens)
 	i = 0;
 	while (tokens[i] != NULL)
 	{
-		printf("%s: %s\n", get_enum(tokens[i]->type), tokens[i]->content);
+		printf("%s: %s\n", get_enum(tokens[i]->type),
+			(char *)tokens[i]->content);
 		i++;
 	}
 }

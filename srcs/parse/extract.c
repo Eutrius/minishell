@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:55:33 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 14:34:04 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 19:51:02 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 		print_error(ERR_MALLOC);
 		return (parse_error(parser));
 	}
+	if (mode != OPERATOR)
+		parser->skipped = 0;
 }
 
 static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
@@ -51,7 +53,6 @@ static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 	int	i;
 
 	i = *index;
-	parser->skipped = 1;
 	if (mode != NORMAL)
 		i++;
 	while (parser->buffer[i] != '\0' && !(*ctrl)(parser->buffer[i]))
@@ -69,7 +70,7 @@ static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 
 static int	extract_op(t_parser *parser, int *index)
 {
-	parser->skipped = 0;
+	parser->skipped = 1;
 	if (parser->buffer[*index] == '|')
 		parser->str = if_double(parser->buffer, index, "||", "|");
 	else if (parser->buffer[*index] == '(')

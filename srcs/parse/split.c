@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 16:01:15 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/23 11:33:48 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 19:37:39 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	split_cmd(t_parser *parser)
 		if (skip_space(parser, &i))
 			continue ;
 		if (is_dquote(parser->buffer[i]))
-			extract(parser, &i, is_dquote, DQUOTE);
+			extract(parser, &i, is_dquote, QUOTE);
 		else if (is_quote(parser->buffer[i]))
 			extract(parser, &i, is_quote, QUOTE);
 		else if (is_special(parser->buffer[i]))
