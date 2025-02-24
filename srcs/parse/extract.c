@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:55:33 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 19:51:02 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 23:23:32 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 		extract_str(parser, index, ctrl, mode);
 	if (parser->str == NULL)
 		return (parse_error(parser));
-	if (!parser->skipped && mode != OPERATOR)
+	if ((parser->last_token & (NAME | NONE)) && mode != OPERATOR)
 		return (join_last(parser));
 	if (gen_token(parser, mode))
 		return (parse_error(parser));
@@ -44,7 +44,7 @@ void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 		return (parse_error(parser));
 	}
 	if (mode != OPERATOR)
-		parser->skipped = 0;
+		parser->last_token = NAME;
 }
 
 static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
@@ -70,7 +70,7 @@ static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 
 static int	extract_op(t_parser *parser, int *index)
 {
-	parser->skipped = 1;
+	parser->last_token = START;
 	if (parser->buffer[*index] == '|')
 		parser->str = if_double(parser->buffer, index, "||", "|");
 	else if (parser->buffer[*index] == '(')

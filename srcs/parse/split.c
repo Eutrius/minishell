@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 16:01:15 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 19:37:39 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 23:23:41 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	split_cmd(t_parser *parser)
 	int	i;
 
 	i = 0;
-	parser->skipped = 1;
+	parser->last_token = START;
 	parser->tokens = ft_calloc(1, sizeof(t_token *));
 	if (parser->tokens == NULL)
 		return (print_error(ERR_MALLOC));
@@ -47,7 +47,8 @@ static int	skip_space(t_parser *parser, int *index)
 	if (parser->buffer[*index] == ' ')
 	{
 		(*index)++;
-		parser->skipped = 1;
+		if (parser->last_token & (NAME | NONE))
+			parser->last_token = NONE;
 		return (1);
 	}
 	return (0);

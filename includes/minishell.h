@@ -14,7 +14,6 @@ typedef struct s_btree		t_btree;
 
 typedef enum e_type
 {
-	NONE = 0,
 	NAME = 1 << 0,
 	PIPE = 1 << 1,
 	OR = 1 << 2,
@@ -27,6 +26,7 @@ typedef enum e_type
 	R_OUT = 1 << 9,
 	END = 1 << 10,
 	START = 1 << 11,
+	NONE = 1 << 12,
 }							t_type;
 
 typedef enum e_mode
@@ -52,9 +52,10 @@ typedef struct s_parser
 	char					*buffer;
 	// split
 	t_token					**tokens;
-	int						skipped;
 	char					*str;
 	t_token					*token;
+	int						skipped;
+	t_type					last_token;
 	// check
 	int						parentesis;
 }							t_parser;

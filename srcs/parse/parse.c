@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 17:30:35 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 19:23:19 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 23:26:59 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ int	parse(t_data *data)
 	parser = data->parser;
 	if (split_cmd(parser))
 		return (1);
+	print_tokens(parser->tokens);
 	if (check_cmd(parser))
 		return (1);
-	print_tokens(parser->tokens);
 	free(parser->buffer);
 	return (0);
 }
