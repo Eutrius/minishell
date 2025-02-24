@@ -4,67 +4,41 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static void	free_previous_sorted_exp(char **exported_dup, int i);
-static void	export(t_data *data);
+static void	export_no_args(t_data *data);
 static void	sort_export(char **sorted_exp);
-static void	append_env_variable(t_data *data);
+static void	export_with_args(t_data *data, int not_valid);
+static void	append_vars(t_data *data, char **new_env, int i);
 
 void	custom_export(t_data *data)
 {
 	int		tokens_count;
 	char	*name;
+	int		i;
+	int		not_valid;
 
+	i = 1;
+	not_valid = 0;
 	tokens_count = count_tokens(data->cmd_line);
-	if (data->cmd_line[1])
+	if (tokens_count >= 2)
 	{
-		name = (char *)data->cmd_line[1]->content;
-		if (!is_valid_identifier(name))
+		while (i < tokens_count)
 		{
-			printf("bash: export: '%s': not a valid identifier\n", name);
+			name = (char *)data->cmd_line[i]->content;
+			if (!is_valid_identifier(name))
+			{
+				printf("bash: export: '%s': not a valid identifier\n", name);
+				not_valid++;
+			}
 			g_status = 255;
-			return ;
+			i++;
 		}
+		export_with_args(data, not_valid);
 	}
 	if (tokens_count == 1)
-		export(data);
-	if (tokens_count >= 2)
-		append_env_variable(data);
+		export_no_args(data);
 }
 
-static void	append_env_variable(t_data *data)
-{
-	int		token_counts;
-	int		i;
-	int		j;
-	char	**new_env;
-	int		strs;
-
-	token_counts = count_tokens(data->cmd_line) - 1;
-	i = 0;
-	j = 1;
-	strs = strs_count(data->env);
-	new_env = ft_calloc(strs + token_counts + 1, sizeof(char *));
-	if (!new_env)
-		return ;
-	while (data->env[i])
-	{
-		new_env[i] = ft_strdup(data->env[i]);
-		free(data->env[i]);
-		i++;
-	}
-	while (token_counts)
-	{
-		new_env[i] = ft_strdup(data->cmd_line[j++]->content);
-		if (!new_env[i++])
-			ft_free_strs(new_env);
-		token_counts--;
-	}
-	free(data->env);
-	new_env[i] = NULL;
-	data->env = new_env;
-}
-
-void	export(t_data *data)
+static void	export_no_args(t_data *data)
 {
 	char	**sorted_exp;
 	char	*tmp;
@@ -84,18 +58,62 @@ void	export(t_data *data)
 			free_previous_sorted_exp(sorted_exp, i);
 			return ;
 		}
-		if (ft_strchr(sorted_exp[i], '=') 
-      && sorted_exp[i][find_eq_i(sorted_exp[i])])
-		{
-			tmp = sorted_exp[i];
-			sorted_exp[i] = ft_strjoin(sorted_exp[i], "\"\"");
-			free(tmp);
-		}
+		value_checker(sorted_exp, i);
 		i++;
 	}
 	sort_export(sorted_exp);
 	print_string_array(sorted_exp);
 	ft_free_strs(sorted_exp);
+}
+
+static void	export_with_args(t_data *data, int not_valid)
+{
+	int		tokens_count;
+	int		i;
+	char	**new_env;
+	int		strs;
+
+	tokens_count = count_tokens(data->cmd_line) - 1 - not_valid;
+	i = 0;
+	strs = strs_count(data->env);
+	new_env = ft_calloc(strs + tokens_count + 1, sizeof(char *));
+	if (!new_env)
+		return ;
+	while (data->env[i])
+	{
+		new_env[i] = ft_strdup(data->env[i]);
+		free(data->env[i]);
+		i++;
+	}
+	append_vars(data, new_env, i);
+}
+
+static void	append_vars(t_data *data, char **new_env, int i)
+{
+	int	j;
+	int	token_count;
+
+	j = 1;
+	token_count = count_tokens(data->cmd_line) - 1;
+	while (token_count)
+	{
+		if (!is_valid_identifier(data->cmd_line[j]->content)
+			|| var_exists(new_env, data->cmd_line[j]->content))
+		{
+			token_count--;
+			j++;
+			continue ;
+		}
+		new_env[i] = ft_strdup(data->cmd_line[j]->content);
+		if (!new_env[i])
+			ft_free_strs(new_env);
+		j++;
+		i++;
+		token_count--;
+	}
+	free(data->env);
+	new_env[i] = NULL;
+	data->env = new_env;
 }
 
 static void	sort_export(char **sorted_exp)
@@ -121,14 +139,4 @@ static void	sort_export(char **sorted_exp)
 		}
 		i++;
 	}
-}
-
-static void	free_previous_sorted_exp(char **exported_dup, int i)
-{
-	while (i)
-	{
-		free(exported_dup[i]);
-		i--;
-	}
-	free(exported_dup);
 }

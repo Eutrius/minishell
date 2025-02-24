@@ -23,6 +23,7 @@ int	main(void)
 	{
 		read_line(&data);
 		parse_cmd(&data);
+		get_var_value(data.cmd_line);
 		is_builtin(data.cmd_line[0]->content, &data);
 		free(data.parser->buffer);
 		ft_free_strs(data.parser->strs);

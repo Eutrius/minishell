@@ -26,6 +26,8 @@ SRC = srcs/main.c \
 	  srcs/builtins/pwd.c \
 	  srcs/builtins/unset.c \
 		srcs/builtins/export_utils.c\
+		srcs/expand/expand.c\
+		srcs/expand/expand_utils.c\
 	  srcs/pathfinder.c
 
 OBJ = $(SRC:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)

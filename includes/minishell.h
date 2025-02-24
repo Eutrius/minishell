@@ -76,6 +76,12 @@ void						extract_op(t_parser *parser, int *index);
 void						parse_strs_error(char ***strs, char *msg);
 void						print_error(char *msg);
 
+// Expand
+
+void						get_var_value(t_token **token);
+int							calculate_var_len(char *str);
+int							is_valid(char c);
+
 // Execute
 
 char						*pathfinder(const char *cmd, char **env);
@@ -89,6 +95,10 @@ int							strs_count(char **strs);
 void						print_string_array(char **strs);
 int							is_valid_identifier(char *str);
 int							find_eq_i(char *str);
+int							var_exists(char **env, char *to_check);
+void						free_previous_sorted_exp(char **exported_dup,
+								int i);
+void						value_checker(char **sorted_exp, int i);
 
 // Pathfinder
 char						*pathfinder(const char *cmd, char **env);
