@@ -6,12 +6,13 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 17:33:10 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/23 12:54:04 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 12:32:37 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "minishell.h"
+#include <stdlib.h>
 
 int	is_special(int c)
 {
@@ -50,27 +51,20 @@ int	is_dquote(int c)
 	return (0);
 }
 
-char	*get_enum(t_type type)
+void	parse_error(t_parser *parser)
 {
-	if (type == NAME)
-		return ("NAME");
-	else if (type == OPEN)
-		return ("OPEN");
-	else if (type == CLOSE)
-		return ("CLOSE");
-	else if (type == PIPE)
-		return ("PIPE");
-	else if (type == AND)
-		return ("AND");
-	else if (type == OR)
-		return ("OR");
-	else if (type == R_IN)
-		return ("R_IN");
-	else if (type == HERE_DOC)
-		return ("HERE_DOC");
-	else if (type == R_OUT)
-		return ("R_OUT");
-	else if (type == APPEND)
-		return ("APPEND");
-	return ("OTHERS");
+	free_tokens(parser->tokens);
+	parser->tokens = NULL;
+	free(parser->str);
+	parser->str = NULL;
+	free(parser->buffer);
+	parser->str = NULL;
+}
+
+void	count_parentesis(t_parser *parser, t_token *c_token)
+{
+	if (c_token->type & OPEN)
+		parser->parentesis++;
+	if (c_token->type & CLOSE)
+		parser->parentesis--;
 }

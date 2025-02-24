@@ -20,6 +20,8 @@ SRC = srcs/main.c \
 	  srcs/parse/check.c \
 	  srcs/parse/extract_utils.c \
 	  srcs/parse/token.c \
+	  srcs/parse/node.c \
+	  srcs/parse/extra.c \
 	  srcs/builtins.c\
 	  srcs/pathfinder.c \
 	  srcs/utils/print_errors.c

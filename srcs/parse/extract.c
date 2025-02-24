@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:55:33 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/23 12:50:12 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 14:34:04 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 
 void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 {
+	t_token	**tmp_tokens;
+
 	if (mode == OPERATOR)
 		extract_op(parser, index);
 	else
@@ -31,9 +33,11 @@ void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 	if (gen_token(parser, mode))
 		return (parse_error(parser));
 	parser->str = NULL;
+	tmp_tokens = parser->tokens;
 	parser->tokens = add_token(parser->tokens, parser->token);
 	if (parser->tokens == NULL)
 	{
+		free_tokens(tmp_tokens);
 		free_token(parser->token);
 		parser->token = NULL;
 		print_error(ERR_MALLOC);

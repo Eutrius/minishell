@@ -10,9 +10,11 @@ typedef struct s_data		t_data;
 typedef struct s_token		t_token;
 typedef struct s_operators	t_operators;
 typedef struct s_parser		t_parser;
+typedef struct s_btree		t_btree;
 
 typedef enum e_type
 {
+	NONE = 0,
 	NAME = 1 << 0,
 	PIPE = 1 << 1,
 	OR = 1 << 2,
@@ -68,9 +70,12 @@ typedef struct s_token
 
 typedef struct s_btree
 {
-	t_token					**content;
-	struct s_btree			*success;
-	struct s_btree			*failure;
+	t_token					**cmd_line;
+	t_btree					*success;
+	t_btree					*failure;
+	t_type					redirect;
+	char					*file;
+	t_type					delimitter;
 }							t_btree;
 
 // Init
@@ -80,7 +85,7 @@ void						init_operators(t_operators *operators);
 
 // Parse
 
-void						parse_cmd(t_data *data);
+int							parse(t_data *data);
 int							split_cmd(t_parser *parser);
 int							check_cmd(t_parser *parser);
 void						parse_error(t_parser *parser);
@@ -94,6 +99,8 @@ void						expand_variable(t_parser *parser);
 void						join_last(t_parser *parser);
 char						*if_double(char *str, int *index, char *twice,
 								char *once);
+void						count_parentesis(t_parser *parser,
+								t_token *c_token);
 // Token
 
 void						free_token(t_token *token);
@@ -101,6 +108,11 @@ void						free_tokens(t_token **tokens);
 t_token						*create_token(void *content, t_type type);
 void						print_tokens(t_token **tokens);
 t_token						**add_token(t_token **tokens, t_token *token);
+
+// Tree
+t_btree						*create_node(void);
+void						free_node(void *node);
+void						apply_tree(t_btree *root, void (*f)(void *));
 
 // Execute
 

@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 11:57:19 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/22 12:24:40 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 14:33:56 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,7 @@ t_token	**add_token(t_token **tokens, t_token *token)
 		len++;
 	res = ft_calloc(len + 2, sizeof(t_token *));
 	if (res == NULL)
-	{
-		free_tokens(tokens);
 		return (NULL);
-	}
 	res[len] = token;
 	len--;
 	while (len >= 0)
@@ -73,16 +70,4 @@ t_token	**add_token(t_token **tokens, t_token *token)
 	}
 	free(tokens);
 	return (res);
-}
-
-void	print_tokens(t_token **tokens)
-{
-	int	i;
-
-	i = 0;
-	while (tokens[i] != NULL)
-	{
-		printf("%s: %s\n", get_enum(tokens[i]->type), tokens[i]->content);
-		i++;
-	}
 }

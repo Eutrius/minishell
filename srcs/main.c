@@ -18,11 +18,11 @@ int	main(void)
 	while (1)
 	{
 		read_line(&data);
-    if (!ft_strcmp(parser.buffer, "echo"))
-      custom_echo(&data);
+		if (!ft_strcmp(parser.buffer, "echo"))
+			custom_echo(&data);
 		if (!ft_strcmp(parser.buffer, "exit"))
 			exit(0);
-		parse_cmd(&data);
+		parse(&data);
 	}
 	exit(0);
 }

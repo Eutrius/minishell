@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 17:30:35 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/23 13:07:00 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 14:54:49 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,52 +14,59 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-void	parse_cmd(t_data *data)
+int	parse(t_data *data)
 {
 	t_parser	*parser;
 
 	parser = data->parser;
 	if (split_cmd(parser))
-		return ;
+		return (1);
 	if (check_cmd(parser))
-		return ;
+		return (1);
 	print_tokens(parser->tokens);
 	free(parser->buffer);
+	return (0);
 }
 
-void	parse_error(t_parser *parser)
+int	parse_cmd(t_parser *parser)
 {
-	free_tokens(parser->tokens);
-	parser->tokens = NULL;
-	free(parser->str);
-	parser->str = NULL;
-	free(parser->buffer);
-	parser->str = NULL;
-}
+	t_token	**tokens;
+	t_btree	*curr_cmd;
+	int		i;
 
-int	gen_token(t_parser *parser, t_mode mode)
-{
-	if (mode != OPERATOR)
-		parser->token = create_token(parser->str, NAME);
-	else if (!ft_strcmp(parser->str, "||"))
-		parser->token = create_token(parser->str, OR);
-	else if (!ft_strcmp(parser->str, "|"))
-		parser->token = create_token(parser->str, PIPE);
-	else if (!ft_strcmp(parser->str, "&&"))
-		parser->token = create_token(parser->str, AND);
-	else if (!ft_strcmp(parser->str, "("))
-		parser->token = create_token(parser->str, OPEN);
-	else if (!ft_strcmp(parser->str, ")"))
-		parser->token = create_token(parser->str, CLOSE);
-	else if (!ft_strcmp(parser->str, "<<"))
-		parser->token = create_token(parser->str, HERE_DOC);
-	else if (!ft_strcmp(parser->str, "<"))
-		parser->token = create_token(parser->str, R_IN);
-	else if (!ft_strcmp(parser->str, ">>"))
-		parser->token = create_token(parser->str, APPEND);
-	else
-		parser->token = create_token(parser->str, R_OUT);
-	if (parser->token == NULL)
+	tokens = parser->tokens;
+	i = 0;
+	curr_cmd = create_node();
+	if (curr_cmd == NULL)
 		return (print_error(ERR_MALLOC));
+	parser->parentesis = 0;
+	while (tokens[i] != NULL)
+	{
+		if (!(tokens[i]->type & (PIPE | OR | AND)))
+		{
+			curr_cmd->cmd_line = add_token(curr_cmd->cmd_line, tokens[i]);
+			if (curr_cmd->cmd_line == NULL)
+				return (print_error(ERR_MALLOC));
+		}
+		else if (tokens[i]->type & PIPE)
+		{
+			curr_cmd->success = create_node();
+			curr_cmd->delimitter = PIPE;
+			curr_cmd = curr_cmd->success;
+		}
+		else if (tokens[i]->type & AND)
+		{
+			curr_cmd->success = create_node();
+			curr_cmd->delimitter = AND;
+			curr_cmd = curr_cmd->success;
+		}
+		else if (tokens[i]->type & AND)
+		{
+			curr_cmd->failure = create_node();
+			curr_cmd->delimitter = AND;
+			curr_cmd = curr_cmd->failure;
+		}
+		i++;
+	}
 	return (0);
 }

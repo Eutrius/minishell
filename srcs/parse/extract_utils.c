@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 12:10:22 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/23 11:43:07 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 12:13:49 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,31 @@ void	join_last(t_parser *parser)
 	free(old_content);
 	free(parser->str);
 	parser->str = NULL;
+}
+
+int	gen_token(t_parser *parser, t_mode mode)
+{
+	if (mode != OPERATOR)
+		parser->token = create_token(parser->str, NAME);
+	else if (!ft_strcmp(parser->str, "||"))
+		parser->token = create_token(parser->str, OR);
+	else if (!ft_strcmp(parser->str, "|"))
+		parser->token = create_token(parser->str, PIPE);
+	else if (!ft_strcmp(parser->str, "&&"))
+		parser->token = create_token(parser->str, AND);
+	else if (!ft_strcmp(parser->str, "("))
+		parser->token = create_token(parser->str, OPEN);
+	else if (!ft_strcmp(parser->str, ")"))
+		parser->token = create_token(parser->str, CLOSE);
+	else if (!ft_strcmp(parser->str, "<<"))
+		parser->token = create_token(parser->str, HERE_DOC);
+	else if (!ft_strcmp(parser->str, "<"))
+		parser->token = create_token(parser->str, R_IN);
+	else if (!ft_strcmp(parser->str, ">>"))
+		parser->token = create_token(parser->str, APPEND);
+	else
+		parser->token = create_token(parser->str, R_OUT);
+	if (parser->token == NULL)
+		return (print_error(ERR_MALLOC));
+	return (0);
 }
