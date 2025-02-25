@@ -2,10 +2,9 @@
 #include "minishell.h"
 #include <stdio.h>
 #include <unistd.h>
+#include <limits.h>
 
 static void	handle_sign(char *str, int *i, int *sign);
-
-#include <limits.h>
 
 int	check_exit_value(char *str)
 {
@@ -13,6 +12,8 @@ int	check_exit_value(char *str)
 	int			sign;
 	int			i;
 
+	if (!str)
+		return (0);
 	if (!ft_strcmp(str, "--"))
 		return (1);
 	num = 0;

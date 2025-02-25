@@ -13,16 +13,18 @@ int	is_valid(char c)
 int	calculate_var_len(char *str)
 {
 	int	i;
+	int	start;
 
 	i = 0;
-	if (str[0] == '$')
+	while (str[i] && str[i] != '$')
 		i++;
-	while (str[i])
+	if (str[i] == '$')
 	{
-		if (is_valid(str[i]))
+		start = i;
+		i++;
+		while (is_valid(str[i]))
 			i++;
-		else
-			break ;
+		return (i - start);
 	}
-	return (i);
+	return (0);
 }

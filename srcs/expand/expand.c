@@ -4,100 +4,85 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static char	*extract_valid_part(char *pointer);
+// static char	*extract_valid_part(char *pointer);
 static char	*extract_var(char *pointer);
 
-void	get_var_value(t_token **token)
+void	check_value(t_data *data)
 {
-	char	*value;
-	char	*curr;
-	char	*var;
-	char	*orig;
-	char	*valid_part;
 	int		i;
+	char	*var;
+	t_token	**cmd_line;
+	char	*value;
 
 	i = 1;
-	while (token[i])
+	cmd_line = data->cmd_line;
+	while (cmd_line[i])
 	{
-		curr = (char *)token[i]->content;
-		if (curr[0] == '$')
-		{
-			orig = ft_strdup(curr);
-			valid_part = extract_valid_part(orig);
-			var = extract_var(orig);
-			value = getenv(var);
-			if (value)
-			{
-				if (valid_part[0] != '\0')
-					token[i]->content = ft_strjoin(value, valid_part);
-				else
-					token[i]->content = ft_strdup(value);
-			}
-			else
-			{
-				if (valid_part[0] != '\0')
-					token[i]->content = ft_strdup(valid_part);
-				else
-					token[i]->content = NULL;
-			}
-			free(var);
-			free(orig);
-			free(valid_part);
-		}
-		i++;
-	}
-}
-
-char	*extract_var(char *pointer)
-{
-	int		i;
-	int		j;
-	char	*new_str;
-
-	j = 0;
-	i = calculate_var_len(pointer);
-	new_str = ft_calloc(i + 1, 1);
-	if (!new_str)
-		return (NULL);
-	if (pointer[0] == '$')
-		j++;
-	i = 0;
-	while (pointer[j])
-	{
-		if (is_valid(pointer[j]))
-		{
-			new_str[i] = pointer[j];
-			j++;
-			i++;
-		}
+		var = extract_var(cmd_line[i]->content);
+		if (!var)
+			return ;
+		value = getenv(var);
+		if (value)
+			cmd_line[i]->content = ft_strdup(value);
 		else
-			break ;
+			cmd_line[i]->content = NULL;
+		i++;
 	}
-	new_str[i] = '\0';
-	return (new_str);
+	free(var);
 }
 
-char	*extract_valid_part(char *pointer)
+char	*extract_var(char *ptr)
 {
-	int		var_len;
-	int		remaining_part;
-	char	*new_str;
 	int		i;
 	int		j;
+	char	*new_var;
 
-	var_len = calculate_var_len(pointer);
-	remaining_part = ft_strlen(pointer) - var_len;
-	new_str = ft_calloc(remaining_part + 1, 1);
-	if (!new_str)
-		return (NULL);
-	i = var_len;
 	j = 0;
-	while (pointer[i])
+	i = 0;
+	new_var = ft_calloc(i + 1, 1);
+	if (!new_var)
+		return (NULL);
+	i = 0;
+	while (ptr[j] && ptr[j] != '$')
 	{
-		new_str[j] = pointer[i];
-		i++;
+		new_var[i] = ptr[j];
 		j++;
 	}
-	new_str[j] = '\0';
-	return (new_str);
+	if (ptr[j] == '$')
+	{
+		j++;
+		while (is_valid(ptr[j]))
+		{
+			new_var[i] = ptr[j];
+			i++;
+			j++;
+		}
+		new_var[i] = '\0';
+	}
+	return (new_var);
 }
+
+// char	*extract_valid_part(char *pointer)
+// {
+// 	int		var_len;
+// 	int		remaining_part;
+// 	char	*new_str;
+// 	int		i;
+// 	int		j;
+
+// 	var_len = calculate_var_len(pointer);
+// 	remaining_part = ft_strlen(pointer) - var_len;
+// 	new_str = ft_calloc(remaining_part + 1, 1);
+// 	if (!new_str)
+// 		return (NULL);
+// 	i = var_len;
+// 	j = 0;
+// 	while (pointer[i])
+// 	{
+// 		new_str[j] = pointer[i];
+// 		i++;
+// 		j++;
+// 	}
+// 	new_str[j] = '\0';
+// 	return (new_str);
+// }

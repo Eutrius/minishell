@@ -78,7 +78,7 @@ void						print_error(char *msg);
 
 // Expand
 
-void						get_var_value(t_token **token);
+void						check_value(t_data *data);
 int							calculate_var_len(char *str);
 int							is_valid(char c);
 
