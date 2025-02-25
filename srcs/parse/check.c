@@ -32,15 +32,14 @@ int	check_cmd(t_parser *parser)
 			if (parser->tokens[i + 1])
 				return (unexpected_error(parser->tokens[i + 1]->content));
 			else
-				return (print_error1(ERR_SYNTAX,
-						" near unexpected token `newline'"));
+				return (unexpected_error("newline"));
 		}
 		i++;
 	}
 	if (parser->parentesis > 0)
 		return (print_error1(ERR_SYNTAX, ": unexpected end of file"));
 	else if (parser->parentesis < 0)
-		return (print_error1(ERR_SYNTAX, " near unexpected token `)'"));
+		return (unexpected_error(")"));
 	return (0);
 }
 

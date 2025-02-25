@@ -42,30 +42,6 @@ int	parse_cmd(t_parser *parser)
 	parser->parentesis = 0;
 	while (tokens[i] != NULL)
 	{
-		if (!(tokens[i]->type & (PIPE | OR | AND)))
-		{
-			curr_cmd->cmd_line = add_token(curr_cmd->cmd_line, tokens[i]);
-			if (curr_cmd->cmd_line == NULL)
-				return (print_error(ERR_MALLOC));
-		}
-		else if (tokens[i]->type & PIPE)
-		{
-			curr_cmd->success = create_node();
-			curr_cmd->delimitter = PIPE;
-			curr_cmd = curr_cmd->success;
-		}
-		else if (tokens[i]->type & AND)
-		{
-			curr_cmd->success = create_node();
-			curr_cmd->delimitter = AND;
-			curr_cmd = curr_cmd->success;
-		}
-		else if (tokens[i]->type & AND)
-		{
-			curr_cmd->failure = create_node();
-			curr_cmd->delimitter = AND;
-			curr_cmd = curr_cmd->failure;
-		}
 		i++;
 	}
 	return (0);

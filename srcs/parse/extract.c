@@ -20,24 +20,20 @@ static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 
 void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 {
-	t_token	**tmp_tokens;
-
 	if (mode == OPERATOR)
 		extract_op(parser, index);
 	else
 		extract_str(parser, index, ctrl, mode);
 	if (parser->str == NULL)
 		return (parse_error(parser));
-	if ((parser->last_token & (NAME | NONE)) && mode != OPERATOR)
+	if ((parser->last_token & NAME) && mode != OPERATOR)
 		return (join_last(parser));
 	if (gen_token(parser, mode))
 		return (parse_error(parser));
 	parser->str = NULL;
-	tmp_tokens = parser->tokens;
 	parser->tokens = add_token(parser->tokens, parser->token);
 	if (parser->tokens == NULL)
 	{
-		free_tokens(tmp_tokens);
 		free_token(parser->token);
 		parser->token = NULL;
 		print_error(ERR_MALLOC);
