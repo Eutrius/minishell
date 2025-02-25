@@ -6,44 +6,44 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 17:30:35 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/20 17:50:53 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 23:26:59 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include "libft.h"
 #include <stdio.h>
+#include "libft.h"
+#include "minishell.h"
 #include <stdlib.h>
 
-static void	tokenize(t_data *data);
-
-void	parse_cmd(t_data *data)
+int	parse(t_data *data)
 {
 	t_parser	*parser;
 
 	parser = data->parser;
-	split_cmd(parser);
-	if (!parser->strs)
-		return ;
-	tokenize(data);
-	// free(parser->buffer);
-	// ft_free_strs(parser->strs);
-	// parser->strs = NULL;
+	if (split_cmd(parser))
+		return (1);
+	print_tokens(parser->tokens);
+	if (check_cmd(parser))
+		return (1);
+	free(parser->buffer);
+	return (0);
 }
 
-static void	tokenize(t_data *data)
+int	parse_cmd(t_parser *parser)
 {
-	t_parser	*parser;
-	int			i;
+	t_token	**tokens;
+	t_btree	*curr_cmd;
+	int		i;
 
-	parser = data->parser;
-	data->cmd_line = ft_calloc(ft_strslen(parser->strs) + 1, sizeof(t_token *));
-	if (!data->cmd_line)
-		return ;
+	tokens = parser->tokens;
 	i = 0;
-	while (parser->strs[i] != NULL)
+	curr_cmd = create_node();
+	if (curr_cmd == NULL)
+		return (print_error(ERR_MALLOC));
+	parser->parentesis = 0;
+	while (tokens[i] != NULL)
 	{
-		data->cmd_line[i] = assign_token(data->cmd_line, parser->strs[i], i);
 		i++;
 	}
+	return (0);
 }

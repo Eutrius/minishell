@@ -22,12 +22,9 @@ int	main(void)
 	while (1)
 	{
 		read_line(&data);
-		parse_cmd(&data);
+		parse(&data);
 		check_value(&data);
 		is_builtin(data.cmd_line[0]->content, &data);
-		free(data.parser->buffer);
-		ft_free_strs(data.parser->strs);
-		parser.strs = NULL;
 	}
 	exit(0);
 }

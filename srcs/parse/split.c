@@ -6,37 +6,40 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 16:01:15 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/20 17:58:25 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/24 23:23:41 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "libft.h"
+#include "minishell.h"
 
 static int	skip_space(t_parser *parser, int *index);
 
-void	split_cmd(t_parser *parser)
+int	split_cmd(t_parser *parser)
 {
 	int	i;
 
-	parser->strs = ft_calloc(1, sizeof(char *));
-	if (parser->strs == NULL)
-		parse_strs_error(&parser->strs, ERR_MALLOC);
 	i = 0;
-	parser->skipped = 1;
-	while (parser->strs && parser->buffer[i] != '\0')
+	parser->last_token = START;
+	parser->tokens = ft_calloc(1, sizeof(t_token *));
+	if (parser->tokens == NULL)
+		return (print_error(ERR_MALLOC));
+	while (parser->buffer[i] != '\0')
 	{
+		if (parser->tokens == NULL)
+			return (1);
 		if (skip_space(parser, &i))
 			continue ;
 		if (is_dquote(parser->buffer[i]))
-			extract_str(parser, &i, is_dquote, DQUOTE);
+			extract(parser, &i, is_dquote, QUOTE);
 		else if (is_quote(parser->buffer[i]))
-			extract_str(parser, &i, is_quote, QUOTE);
+			extract(parser, &i, is_quote, QUOTE);
 		else if (is_special(parser->buffer[i]))
-			extract_op(parser, &i);
+			extract(parser, &i, NULL, OPERATOR);
 		else
-			extract_str(parser, &i, is_special, NORMAL);
+			extract(parser, &i, is_special, NORMAL);
 	}
+	return (0);
 }
 
 static int	skip_space(t_parser *parser, int *index)
@@ -44,7 +47,8 @@ static int	skip_space(t_parser *parser, int *index)
 	if (parser->buffer[*index] == ' ')
 	{
 		(*index)++;
-		parser->skipped = 1;
+		if (parser->last_token & (NAME | NONE))
+			parser->last_token = NONE;
 		return (1);
 	}
 	return (0);
