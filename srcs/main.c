@@ -22,7 +22,10 @@ int	main(void)
 	while (1)
 	{
 		read_line(&data);
-		parse(&data);
+		if (parser.buffer == NULL || ft_strlen(parser.buffer) == 0)
+			continue ;
+		if (parse(&data))
+			continue ;
 		// check_value(&data);
 		is_builtin((parser.tokens[0])->content, &data);
 	}

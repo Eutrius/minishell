@@ -58,7 +58,7 @@ void	parse_error(t_parser *parser)
 	free(parser->str);
 	parser->str = NULL;
 	free(parser->buffer);
-	parser->str = NULL;
+	parser->buffer = NULL;
 }
 
 void	count_parentesis(t_parser *parser, t_token *c_token)
