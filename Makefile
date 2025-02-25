@@ -5,7 +5,7 @@ LIBFT = $(LIBFT_PATH)/libft.a
 LIBFT_FLAGS = -L$(LIBFT_PATH) -lft
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_PATH) -Iincludes -g -O3
+CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_PATH) -Iincludes -g -O3 -gdwarf-4
 RM = rm -rf
 
 OBJS_DIR = objs

@@ -23,8 +23,8 @@ int	main(void)
 	{
 		read_line(&data);
 		parse(&data);
-		check_value(&data);
-		is_builtin(data.cmd_line[0]->content, &data);
+		// check_value(&data);
+		is_builtin((parser.tokens[0])->content, &data);
 	}
 	exit(0);
 }

@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "libft.h"
 #include "minishell.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 int	parse(t_data *data)
@@ -26,6 +26,7 @@ int	parse(t_data *data)
 	if (check_cmd(parser))
 		return (1);
 	free(parser->buffer);
+	data->cmd_line = parser->tokens;
 	return (0);
 }
 
