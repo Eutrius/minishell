@@ -17,8 +17,14 @@ SRC = srcs/main.c \
 	  srcs/parse/utils.c \
 	  srcs/parse/split.c \
 	  srcs/parse/extract.c \
+	  srcs/parse/check.c \
+	  srcs/parse/extract_utils.c \
+	  srcs/parse/token.c \
+	  srcs/parse/node.c \
+	  srcs/parse/extra.c \
 	  srcs/builtins.c\
-	  srcs/pathfinder.c
+	  srcs/pathfinder.c \
+	  srcs/utils/print_errors.c
 
 OBJ = $(SRC:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
