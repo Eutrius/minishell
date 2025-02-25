@@ -43,7 +43,7 @@ typedef enum e_mode
 typedef struct s_data
 {
 	char					**env;
-	t_token					***cmd_lines;
+	t_btree					*root;
 	t_token					**cmd_line;
 	t_parser				*parser;
 }							t_data;
@@ -54,9 +54,9 @@ typedef struct s_parser
 	char					*buffer;
 	// split
 	t_token					**tokens;
-	char					*str;
+	t_btree					**nodes;
 	t_token					*token;
-	int						skipped;
+	char					*str;
 	t_type					last_token;
 	// check
 	int						parentesis;
@@ -75,9 +75,10 @@ typedef struct s_btree
 	t_token					**cmd_line;
 	t_btree					*success;
 	t_btree					*failure;
-	t_type					redirect;
-	char					*file;
-	t_type					delimitter;
+	char					*output;
+	char					*input;
+	char					*limiter;
+	int						id;
 }							t_btree;
 
 // Init
@@ -112,8 +113,10 @@ void						print_tokens(t_token **tokens);
 t_token						**add_token(t_token **tokens, t_token *token);
 
 // Tree
-t_btree						*create_node(void);
+t_btree						*create_node(int id);
+t_btree						**create_nodes(int size);
 void						free_node(void *node);
+void						free_nodes(t_btree **nodes);
 void						apply_tree(t_btree *root, void (*f)(void *));
 
 // Expand

@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 17:30:35 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 23:26:59 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/25 15:16:59 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,21 @@ int	parse(t_data *data)
 int	parse_cmd(t_parser *parser)
 {
 	t_token	**tokens;
-	t_btree	*curr_cmd;
 	int		i;
 
 	tokens = parser->tokens;
 	i = 0;
-	curr_cmd = create_node();
-	if (curr_cmd == NULL)
-		return (print_error(ERR_MALLOC));
+	parser->data->root = NULL;
 	parser->parentesis = 0;
 	while (tokens[i] != NULL)
 	{
+		if (tokens[i]->type & (OPEN | CLOSE))
+		{
+			count_parentesis(parser, tokens[i]);
+		}
+		else if (tokens[i]->type & (NAME))
+		{
+		}
 		i++;
 	}
 	return (0);

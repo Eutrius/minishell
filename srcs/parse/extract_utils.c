@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 12:10:22 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 23:22:08 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/25 16:16:00 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <stdlib.h>
 
 static void	gen_op_token(t_parser *parser);
-static char	*ft_strjoin_with(char *s1, char *s2, char *c);
 
 char	*if_double(char *str, int *index, char *twice, char *once)
 {
@@ -35,10 +34,7 @@ void	join_last(t_parser *parser)
 	char	*old_content;
 
 	old_content = parser->token->content;
-	if (parser->last_token & NONE)
-		new_content = ft_strjoin_with(old_content, parser->str, " ");
-	else
-		new_content = ft_strjoin(old_content, parser->str);
+	new_content = ft_strjoin(old_content, parser->str);
 	if (new_content == NULL)
 	{
 		print_error(ERR_MALLOC);
@@ -49,22 +45,6 @@ void	join_last(t_parser *parser)
 	free(old_content);
 	free(parser->str);
 	parser->str = NULL;
-}
-
-static char	*ft_strjoin_with(char *s1, char *s2, char *c)
-{
-	char	*res;
-	size_t	len;
-
-	len = ft_strlen(s1) + ft_strlen(s2) + ft_strlen(c) + 2;
-	res = ft_calloc(len, sizeof(char));
-	if (res != NULL)
-	{
-		ft_strlcat(res, s1, len);
-		ft_strlcat(res, c, len);
-		ft_strlcat(res, s2, len);
-	}
-	return (res);
 }
 
 int	gen_token(t_parser *parser, t_mode mode)
