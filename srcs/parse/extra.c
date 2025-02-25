@@ -39,15 +39,15 @@ char	*get_enum(t_type type)
 	return ("OTHERS");
 }
 
-void	print_tokens(t_token **tokens)
-{
-	int	i;
+// void	print_tokens(t_token **tokens)
+// {
+// 	int	i;
 
-	i = 0;
-	while (tokens[i] != NULL)
-	{
-		printf("%s: %s\n", get_enum(tokens[i]->type),
-			(char *)tokens[i]->content);
-		i++;
-	}
-}
+// 	i = 0;
+// 	while (tokens[i] != NULL)
+// 	{
+// 		printf("%s: %s\n", get_enum(tokens[i]->type),
+// 			(char *)tokens[i]->content);
+// 		i++;
+// 	}
+// }

@@ -5,84 +5,50 @@
 #include <unistd.h>
 
 // static char	*extract_valid_part(char *pointer);
-static char	*extract_var(char *pointer);
+static char *create_var(char *ptr);
 
 void	check_value(t_data *data)
 {
 	int		i;
-	char	*var;
 	t_token	**cmd_line;
-	char	*value;
 
 	i = 1;
 	cmd_line = data->cmd_line;
 	while (cmd_line[i])
 	{
-		var = extract_var(cmd_line[i]->content);
-		if (!var)
-			return ;
-		value = getenv(var);
-		if (value)
-			cmd_line[i]->content = ft_strdup(value);
-		else
-			cmd_line[i]->content = NULL;
+		if (cmd_line[i]->type == NAME)
+			cmd_line[i]->content = create_var(cmd_line[i]->content);
 		i++;
 	}
-	free(var);
 }
 
-char	*extract_var(char *ptr)
+static char *create_var(char *ptr)
 {
-	int		i;
-	int		j;
-	char	*new_var;
-
-	j = 0;
-	i = 0;
-	new_var = ft_calloc(i + 1, 1);
-	if (!new_var)
-		return (NULL);
-	i = 0;
-	while (ptr[j] && ptr[j] != '$')
+	char *before_dollar;
+	char *var;
+	char *var2;
+	char *after_var;
+	char *tmp;
+	char *final_string;
+	before_dollar = extract_before_dollar(ptr);
+	var = extract_var(ptr);
+	var2 = getenv(var);
+	after_var = extract_after_dollar(ptr);
+	tmp = safe_join(before_dollar,var2);
+	if (!tmp)
 	{
-		new_var[i] = ptr[j];
-		j++;
+		print_error(ERR_MALLOC);
+		return NULL;
 	}
-	if (ptr[j] == '$')
+	final_string = safe_join(tmp,after_var);
+	if (!final_string)
 	{
-		j++;
-		while (is_valid(ptr[j]))
-		{
-			new_var[i] = ptr[j];
-			i++;
-			j++;
-		}
-		new_var[i] = '\0';
+		print_error(ERR_MALLOC);
+		return NULL;
 	}
-	return (new_var);
+	free(before_dollar);
+	free(var);
+	free(after_var);
+	return final_string;
 }
 
-// char	*extract_valid_part(char *pointer)
-// {
-// 	int		var_len;
-// 	int		remaining_part;
-// 	char	*new_str;
-// 	int		i;
-// 	int		j;
-
-// 	var_len = calculate_var_len(pointer);
-// 	remaining_part = ft_strlen(pointer) - var_len;
-// 	new_str = ft_calloc(remaining_part + 1, 1);
-// 	if (!new_str)
-// 		return (NULL);
-// 	i = var_len;
-// 	j = 0;
-// 	while (pointer[i])
-// 	{
-// 		new_str[j] = pointer[i];
-// 		i++;
-// 		j++;
-// 	}
-// 	new_str[j] = '\0';
-// 	return (new_str);
-// }

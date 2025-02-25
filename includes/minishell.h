@@ -121,6 +121,11 @@ void						apply_tree(t_btree *root, void (*f)(void *));
 void						check_value(t_data *data);
 int							calculate_var_len(char *str);
 int							is_valid(char c);
+char  *extract_before_dollar(char *ptr);
+char  *extract_after_dollar(char *ptr);
+char	*ft_strjoin_with(char *s1, char *s2, char *c);
+char    *extract_var(char *ptr);
+char	*safe_join(char *s1, char *s2);
 
 // Execute
 

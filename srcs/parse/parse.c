@@ -22,7 +22,7 @@ int	parse(t_data *data)
 	parser = data->parser;
 	if (split_cmd(parser))
 		return (1);
-	print_tokens(parser->tokens);
+	// print_tokens(parser->tokens);
 	if (check_cmd(parser))
 		return (1);
 	free(parser->buffer);
