@@ -1,13 +1,17 @@
-#include "../includes/minishell.h"
-#include "../libft/libft.h"
+#include "libft.h"
+#include "minishell.h"
 // clang-format off
 #include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 // clang-format on
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 static void	read_line(t_data *data);
+
+int			g_status;
 
 int	main(void)
 {
@@ -18,11 +22,9 @@ int	main(void)
 	while (1)
 	{
 		read_line(&data);
-		if (!ft_strcmp(parser.buffer, "echo"))
-			custom_echo(&data);
-		if (!ft_strcmp(parser.buffer, "exit"))
-			exit(0);
 		parse(&data);
+		check_value(&data);
+		is_builtin(data.cmd_line[0]->content, &data);
 	}
 	exit(0);
 }

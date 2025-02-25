@@ -17,12 +17,22 @@ SRC = srcs/main.c \
 	  srcs/parse/utils.c \
 	  srcs/parse/split.c \
 	  srcs/parse/extract.c \
+	  srcs/builtins/utils.c\
+	  srcs/builtins/echo.c \
+	  srcs/builtins/exit.c \
+	  srcs/builtins/export.c \
+	  srcs/builtins/env.c \
+	  srcs/builtins/cd.c \
+	  srcs/builtins/pwd.c \
+	  srcs/builtins/unset.c \
+	  srcs/builtins/export_utils.c\
+	  srcs/expand/expand.c\
+	  srcs/expand/expand_utils.c\
 	  srcs/parse/check.c \
 	  srcs/parse/extract_utils.c \
 	  srcs/parse/token.c \
 	  srcs/parse/node.c \
 	  srcs/parse/extra.c \
-	  srcs/builtins.c\
 	  srcs/pathfinder.c \
 	  srcs/utils/print_errors.c
 

@@ -12,6 +12,8 @@ typedef struct s_operators	t_operators;
 typedef struct s_parser		t_parser;
 typedef struct s_btree		t_btree;
 
+extern int					g_status;
+
 typedef enum e_type
 {
 	NAME = 1 << 0,
@@ -114,17 +116,42 @@ t_btree						*create_node(void);
 void						free_node(void *node);
 void						apply_tree(t_btree *root, void (*f)(void *));
 
+// Expand
+
+void						check_value(t_data *data);
+int							calculate_var_len(char *str);
+int							is_valid(char c);
+
 // Execute
 
+char						*pathfinder(const char *cmd, char **env);
+
+// Built in Utils
+
+int							check_exit_value(char *str);
+int							count_tokens(t_token **token);
+int							is_builtin(char *buf, t_data *data);
+int							strs_count(char **strs);
+void						print_string_array(char **strs);
+int							is_valid_identifier(char *str);
+int							find_eq_i(char *str);
+int							var_exists(char **env, char *to_check);
+void						free_previous_sorted_exp(char **exported_dup,
+								int i);
+void						value_checker(char **sorted_exp, int i);
+
+// Pathfinder
 char						*pathfinder(const char *cmd, char **env);
 
 // Built in
 
 void						custom_echo(t_data *data);
 void						clean_exit(t_data *data);
-void						custom_pwd(t_data *data);
+void						custom_pwd(void);
 void						custom_chdir(t_data *data);
 void						custom_env(t_data *data);
+void						custom_export(t_data *data);
+void						custom_unset(t_data *data);
 
 char						*get_enum(t_type type);
 

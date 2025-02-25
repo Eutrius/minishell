@@ -10,11 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
-#include "../libft/libft.h"
+#include "libft.h"
+#include "minishell.h"
 
 void	init(t_data *data, t_parser *parser)
 {
+	extern char	**environ;
+
 	data->parser = parser;
 	parser->data = data;
+	data->env = ft_strsdup(environ);
 }

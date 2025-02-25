@@ -1,4 +1,4 @@
-#include "../libft/libft.h"
+#include "libft.h"
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -24,7 +24,7 @@ char	*pathfinder(const char *cmd, char **env)
 	size_t	len;
 
 	return_path = NULL;
-  i = 0;
+	i = 0;
 	path = get_paths(env);
 	while (path && path[i])
 	{
