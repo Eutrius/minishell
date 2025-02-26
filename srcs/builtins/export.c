@@ -88,31 +88,51 @@ static void	export_with_args(t_data *data, int not_valid)
 	append_vars(data, new_env, i);
 }
 
-static void	append_vars(t_data *data, char **new_env, int i)
+static void append_vars(t_data *data, char **new_env, int i)
 {
-	int	j;
-	int	token_count;
+  int j;
+  int token_count;
+  int to_sub;
+  char *current_token;
+  int k;
+  int has_equals;
 
-	j = 1;
-	token_count = count_tokens(data->cmd_line) - 1;
-	while (token_count)
-	{
-		if (!is_valid_identifier(data->cmd_line[j]->content))
-		{
-			token_count--;
-			j++;
-			continue ;
-		}
-		new_env[i] = ft_strdup(data->cmd_line[j]->content);
-		if (!new_env[i])
-			ft_free_strs(new_env);
-		j++;
-		i++;
-		token_count--;
-	}
-	free(data->env);
-	new_env[i] = NULL;
-	data->env = new_env;
+  j = 1;
+  token_count = count_tokens(data->cmd_line) - 1;
+  while (token_count)
+  {
+    // if (!is_valid_identifier(data->cmd_line[j]->content))
+    // {
+    //   token_count--;
+    //   j++;
+    //   continue;
+    // }
+    current_token = data->cmd_line[j]->content;
+    has_equals = 0;
+    k = 0;
+    while (current_token[k] && current_token[k] != '=')
+      k++;
+    if (current_token[k] == '=')
+      has_equals = 1;
+    to_sub = check_var_existence(new_env, current_token);
+    if (to_sub >= 0)
+    {
+      if (has_equals)
+        new_env[to_sub] = ft_strdup(current_token);
+    }
+    else
+    {
+      new_env[i] = ft_strdup(current_token);
+      if (!new_env[i])
+        ft_free_strs(new_env);
+      i++;
+    }
+    j++;
+    token_count--;
+  }
+  free(data->env);
+  new_env[i] = NULL;
+  data->env = new_env;
 }
 
 static void	sort_export(char **sorted_exp)

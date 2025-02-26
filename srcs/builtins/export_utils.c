@@ -9,15 +9,10 @@ int	is_valid_identifier(char *str)
 	int	i;
 
 	i = 0;
-	while (str[i])
+	while (str[i] && str[i] != '=')
 	{
 		if (!ft_isalpha(str[0]))
 			return (0);
-		if (str[i] == '_' || str[i] == '=')
-		{
-			i++;
-			continue ;
-		}
 		if (!ft_isalnum(str[i]))
 			return (0);
 		i++;
@@ -113,35 +108,20 @@ int	strs_count(char **strs)
 	return (i);
 }
 
-int is_there_char(char *str, char c)
-{
-	int i = 0;
-	while(str[i])
-	{
-		if (str[i] == c)
-			return 1;
-		i++;
-	}
-	return 0;
-}
-
-// If ptr has name name of env, and has no equal  --> skip
-// if Ptr has same name(until equal) and ptr has equal --> replace.
-// 
-
 int check_var_existence(char **env, char *ptr)
 {
-    int i = 0;
-	while (env[i])
-	{
-		if (!ft_strncmp(env[i],ptr,ft_strlen(ptr)) && !ptr[ft_strlen(ptr)])
-		{
-			printf("in\n");
-			return 1;
-		}
-		i++;
-	}
-	return 0;
+  int i = 0;
+  while(ptr[i] && ptr[i] != '=')
+    i++;
+  int equal_index = i;
+  i = 0;
+  while (env[i])
+  {
+    if (!ft_strncmp(env[i], ptr, equal_index))
+      return i;
+    i++;
+  }
+  return -1;
 }
 
 void	free_previous_sorted_exp(char **exported_dup, int i)
