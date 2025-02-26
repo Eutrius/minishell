@@ -45,7 +45,7 @@ static void	export_no_args(t_data *data)
 	int		i;
 
 	i = 0;
-	sorted_exp = ft_strsdup(data->env);
+	sorted_exp = export_strsdup(data->env);
 	if (!sorted_exp)
 		return ;
 	while (sorted_exp[i])
@@ -97,8 +97,7 @@ static void	append_vars(t_data *data, char **new_env, int i)
 	token_count = count_tokens(data->cmd_line) - 1;
 	while (token_count)
 	{
-		if (!is_valid_identifier(data->cmd_line[j]->content)
-			|| var_exists(new_env, data->cmd_line[j]->content))
+		if (!is_valid_identifier(data->cmd_line[j]->content))
 		{
 			token_count--;
 			j++;

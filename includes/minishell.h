@@ -105,6 +105,7 @@ void						count_parentesis(t_parser *parser,
 								t_token *c_token);
 // Token
 
+
 void						free_token(t_token *token);
 void						free_tokens(t_token **tokens);
 t_token						*create_token(void *content, t_type type);
@@ -121,11 +122,11 @@ void						apply_tree(t_btree *root, void (*f)(void *));
 void						check_value(t_data *data);
 int							calculate_var_len(char *str);
 int							is_valid(char c);
-char  *extract_before_dollar(char *ptr);
-char  *extract_after_dollar(char *ptr);
-char	*ft_strjoin_with(char *s1, char *s2, char *c);
-char    *extract_var(char *ptr);
-char	*safe_join(char *s1, char *s2);
+char						*extract_before_dollar(char *ptr);
+char						*extract_after_dollar(char *ptr);
+char						*ft_strjoin_with(char *s1, char *s2, char *c);
+char						*extract_var(char *ptr);
+char						*safe_join(char *s1, char *s2);
 
 // Execute
 
@@ -144,6 +145,12 @@ int							var_exists(char **env, char *to_check);
 void						free_previous_sorted_exp(char **exported_dup,
 								int i);
 void						value_checker(char **sorted_exp, int i);
+char *strdup_and_add_quotes(char *str);
+char **export_strsdup(char **strs);
+int replace_existing_var(char **env, char *to_check);
+int	var_replace(char **env, char *to_check);
+int is_there_char(char *str, char c);
+int check_var_existence(char **env, char *ptr);
 
 // Pathfinder
 char						*pathfinder(const char *cmd, char **env);
