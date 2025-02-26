@@ -30,26 +30,3 @@ int	parse(t_data *data)
 	data->cmd_line = parser->tokens;
 	return (0);
 }
-
-int	parse_cmd(t_parser *parser)
-{
-	t_token	**tokens;
-	int		i;
-
-	tokens = parser->tokens;
-	i = 0;
-	parser->data->root = NULL;
-	parser->parentesis = 0;
-	while (tokens[i] != NULL)
-	{
-		if (tokens[i]->sub_type & (OPEN | CLOSE))
-		{
-			count_parentesis(parser, tokens[i]);
-		}
-		else if (tokens[i]->sub_type & (NAME))
-		{
-		}
-		i++;
-	}
-	return (0);
-}

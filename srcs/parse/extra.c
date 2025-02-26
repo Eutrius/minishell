@@ -14,6 +14,8 @@
 #include "minishell.h"
 #include <stdio.h>
 
+static char	*get_more_enum(t_type type);
+
 char	*get_enum(t_type type)
 {
 	if (type == NAME)
@@ -36,7 +38,23 @@ char	*get_enum(t_type type)
 		return ("R_OUT");
 	else if (type == APPEND)
 		return ("APPEND");
-	return ("OTHERS");
+	return (get_more_enum(type));
+}
+
+static char	*get_more_enum(t_type type)
+{
+	if (type == CMD)
+		return ("CMD");
+	else if (type == DELIMITTER)
+		return ("DELIMITTER");
+	else if (type == FILENAME)
+		return ("FILENAME");
+	else if (type == LIMITER)
+		return ("LIMITER");
+	else if (type == REDIRECT)
+		return ("REDIRECT");
+	else
+		return ("OTHERS");
 }
 
 void	print_tokens(t_token **tokens)
@@ -46,8 +64,8 @@ void	print_tokens(t_token **tokens)
 	i = 0;
 	while (tokens[i] != NULL)
 	{
-		printf("%i: %s: %s\n", tokens[i]->index, get_enum(tokens[i]->sub_type),
-			(char *)tokens[i]->content);
+		printf("%i: %s: %s: %s\n", tokens[i]->index, get_enum(tokens[i]->type),
+			get_enum(tokens[i]->sub_type), (char *)tokens[i]->content);
 		i++;
 	}
 }

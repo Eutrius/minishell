@@ -34,6 +34,8 @@ void	prepare_cmd(t_parser *parser)
 			current->type = REDIRECT;
 		else if (current->sub_type & (AND | OR))
 			current->type = DELIMITTER;
+		else if (current->sub_type & (NAME))
+			current->type = CMD;
 		parser->last_token = current->type;
 		i++;
 	}
@@ -70,7 +72,7 @@ static void	organize_redirect(t_parser *parser, int *index)
 	(*index)++;
 	current = parser->tokens[*index];
 	current->type = FILENAME;
-	if (current->sub_type & HERE_DOC)
+	if (parser->tokens[*index - 1]->sub_type & HERE_DOC)
 		current->type = LIMITER;
 	if (parser->last_token & (NAME | FILENAME | LIMITER))
 		shift_redirect(parser->tokens, index);
@@ -79,11 +81,23 @@ static void	organize_redirect(t_parser *parser, int *index)
 static void	assign_index(t_parser *parser)
 {
 	int	i;
+	int	tmp;
 
 	i = 0;
+	tmp = -1;
 	while (parser->tokens[i] != NULL)
 	{
-		parser->tokens[i]->index = i;
+		if (parser->tokens[i]->type & CMD)
+		{
+			if (tmp == -1)
+				tmp = i;
+			parser->tokens[i]->index = tmp;
+		}
+		else
+		{
+			tmp = -1;
+			parser->tokens[i]->index = i;
+		}
 		i++;
 	}
 }
