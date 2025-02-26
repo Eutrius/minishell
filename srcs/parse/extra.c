@@ -46,7 +46,7 @@ void	print_tokens(t_token **tokens)
 	i = 0;
 	while (tokens[i] != NULL)
 	{
-		printf("%s: %s\n", get_enum(tokens[i]->type),
+		printf("%i: %s: %s\n", tokens[i]->index, get_enum(tokens[i]->sub_type),
 			(char *)tokens[i]->content);
 		i++;
 	}

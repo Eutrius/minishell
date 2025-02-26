@@ -22,9 +22,10 @@ int	parse(t_data *data)
 	parser = data->parser;
 	if (split_cmd(parser))
 		return (1);
-	print_tokens(parser->tokens);
 	if (check_cmd(parser))
 		return (1);
+	prepare_cmd(parser);
+	print_tokens(parser->tokens);
 	free(parser->buffer);
 	data->cmd_line = parser->tokens;
 	return (0);
@@ -41,11 +42,11 @@ int	parse_cmd(t_parser *parser)
 	parser->parentesis = 0;
 	while (tokens[i] != NULL)
 	{
-		if (tokens[i]->type & (OPEN | CLOSE))
+		if (tokens[i]->sub_type & (OPEN | CLOSE))
 		{
 			count_parentesis(parser, tokens[i]);
 		}
-		else if (tokens[i]->type & (NAME))
+		else if (tokens[i]->sub_type & (NAME))
 		{
 		}
 		i++;

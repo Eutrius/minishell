@@ -63,8 +63,8 @@ void	parse_error(t_parser *parser)
 
 void	count_parentesis(t_parser *parser, t_token *c_token)
 {
-	if (c_token->type & OPEN)
+	if (c_token->sub_type & OPEN)
 		parser->parentesis++;
-	if (c_token->type & CLOSE)
+	if (c_token->sub_type & CLOSE)
 		parser->parentesis--;
 }

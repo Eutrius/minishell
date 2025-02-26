@@ -50,10 +50,10 @@ static int	check_type(t_token *c_token, t_token *n_token)
 
 	current = START;
 	if (c_token != NULL)
-		current = c_token->type;
+		current = c_token->sub_type;
 	next = END;
 	if (n_token != NULL)
-		next = n_token->type;
+		next = n_token->sub_type;
 	if (current & (APPEND | HERE_DOC | R_IN | R_OUT))
 		return (!(next & NAME));
 	else if (current & (PIPE | OR | AND | OPEN))

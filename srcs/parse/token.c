@@ -23,6 +23,7 @@ t_token	*create_token(void *content, t_type type)
 	if (!token)
 		return (NULL);
 	token->content = content;
+	token->sub_type = type;
 	token->type = type;
 	return (token);
 }
