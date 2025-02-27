@@ -87,6 +87,19 @@ static t_token	*parse_cmd(t_token **tokens)
 			last_token = tmp;
 			continue ;
 		}
+		else if (tokens[i]->sub_type & PIPE)
+		{
+			if (root->type & NAME)
+			{
+				tokens[i]->left = root;
+				root = tokens[i];
+			}
+			else if (last_token != root)
+				tokens[i]->left = last_token;
+			root->right = tokens[i];
+			last_token = tokens[i];
+			i++;
+		}
 		else if (tokens[i]->type & REDIRECT)
 		{
 			if (root == NULL)
