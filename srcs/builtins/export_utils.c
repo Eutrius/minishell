@@ -11,6 +11,7 @@ int	is_valid_identifier(char *str)
 	i = 0;
 	while (str[i] && str[i] != '=')
 	{
+		
 		if (!ft_isalpha(str[0]))
 			return (0);
 		if (!ft_isalnum(str[i]))
@@ -43,93 +44,126 @@ int	find_eq_i(char *str)
 	return (i);
 }
 
-char *strdup_and_add_quotes(char *str)
+int iterate_vars(t_data *data, char **new_env, int i, int token_count)
 {
-	int len;
-	int i;
-	int j;
-	char *new;
-	
+	int  j;
+	char *current_token;
+	int  to_sub;
+
+	j = 1;
+	while (token_count)
+	{
+		current_token = data->cmd_line[j++]->content;
+		to_sub = check_var_existence(new_env, current_token);
+		if (to_sub >= 0)
+		{
+			if (check_equal(current_token))
+				new_env[to_sub] = ft_strdup(current_token);
+		}
+		else
+			new_env[i++] = ft_strdup(current_token);
+		if (!new_env[to_sub] || !new_env[i - 1])
+		{
+			print_error(ERR_MALLOC);
+			ft_free_strs(new_env);
+			return 0;
+		}
+		token_count--;
+	}
+	free(data->env);
+	new_env[i] = NULL;
+	data->env = new_env;
+	return 1;
+}
+
+char	*strdup_and_add_quotes(char *str)
+{
+	int		len;
+	int		i;
+	int		j;
+	char	*new;
+
 	i = 0;
 	j = 0;
 	len = ft_strlen(str) + 3;
-	new = ft_calloc(len,1);
+	new = ft_calloc(len, 1);
 	if (!new)
 	{
 		print_error(ERR_MALLOC);
-		return NULL;
+		return (NULL);
 	}
-	while(str[j] && str[j] != '=')
+	while (str[j] && str[j] != '=')
 		new[i++] = str[j++];
 	if (str[j++] == '=')
 		new[i++] = '=';
 	else
 	{
 		new[i] = '\0';
-		return new;
+		return (new);
 	}
 	new[i++] = '"';
-	while(str[j])
+	while (str[j])
 		new[i++] = str[j++];
 	new[i++] = '"';
 	new[i] = '\0';
-	return new;
+	return (new);
 }
 
-char **export_strsdup(char **strs)
+char	**export_strsdup(char **strs)
 {
-	int i = 0;
-	int quantity = ft_strslen(strs);
-	char **new_env = ft_calloc(quantity + 1,sizeof(char *));
+	int		i;
+	int		quantity;
+	char	**new_env;
+
+	i = 0;
+	quantity = ft_strslen(strs);
+	new_env = ft_calloc(quantity + 1, sizeof(char *));
 	if (!new_env)
-		return NULL;
-	while(strs[i])
+		return (NULL);
+	while (strs[i])
 	{
 		new_env[i] = strdup_and_add_quotes(strs[i]);
 		if (!new_env[i])
 		{
 			ft_free_strs(strs);
 			print_error(ERR_MALLOC);
-			return NULL;
+			return (NULL);
 		}
 		i++;
 	}
 	new_env[i] = NULL;
-	return new_env;
+	return (new_env);
 }
 
-int	strs_count(char **strs)
+int	check_equal(char *ptr)
+{
+	int	has_equals;
+	int	k;
+
+	has_equals = 0;
+	k = 0;
+	while (ptr[k] && ptr[k] != '=')
+		k++;
+	if (ptr[k] == '=')
+		has_equals = 1;
+	return (has_equals);
+}
+
+int	check_var_existence(char **env, char *ptr)
 {
 	int	i;
+	int	equal_index;
 
 	i = 0;
-	while (strs[i])
+	while (ptr[i] && ptr[i] != '=')
 		i++;
-	return (i);
-}
-
-int check_var_existence(char **env, char *ptr)
-{
-  int i = 0;
-  while(ptr[i] && ptr[i] != '=')
-    i++;
-  int equal_index = i;
-  i = 0;
-  while (env[i])
-  {
-    if (!ft_strncmp(env[i], ptr, equal_index))
-      return i;
-    i++;
-  }
-  return -1;
-}
-
-void	free_previous_sorted_exp(char **exported_dup, int i)
-{
-	while (i)
+	equal_index = i;
+	i = 0;
+	while (env[i])
 	{
-		free(exported_dup[i]);
-		i--;
+		if (!ft_strncmp(env[i], ptr, equal_index))
+			return (i);
+		i++;
 	}
-	free(exported_dup);
+	return (-1);
 }

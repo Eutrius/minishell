@@ -105,7 +105,6 @@ void						count_parentesis(t_parser *parser,
 								t_token *c_token);
 // Token
 
-
 void						free_token(t_token *token);
 void						free_tokens(t_token **tokens);
 t_token						*create_token(void *content, t_type type);
@@ -137,7 +136,6 @@ char						*pathfinder(const char *cmd, char **env);
 int							check_exit_value(char *str);
 int							count_tokens(t_token **token);
 int							is_builtin(char *buf, t_data *data);
-int							strs_count(char **strs);
 void						print_string_array(char **strs);
 int							is_valid_identifier(char *str);
 int							find_eq_i(char *str);
@@ -145,13 +143,14 @@ int							var_exists(char **env, char *to_check);
 void						free_previous_sorted_exp(char **exported_dup,
 								int i);
 void						value_checker(char **sorted_exp, int i);
-char *strdup_and_add_quotes(char *str);
-char **export_strsdup(char **strs);
-int replace_existing_var(char **env, char *to_check);
-int	var_replace(char **env, char *to_check);
-int is_there_char(char *str, char c);
-int check_var_existence(char **env, char *ptr);
-
+char						*strdup_and_add_quotes(char *str);
+char						**export_strsdup(char **strs);
+int							replace_existing_var(char **env, char *to_check);
+int							var_replace(char **env, char *to_check);
+int							is_there_char(char *str, char c);
+int							check_var_existence(char **env, char *ptr);
+int							check_equal(char *ptr);
+int iterate_vars(t_data *data, char **new_env, int i, int token_count);
 // Pathfinder
 char						*pathfinder(const char *cmd, char **env);
 

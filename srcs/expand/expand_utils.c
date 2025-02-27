@@ -40,7 +40,7 @@ char	*extract_var(char *ptr)
 	if (ptr[i] == '$')
 		start = ++i;
 	while (ptr[i] && is_valid(ptr[i]))
-			i++;
+		i++;
 	new_var = ft_calloc(i - start + 1, 1);
 	if (!new_var)
 	{

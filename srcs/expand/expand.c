@@ -16,7 +16,7 @@ void	check_value(t_data *data)
 	i = 1;
 	cmd_line = data->cmd_line;
 	if (!cmd_line[1])
-		return;
+		return ;
 	while (cmd_line[i])
 	{
 		if (cmd_line[i]->type == NAME)
