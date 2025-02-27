@@ -20,11 +20,13 @@ static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 
 void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 {
+	int	status;
+
 	if (mode == OPERATOR)
-		extract_op(parser, index);
+		status = extract_op(parser, index);
 	else
-		extract_str(parser, index, ctrl, mode);
-	if (parser->str == NULL)
+		status = extract_str(parser, index, ctrl, mode);
+	if (parser->str == NULL && status)
 		return (parse_error(parser));
 	if ((parser->last_token & NAME) && mode != OPERATOR)
 		return (join_last(parser));

@@ -29,7 +29,12 @@ void	prepare_cmd(t_parser *parser)
 	{
 		current = parser->tokens[i];
 		if (current->sub_type & (APPEND | HERE_DOC | R_IN | R_OUT))
+		{
 			organize_redirect(parser, &i);
+			parser->last_token = parser->tokens[i]->type;
+			i++;
+			continue ;
+		}
 		else if (current->sub_type & PIPE)
 			current->type = REDIRECT;
 		else if (current->sub_type & (AND | OR))
@@ -53,7 +58,7 @@ static void	shift_redirect(t_token **tokens, int *index)
 	name = tokens[*index];
 	redirect = tokens[*index - 1];
 	count = 0;
-	while (i >= 0 && tokens[i]->type & NAME)
+	while (i >= 0 && tokens[i]->type & CMD)
 	{
 		tokens[*index - count] = tokens[i];
 		i--;
@@ -74,7 +79,7 @@ static void	organize_redirect(t_parser *parser, int *index)
 	current->type = FILENAME;
 	if (parser->tokens[*index - 1]->sub_type & HERE_DOC)
 		current->type = LIMITER;
-	if (parser->last_token & (NAME | FILENAME | LIMITER))
+	if (parser->last_token & (CMD | FILENAME | LIMITER))
 		shift_redirect(parser->tokens, index);
 }
 

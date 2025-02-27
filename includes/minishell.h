@@ -92,8 +92,8 @@ void						init_operators(t_operators *operators);
 // Parse
 
 int							parse(t_data *data);
-int							split_cmd(t_parser *parser);
 int							check_cmd(t_parser *parser);
+int							split_cmd(t_parser *parser);
 void						prepare_cmd(t_parser *parser);
 void						parse_error(t_parser *parser);
 int							gen_token(t_parser *parser, t_mode mode);
@@ -106,8 +106,7 @@ void						expand_variable(t_parser *parser);
 void						join_last(t_parser *parser);
 char						*if_double(char *str, int *index, char *twice,
 								char *once);
-void						count_parentesis(t_parser *parser,
-								t_token *c_token);
+void						count_parentesis(int *parentesis, t_token *c_token);
 
 // Token
 

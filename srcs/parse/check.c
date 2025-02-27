@@ -26,7 +26,7 @@ int	check_cmd(t_parser *parser)
 		return (unexpected_error(parser->tokens[i]->content));
 	while (parser->tokens[i] != NULL)
 	{
-		count_parentesis(parser, parser->tokens[i]);
+		count_parentesis(&parser->parentesis, parser->tokens[i]);
 		if (check_type(parser->tokens[i], parser->tokens[i + 1]))
 		{
 			if (parser->tokens[i + 1])

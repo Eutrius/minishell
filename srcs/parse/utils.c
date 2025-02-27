@@ -57,14 +57,12 @@ void	parse_error(t_parser *parser)
 	parser->tokens = NULL;
 	free(parser->str);
 	parser->str = NULL;
-	free(parser->buffer);
-	parser->buffer = NULL;
 }
 
-void	count_parentesis(t_parser *parser, t_token *c_token)
+void	count_parentesis(int *parentesis, t_token *c_token)
 {
 	if (c_token->sub_type & OPEN)
-		parser->parentesis++;
+		(*parentesis)++;
 	if (c_token->sub_type & CLOSE)
-		parser->parentesis--;
+		(*parentesis)--;
 }
