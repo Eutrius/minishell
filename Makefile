@@ -5,7 +5,7 @@ LIBFT = $(LIBFT_PATH)/libft.a
 LIBFT_FLAGS = -L$(LIBFT_PATH) -lft
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_PATH) -Iincludes -g -O3 -gdwarf-4
+CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_PATH) -Iincludes 
 RM = rm -rf
 
 OBJS_DIR = objs
@@ -23,6 +23,7 @@ SRC = srcs/main.c \
 	  srcs/parse/token.c \
 	  srcs/parse/extra.c \
 	  srcs/parse/prepare.c \
+	  srcs/parse/parse_utils.c \
 	  srcs/expand/expand.c\
 	  srcs/expand/expand_utils.c\
 	  srcs/builtins/utils.c\

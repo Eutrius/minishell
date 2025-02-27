@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 10:40:21 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 12:32:58 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:44:03 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 static int	check_type(t_token *c_token, t_token *n_token);
 static int	unexpected_error(char *content);
 
-int	check_cmd(t_parser *parser)
+int	check_line(t_parser *parser)
 {
 	int	i;
 
@@ -54,13 +54,15 @@ static int	check_type(t_token *c_token, t_token *n_token)
 	next = END;
 	if (n_token != NULL)
 		next = n_token->sub_type;
-	if (current & (APPEND | HERE_DOC | R_IN | R_OUT))
-		return (!(next & NAME));
+	if (current & (APPEND | R_IN | R_OUT))
+		return (!(next & FILENAME));
+	else if (current & HERE_DOC)
+		return (!(next & LIMITER));
 	else if (current & (PIPE | OR | AND | OPEN))
 		return ((next & (PIPE | OR | AND | END | CLOSE)));
 	else if (current & CLOSE)
-		return (next & (NAME | OPEN));
-	else if (current & NAME)
+		return (next & (CMD | OPEN));
+	else if (current & CMD)
 		return (next & (OPEN));
 	else if (current & START)
 		return (next & (PIPE | OR | AND | CLOSE));

@@ -6,13 +6,12 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 11:57:19 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 14:33:56 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:36:05 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "minishell.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 t_token	*create_token(void *content, t_type type)

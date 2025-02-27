@@ -6,11 +6,10 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 17:33:10 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 20:04:08 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:35:43 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "minishell.h"
 #include <stdlib.h>
 
@@ -57,12 +56,14 @@ void	parse_error(t_parser *parser)
 	parser->tokens = NULL;
 	free(parser->str);
 	parser->str = NULL;
+	free(parser->buffer);
+	parser->buffer = NULL;
 }
 
-void	count_parentesis(int *parentesis, t_token *c_token)
+void	count_parentesis(int *parentesis, t_token *token)
 {
-	if (c_token->sub_type & OPEN)
+	if (token->sub_type & OPEN)
 		(*parentesis)++;
-	if (c_token->sub_type & CLOSE)
+	if (token->sub_type & CLOSE)
 		(*parentesis)--;
 }

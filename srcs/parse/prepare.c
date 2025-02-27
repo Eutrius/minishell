@@ -1,16 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   merge.c                                            :+:      :+:    :+:   */
+/*   prepare.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 14:44:14 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/25 17:25:48 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:33:40 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
 
@@ -18,7 +17,7 @@ static void	shift_redirect(t_token **tokens, int *index);
 static void	organize_redirect(t_parser *parser, int *index);
 static void	assign_index(t_parser *parser);
 
-void	prepare_cmd(t_parser *parser)
+void	prepare_line(t_parser *parser)
 {
 	int		i;
 	t_token	*current;
@@ -39,8 +38,6 @@ void	prepare_cmd(t_parser *parser)
 			current->type = REDIRECT;
 		else if (current->sub_type & (AND | OR))
 			current->type = DELIMITTER;
-		else if (current->sub_type & (NAME))
-			current->type = CMD;
 		parser->last_token = current->type;
 		i++;
 	}
@@ -75,10 +72,6 @@ static void	organize_redirect(t_parser *parser, int *index)
 	current = parser->tokens[*index];
 	current->type = REDIRECT;
 	(*index)++;
-	current = parser->tokens[*index];
-	current->type = FILENAME;
-	if (parser->tokens[*index - 1]->sub_type & HERE_DOC)
-		current->type = LIMITER;
 	if (parser->last_token & (CMD | FILENAME | LIMITER))
 		shift_redirect(parser->tokens, index);
 }

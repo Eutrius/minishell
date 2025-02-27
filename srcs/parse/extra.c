@@ -6,11 +6,10 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:11:27 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 19:52:37 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:32:50 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
 
@@ -68,4 +67,23 @@ void	print_tokens(t_token **tokens)
 			get_enum(tokens[i]->sub_type), (char *)tokens[i]->content);
 		i++;
 	}
+}
+
+void	print_tree(t_token *root, int level)
+{
+	int	i;
+
+	if (root == NULL)
+		return ;
+	level += 5;
+	print_tree(root->right, level);
+	printf("\n");
+	i = 5;
+	while (i < level)
+	{
+		printf(" ");
+		i++;
+	}
+	printf("%s\n", (char *)root->content);
+	print_tree(root->left, level);
 }
