@@ -32,7 +32,7 @@ t_token	*parse_line(t_token **tokens)
 	{
 		if (tokens[i]->type & CMD)
 			parse_cmd(tokens[i], &root, &last);
-		else if (tokens[i]->type & DELIMITTER)
+		else if (tokens[i]->type & DELIMITER)
 		{
 			tokens[i]->left = root;
 			root = tokens[i];
@@ -53,7 +53,7 @@ static void	parse_cmd(t_token *token, t_token **root, t_token **last)
 {
 	if (*root == NULL)
 		*root = token;
-	else if ((*last)->type & (DELIMITTER | REDIRECT))
+	else if ((*last)->type & (DELIMITER | REDIRECT))
 		(*last)->right = token;
 	*last = token;
 }
@@ -80,7 +80,7 @@ static void	parse_pipe(t_token *token, t_token **root, t_token **last)
 	else
 	{
 		token->left = *last;
-		*root = token;
+		(*root)->right = token;
 	}
 	*last = token;
 }
@@ -92,10 +92,6 @@ static void	parse_open(t_token **tokens, int *i, t_token **root, t_token **last)
 
 	parentesis = 0;
 	tmp = parse_line(&tokens[*i + 1]);
-	if (*root == NULL)
-		*root = tmp;
-	else if ((*last)->type & (DELIMITTER | REDIRECT))
-		(*last)->right = tmp;
 	while (1)
 	{
 		count_parentesis(&parentesis, tokens[*i]);
@@ -103,5 +99,25 @@ static void	parse_open(t_token **tokens, int *i, t_token **root, t_token **last)
 			break ;
 		(*i)++;
 	}
+	while (tokens[*i + 1] && tokens[*i
+		+ 1]->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
+	{
+		if (tmp->type & DELIMITER || tmp->sub_type & PIPE)
+		{
+			tokens[*i + 1]->right = tmp;
+			tmp = tokens[*i + 1];
+		}
+		else
+		{
+			tokens[*i + 1]->right = tmp->right;
+			tmp->right = tokens[*i + 1];
+		}
+		tokens[*i + 1]->left = tokens[*i + 2];
+		(*i) += 2;
+	}
+	if (*root == NULL)
+		*root = tmp;
+	else if ((*last)->type & (DELIMITER | REDIRECT))
+		(*last)->right = tmp;
 	*last = tmp;
 }

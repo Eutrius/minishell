@@ -29,7 +29,7 @@ typedef enum e_type
 	START = 1 << 11,
 	NAME = 1 << 13,
 	CMD = 1 << 14,
-	DELIMITTER = 1 << 15,
+	DELIMITER = 1 << 15,
 	REDIRECT = 1 << 16,
 	FILENAME = 1 << 17,
 	LIMITER = 1 << 18,

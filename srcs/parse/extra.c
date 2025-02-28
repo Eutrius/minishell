@@ -44,7 +44,7 @@ static char	*get_more_enum(t_type type)
 {
 	if (type == CMD)
 		return ("CMD");
-	else if (type == DELIMITTER)
+	else if (type == DELIMITER)
 		return ("DELIMITTER");
 	else if (type == FILENAME)
 		return ("FILENAME");
