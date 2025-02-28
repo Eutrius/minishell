@@ -5,7 +5,7 @@ LIBFT = $(LIBFT_PATH)/libft.a
 LIBFT_FLAGS = -L$(LIBFT_PATH) -lft
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_PATH) -Iincludes -g -O3 -gdwarf-4
+CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_PATH) -Iincludes 
 RM = rm -rf
 
 OBJS_DIR = objs
@@ -13,10 +13,19 @@ SRCS_DIR = srcs
 
 SRC = srcs/main.c \
 	  srcs/init.c \
+	  srcs/pathfinder.c \
 	  srcs/parse/parse.c \
 	  srcs/parse/utils.c \
 	  srcs/parse/split.c \
 	  srcs/parse/extract.c \
+	  srcs/parse/check.c \
+	  srcs/parse/extract_utils.c \
+	  srcs/parse/token.c \
+	  srcs/parse/extra.c \
+	  srcs/parse/prepare.c \
+	  srcs/parse/parse_utils.c \
+	  srcs/expand/expand.c\
+	  srcs/expand/expand_utils.c\
 	  srcs/builtins/utils.c\
 	  srcs/builtins/echo.c \
 	  srcs/builtins/exit.c \
@@ -26,14 +35,6 @@ SRC = srcs/main.c \
 	  srcs/builtins/pwd.c \
 	  srcs/builtins/unset.c \
 	  srcs/builtins/export_utils.c\
-	  srcs/expand/expand.c\
-	  srcs/expand/expand_utils.c\
-	  srcs/parse/check.c \
-	  srcs/parse/extract_utils.c \
-	  srcs/parse/token.c \
-	  srcs/parse/node.c \
-	  srcs/parse/extra.c \
-	  srcs/pathfinder.c \
 	  srcs/utils/print_errors.c
 
 OBJ = $(SRC:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)

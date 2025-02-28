@@ -10,13 +10,12 @@ typedef struct s_data		t_data;
 typedef struct s_token		t_token;
 typedef struct s_operators	t_operators;
 typedef struct s_parser		t_parser;
-typedef struct s_btree		t_btree;
 
 extern int					g_status;
 
 typedef enum e_type
 {
-	NAME = 1 << 0,
+	NONE = 1 << 0,
 	PIPE = 1 << 1,
 	OR = 1 << 2,
 	AND = 1 << 3,
@@ -28,7 +27,13 @@ typedef enum e_type
 	R_OUT = 1 << 9,
 	END = 1 << 10,
 	START = 1 << 11,
-	NONE = 1 << 12,
+	NAME = 1 << 13,
+	CMD = 1 << 14,
+	DELIMITER = 1 << 15,
+	REDIRECT = 1 << 16,
+	FILENAME = 1 << 17,
+	LIMITER = 1 << 18,
+
 }							t_type;
 
 typedef enum e_mode
@@ -36,6 +41,7 @@ typedef enum e_mode
 	NORMAL,
 	QUOTE,
 	OPERATOR,
+
 }							t_mode;
 
 // General struct
@@ -43,23 +49,26 @@ typedef enum e_mode
 typedef struct s_data
 {
 	char					**env;
-	t_token					***cmd_lines;
+	t_token					*root;
 	t_token					**cmd_line;
 	t_parser				*parser;
+
 }							t_data;
 
 typedef struct s_parser
 {
 	t_data					*data;
-	char					*buffer;
+
 	// split
+	char					*buffer;
 	t_token					**tokens;
-	char					*str;
 	t_token					*token;
-	int						skipped;
+	char					*str;
 	t_type					last_token;
+
 	// check
 	int						parentesis;
+
 }							t_parser;
 
 // Token struct
@@ -67,18 +76,13 @@ typedef struct s_parser
 typedef struct s_token
 {
 	void					*content;
+	t_type					sub_type;
+	int						index;
 	t_type					type;
-}							t_token;
+	t_token					*left;
+	t_token					*right;
 
-typedef struct s_btree
-{
-	t_token					**cmd_line;
-	t_btree					*success;
-	t_btree					*failure;
-	t_type					redirect;
-	char					*file;
-	t_type					delimitter;
-}							t_btree;
+}							t_token;
 
 // Init
 
@@ -88,8 +92,10 @@ void						init_operators(t_operators *operators);
 // Parse
 
 int							parse(t_data *data);
-int							split_cmd(t_parser *parser);
-int							check_cmd(t_parser *parser);
+int							split_line(t_parser *parser);
+int							check_line(t_parser *parser);
+void						prepare_line(t_parser *parser);
+t_token						*parse_line(t_token **tokens);
 void						parse_error(t_parser *parser);
 int							gen_token(t_parser *parser, t_mode mode);
 int							is_special(int c);
@@ -101,20 +107,17 @@ void						expand_variable(t_parser *parser);
 void						join_last(t_parser *parser);
 char						*if_double(char *str, int *index, char *twice,
 								char *once);
-void						count_parentesis(t_parser *parser,
-								t_token *c_token);
+void						count_parentesis(int *parentesis, t_token *token);
+
+void						print_tokens(t_token **tokens);
+void						print_tree(t_token *root, int level);
+
 // Token
 
 void						free_token(t_token *token);
 void						free_tokens(t_token **tokens);
 t_token						*create_token(void *content, t_type type);
-void						print_tokens(t_token **tokens);
 t_token						**add_token(t_token **tokens, t_token *token);
-
-// Tree
-t_btree						*create_node(void);
-void						free_node(void *node);
-void						apply_tree(t_btree *root, void (*f)(void *));
 
 // Expand
 

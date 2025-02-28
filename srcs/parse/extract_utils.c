@@ -6,13 +6,12 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 12:10:22 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 23:22:08 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:33:17 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "minishell.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 static void	gen_op_token(t_parser *parser);
@@ -40,18 +39,23 @@ void	join_last(t_parser *parser)
 		print_error(ERR_MALLOC);
 		return (parse_error(parser));
 	}
-	parser->last_token = NAME;
 	parser->token->content = new_content;
 	free(old_content);
 	free(parser->str);
 	parser->str = NULL;
 }
 
-
 int	gen_token(t_parser *parser, t_mode mode)
 {
 	if (mode != OPERATOR)
-		parser->token = create_token(parser->str, NAME);
+	{
+		if (parser->last_token & (APPEND | R_IN | R_OUT))
+			parser->token = create_token(parser->str, FILENAME);
+		else if (parser->last_token & HERE_DOC)
+			parser->token = create_token(parser->str, LIMITER);
+		else
+			parser->token = create_token(parser->str, CMD);
+	}
 	else
 		gen_op_token(parser);
 	if (parser->token == NULL)

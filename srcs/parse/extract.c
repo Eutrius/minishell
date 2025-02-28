@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:55:33 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/24 23:23:32 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:33:03 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,18 @@ static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 
 void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 {
+	int	status;
+
 	if (mode == OPERATOR)
-		extract_op(parser, index);
+		status = extract_op(parser, index);
 	else
-		extract_str(parser, index, ctrl, mode);
-	if (parser->str == NULL)
+		status = extract_str(parser, index, ctrl, mode);
+	if (parser->str == NULL && status)
 		return (parse_error(parser));
-	if ((parser->last_token & NAME) && mode != OPERATOR)
+	if ((parser->last_token & (CMD | FILENAME | LIMITER)) && mode != OPERATOR)
 		return (join_last(parser));
 	if (gen_token(parser, mode))
 		return (parse_error(parser));
-	parser->str = NULL;
 	parser->tokens = add_token(parser->tokens, parser->token);
 	if (parser->tokens == NULL)
 	{
@@ -39,8 +40,8 @@ void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 		print_error(ERR_MALLOC);
 		return (parse_error(parser));
 	}
-	if (mode != OPERATOR)
-		parser->last_token = NAME;
+	parser->str = NULL;
+	parser->last_token = parser->token->sub_type;
 }
 
 static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
@@ -66,7 +67,6 @@ static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 
 static int	extract_op(t_parser *parser, int *index)
 {
-	parser->last_token = START;
 	if (parser->buffer[*index] == '|')
 		parser->str = if_double(parser->buffer, index, "||", "|");
 	else if (parser->buffer[*index] == '(')
