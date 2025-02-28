@@ -37,7 +37,7 @@ void	prepare_line(t_parser *parser)
 		else if (current->sub_type & PIPE)
 			current->type = REDIRECT;
 		else if (current->sub_type & (AND | OR))
-			current->type = DELIMITTER;
+			current->type = DELIMITER;
 		parser->last_token = current->type;
 		i++;
 	}
