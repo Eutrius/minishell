@@ -34,7 +34,10 @@ char **fill_args_array(t_token *cmd, t_data *data)
 void execute_cmd(char **args,t_token *cmd, t_data *data)
 {
 	pid_t pid;
-	extern char **environ;
 	char *cmd_path;
-	cmd_path = pathfinder(cmd[0].content, char **env)
+	t_token **token_array = data->cmd_line;
+	t_token *token = token_array[0];
+	cmd_path = pathfinder(token->content,data->env);
+
+
 }
