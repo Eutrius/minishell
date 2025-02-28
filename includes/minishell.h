@@ -121,6 +121,11 @@ void						apply_tree(t_btree *root, void (*f)(void *));
 void						check_value(t_data *data);
 int							calculate_var_len(char *str);
 int							is_valid(char c);
+char						*extract_before_dollar(char *ptr);
+char						*extract_after_dollar(char *ptr);
+char						*ft_strjoin_with(char *s1, char *s2, char *c);
+char						*extract_var(char *ptr);
+char						*safe_join(char *s1, char *s2);
 
 // Execute
 
@@ -131,7 +136,6 @@ char						*pathfinder(const char *cmd, char **env);
 int							check_exit_value(char *str);
 int							count_tokens(t_token **token);
 int							is_builtin(char *buf, t_data *data);
-int							strs_count(char **strs);
 void						print_string_array(char **strs);
 int							is_valid_identifier(char *str);
 int							find_eq_i(char *str);
@@ -139,7 +143,14 @@ int							var_exists(char **env, char *to_check);
 void						free_previous_sorted_exp(char **exported_dup,
 								int i);
 void						value_checker(char **sorted_exp, int i);
-
+char						*strdup_and_add_quotes(char *str);
+char						**export_strsdup(char **strs);
+int							replace_existing_var(char **env, char *to_check);
+int							var_replace(char **env, char *to_check);
+int							is_there_char(char *str, char c);
+int							check_var_existence(char **env, char *ptr);
+int							check_equal(char *ptr);
+int iterate_vars(t_data *data, char **new_env, int i, int token_count);
 // Pathfinder
 char						*pathfinder(const char *cmd, char **env);
 

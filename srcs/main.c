@@ -26,7 +26,7 @@ int	main(void)
 			continue ;
 		if (parse(&data))
 			continue ;
-		// check_value(&data);
+		check_value(&data);
 		is_builtin((parser.tokens[0])->content, &data);
 	}
 	exit(0);

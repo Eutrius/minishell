@@ -1,8 +1,8 @@
 #include "libft.h"
 #include "minishell.h"
+#include <limits.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <limits.h>
 
 static void	handle_sign(char *str, int *i, int *sign);
 
