@@ -34,6 +34,7 @@ int	parse(t_data *data)
 	printf("line: %s \n", parser->buffer);
 	print_tree(root, 0);
 	printf("\n");
+	data->cmd_line = parser->tokens;
 	data->root = root;
 	free(parser->buffer);
 	return (0);

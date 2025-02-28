@@ -38,34 +38,6 @@ void	custom_export(t_data *data)
 		export_no_args(data);
 }
 
-static void	export_no_args(t_data *data)
-{
-	char	**sorted_exp;
-	char	*tmp;
-	int		i;
-
-	i = 0;
-	sorted_exp = ft_strsdup(data->env);
-	if (!sorted_exp)
-		return ;
-	while (sorted_exp[i])
-	{
-		tmp = sorted_exp[i];
-		sorted_exp[i] = ft_strjoin("declare -x ", sorted_exp[i]);
-		free(tmp);
-		if (!sorted_exp[i])
-		{
-			free_previous_sorted_exp(sorted_exp, i);
-			return ;
-		}
-		value_checker(sorted_exp, i);
-		i++;
-	}
-	sort_export(sorted_exp);
-	print_string_array(sorted_exp);
-	ft_free_strs(sorted_exp);
-}
-
 static void	export_with_args(t_data *data, int not_valid)
 {
 	int		tokens_count;
@@ -75,7 +47,7 @@ static void	export_with_args(t_data *data, int not_valid)
 
 	tokens_count = count_tokens(data->cmd_line) - 1 - not_valid;
 	i = 0;
-	strs = strs_count(data->env);
+	strs = ft_strslen(data->env);
 	new_env = ft_calloc(strs + tokens_count + 1, sizeof(char *));
 	if (!new_env)
 		return ;
@@ -88,32 +60,41 @@ static void	export_with_args(t_data *data, int not_valid)
 	append_vars(data, new_env, i);
 }
 
+static void	export_no_args(t_data *data)
+{
+	char	**sorted_exp;
+	char	*tmp;
+	int		i;
+
+	i = 0;
+	sorted_exp = export_strsdup(data->env);
+	if (!sorted_exp)
+		return ;
+	while (sorted_exp[i])
+	{
+		tmp = sorted_exp[i];
+		sorted_exp[i] = ft_strjoin("declare -x ", sorted_exp[i]);
+		free(tmp);
+		if (!sorted_exp[i])
+		{
+			ft_free_strs(sorted_exp);
+			return ;
+		}
+		value_checker(sorted_exp, i);
+		i++;
+	}
+	sort_export(sorted_exp);
+	print_string_array(sorted_exp);
+	ft_free_strs(sorted_exp);
+}
+
 static void	append_vars(t_data *data, char **new_env, int i)
 {
-	int	j;
 	int	token_count;
 
-	j = 1;
 	token_count = count_tokens(data->cmd_line) - 1;
-	while (token_count)
-	{
-		if (!is_valid_identifier(data->cmd_line[j]->content)
-			|| var_exists(new_env, data->cmd_line[j]->content))
-		{
-			token_count--;
-			j++;
-			continue ;
-		}
-		new_env[i] = ft_strdup(data->cmd_line[j]->content);
-		if (!new_env[i])
-			ft_free_strs(new_env);
-		j++;
-		i++;
-		token_count--;
-	}
-	free(data->env);
-	new_env[i] = NULL;
-	data->env = new_env;
+	if (!iterate_vars(data, new_env, i, token_count))
+		return ;
 }
 
 static void	sort_export(char **sorted_exp)
