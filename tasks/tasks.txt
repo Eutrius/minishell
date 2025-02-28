@@ -4,7 +4,12 @@ To fix:
 -- Overflow check on exit
 
 TO do:
-unset
-handle () || 
+Expand variable
+Expand wildcard
+Execute
+Signal
+Errors
+Leaks
+Tests
 
 

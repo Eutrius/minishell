@@ -27,15 +27,44 @@ int	parse(t_data *data)
 		return (1);
 	}
 	prepare_line(parser);
-	printf("\nTokens:\n");
-	print_tokens(parser->tokens);
-	printf("\n");
 	root = parse_line(parser->tokens);
-	printf("line: %s \n", parser->buffer);
-	print_tree(root, 0);
-	printf("\n");
+	/*printf("\nTokens:\n");*/
+	/*print_tokens(parser->tokens);*/
+	/*printf("\n");*/
+	/*printf("line: %s \n", parser->buffer);*/
+	/*print_tree(root, 0);*/
+	/*printf("\n");*/
 	data->cmd_line = parser->tokens;
 	data->root = root;
 	free(parser->buffer);
 	return (0);
+}
+
+t_token	*parse_line(t_token **tokens)
+{
+	t_token	*root;
+	t_token	*last;
+	int		i;
+
+	i = 0;
+	root = NULL;
+	while (tokens[i] != NULL && !(tokens[i]->type & CLOSE))
+	{
+		if (tokens[i]->type & CMD)
+			parse_cmd(tokens[i], &root, &last);
+		else if (tokens[i]->type & DELIMITER)
+		{
+			tokens[i]->left = root;
+			root = tokens[i];
+			last = tokens[i];
+		}
+		else if (tokens[i]->type & OPEN)
+			parse_open(tokens, &i, &root, &last);
+		else if (tokens[i]->sub_type & PIPE)
+			parse_pipe(tokens[i], &root, &last);
+		else if (tokens[i]->type & REDIRECT)
+			parse_redirect(tokens, &i, &root, &last);
+		i++;
+	}
+	return (root);
 }

@@ -6,6 +6,61 @@
 
 // static char	*extract_valid_part(char *pointer);
 static char	*create_var(char *ptr);
+void		check_quotes(int *in_quote, int c);
+
+char	*expand_var(char *str)
+{
+	int		i;
+	int		in_quote;
+	char	*res;
+	char	*pre;
+	int		j;
+	char	tmp;
+	char	*var;
+
+	i = 0;
+	j = 0;
+	in_quote = 0;
+	res = NULL;
+	while (str[i] != '\0')
+	{
+		check_quotes(&in_quote, str[i]);
+		if (in_quote != 1 && str[i] == '$')
+		{
+			pre = ft_strndup(&str[j], i);
+			printf("%s\n", pre);
+			res = safe_join(res, pre);
+			i++;
+			j = i;
+			while (str[i] && is_valid(str[i]))
+				i++;
+			tmp = str[i];
+			str[i] = '\0';
+			var = getenv(&str[j]);
+			res = safe_join(res, var);
+			str[i] = tmp;
+			i = j;
+			continue ;
+		}
+		i++;
+	}
+	if (str[j] != '\0')
+		res = safe_join(res, &str[j]);
+	free(str);
+	return (res);
+}
+
+void	check_quotes(int *in_quote, int c)
+{
+	if (*in_quote == 0 && is_dquote(c))
+		*in_quote = 2;
+	else if (*in_quote == 2 && is_dquote(c))
+		*in_quote = 0;
+	else if (*in_quote == 0 && is_quote(c))
+		*in_quote = 1;
+	else if (*in_quote == 1 && is_quote(c))
+		*in_quote = 0;
+}
 
 void	check_value(t_data *data)
 {

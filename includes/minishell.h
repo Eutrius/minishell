@@ -95,7 +95,6 @@ int							parse(t_data *data);
 int							split_line(t_parser *parser);
 int							check_line(t_parser *parser);
 void						prepare_line(t_parser *parser);
-t_token						*parse_line(t_token **tokens);
 void						parse_error(t_parser *parser);
 int							gen_token(t_parser *parser, t_mode mode);
 int							is_special(int c);
@@ -109,8 +108,18 @@ char						*if_double(char *str, int *index, char *twice,
 								char *once);
 void						count_parentesis(int *parentesis, t_token *token);
 
+t_token						*parse_line(t_token **tokens);
+void						parse_cmd(t_token *token, t_token **root,
+								t_token **last);
+void						parse_pipe(t_token *token, t_token **root,
+								t_token **last);
+void						parse_redirect(t_token **tokens, int *i,
+								t_token **root, t_token **last);
+void						parse_open(t_token **tokens, int *i, t_token **root,
+								t_token **last);
 void						print_tokens(t_token **tokens);
 void						print_tree(t_token *root, int level);
+char						*expand_var(char *str);
 
 // Token
 
@@ -153,7 +162,8 @@ int							var_replace(char **env, char *to_check);
 int							is_there_char(char *str, char c);
 int							check_var_existence(char **env, char *ptr);
 int							check_equal(char *ptr);
-int iterate_vars(t_data *data, char **new_env, int i, int token_count);
+int							iterate_vars(t_data *data, char **new_env, int i,
+								int token_count);
 // Pathfinder
 char						*pathfinder(const char *cmd, char **env);
 

@@ -1,6 +1,7 @@
 #include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 char	*extract_before_dollar(char *ptr)
@@ -85,11 +86,16 @@ char	*extract_after_dollar(char *ptr)
 
 char	*safe_join(char *s1, char *s2)
 {
+	char	*res;
+
 	if (!s1 && s2)
 		return (ft_strdup(s2));
 	if (s1 && !s2)
 		return (ft_strdup(s1));
-	return (ft_strjoin(s1, s2));
+	res = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
+	return (res);
 }
 
 int	is_valid(char c)
