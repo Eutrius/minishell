@@ -134,11 +134,12 @@ char						*safe_join(char *s1, char *s2);
 
 char						*pathfinder(const char *cmd, char **env);
 
+char **fill_args_array(t_token *cmd, t_data *data);
 // Built in Utils
 
 int							check_exit_value(char *str);
 int							count_tokens(t_token **token);
-int							is_builtin(char *buf, t_data *data);
+int							is_builtin(char **args, t_data *data);
 void						print_string_array(char **strs);
 int							is_valid_identifier(char *str);
 int							find_eq_i(char *str);
@@ -159,13 +160,13 @@ char						*pathfinder(const char *cmd, char **env);
 
 // Built in
 
-void						custom_echo(t_data *data);
-void						clean_exit(t_data *data);
+void						custom_echo(char **args);
+void						clean_exit(t_data *data, char **args);
 void						custom_pwd(void);
-void						custom_chdir(t_data *data);
+void						custom_chdir(char **args);
 void						custom_env(t_data *data);
-void						custom_export(t_data *data);
-void						custom_unset(t_data *data);
+void						custom_export(t_data *data, char **args);
+void						custom_unset(t_data *data, char **args);
 
 char						*get_enum(t_type type);
 

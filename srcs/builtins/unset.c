@@ -5,16 +5,16 @@
 
 static void	unset_variable(t_data *data, char **new_env, char **to_remove);
 static char	**reallocate_env(t_data *data);
-static char	**fill_to_remove(t_data *data);
+static char	**fill_to_remove(char **args);
 
-void	custom_unset(t_data *data)
+void	custom_unset(t_data *data, char **args)
 {
 	char	**new_env;
 	char	**to_remove;
 
-	if (!data->cmd_line[1])
+	if (!args[1])
 		return ;
-	to_remove = fill_to_remove(data);
+	to_remove = fill_to_remove(args);
 	new_env = reallocate_env(data);
 	if (!new_env)
 		return ;
@@ -37,18 +37,18 @@ static char	**reallocate_env(t_data *data)
 	return (new_env);
 }
 
-static char	**fill_to_remove(t_data *data)
+static char	**fill_to_remove(char **args)
 {
 	int		i;
 	char	**to_remove;
 
 	i = 1;
-	to_remove = ft_calloc((count_tokens(data->cmd_line) - 1), sizeof(char *));
+	to_remove = ft_calloc((ft_strslen(args) - 1), sizeof(char *));
 	if (!to_remove)
 		return (NULL);
-	while (data->cmd_line[i])
+	while (args[i])
 	{
-		to_remove[i - 1] = ft_strdup(data->cmd_line[i]->content);
+		to_remove[i - 1] = ft_strdup(args[i]);
 		if (!to_remove[i - 1])
 		{
 			to_remove[i - 1] = NULL;

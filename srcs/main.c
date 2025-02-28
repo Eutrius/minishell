@@ -27,7 +27,9 @@ int	main(void)
 		if (parse(&data))
 			continue ;
 		// check_value(&data);
-		is_builtin((parser.tokens[0])->content, &data);
+		// printf("%s\n",(char *)data.root->content);
+		char **args = fill_args_array(data.root,&data);
+		is_builtin(args, &data);
 	}
 	exit(0);
 }

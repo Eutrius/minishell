@@ -5,7 +5,7 @@ LIBFT = $(LIBFT_PATH)/libft.a
 LIBFT_FLAGS = -L$(LIBFT_PATH) -lft
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_PATH) -Iincludes 
+CFLAGS = -Wall -Werror -Wextra -I$(LIBFT_PATH) -Iincludes -g -gdwarf-4 
 RM = rm -rf
 
 OBJS_DIR = objs
@@ -35,7 +35,8 @@ SRC = srcs/main.c \
 	  srcs/builtins/pwd.c \
 	  srcs/builtins/unset.c \
 	  srcs/builtins/export_utils.c\
-	  srcs/utils/print_errors.c
+	  srcs/utils/print_errors.c\
+	  srcs/executor/executor.c
 
 OBJ = $(SRC:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 

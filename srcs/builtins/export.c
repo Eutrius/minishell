@@ -6,10 +6,10 @@
 
 static void	export_no_args(t_data *data);
 static void	sort_export(char **sorted_exp);
-static void	export_with_args(t_data *data, int not_valid);
+static void	export_with_args(t_data *data, char **args, int not_valid);
 static void	append_vars(t_data *data, char **new_env, int i);
 
-void	custom_export(t_data *data)
+void	custom_export(t_data *data, char **args)
 {
 	int		tokens_count;
 	char	*name;
@@ -18,12 +18,12 @@ void	custom_export(t_data *data)
 
 	i = 1;
 	not_valid = 0;
-	tokens_count = count_tokens(data->cmd_line);
+	tokens_count = ft_strslen(args);
 	if (tokens_count >= 2)
 	{
 		while (i < tokens_count)
 		{
-			name = (char *)data->cmd_line[i]->content;
+			name = args[i];
 			if (!is_valid_identifier(name))
 			{
 				printf("bash: export: '%s': not a valid identifier\n", name);
@@ -32,20 +32,20 @@ void	custom_export(t_data *data)
 			g_status = 255;
 			i++;
 		}
-		export_with_args(data, not_valid);
+		export_with_args(data,args,not_valid);
 	}
 	if (tokens_count == 1)
 		export_no_args(data);
 }
 
-static void	export_with_args(t_data *data, int not_valid)
+static void	export_with_args(t_data *data,char **args,int not_valid)
 {
 	int		tokens_count;
 	int		i;
 	char	**new_env;
 	int		strs;
 
-	tokens_count = count_tokens(data->cmd_line) - 1 - not_valid;
+	tokens_count = ft_strslen(args) - 1 - not_valid;
 	i = 0;
 	strs = ft_strslen(data->env);
 	new_env = ft_calloc(strs + tokens_count + 1, sizeof(char *));
@@ -53,17 +53,16 @@ static void	export_with_args(t_data *data, int not_valid)
 		return ;
 	while (data->env[i])
 	{
-		new_env[i] = ft_strdup(data->env[i]);
-		free(data->env[i]);
+		new_env[i] = data->env[i];
 		i++;
 	}
-	append_vars(data, new_env, i);
+	data->env = new_env;
+	append_vars(data,args, i);
 }
 
 static void	export_no_args(t_data *data)
 {
 	char	**sorted_exp;
-	char	*tmp;
 	int		i;
 
 	i = 0;
@@ -72,9 +71,7 @@ static void	export_no_args(t_data *data)
 		return ;
 	while (sorted_exp[i])
 	{
-		tmp = sorted_exp[i];
 		sorted_exp[i] = ft_strjoin("declare -x ", sorted_exp[i]);
-		free(tmp);
 		if (!sorted_exp[i])
 		{
 			ft_free_strs(sorted_exp);
@@ -88,12 +85,12 @@ static void	export_no_args(t_data *data)
 	ft_free_strs(sorted_exp);
 }
 
-static void	append_vars(t_data *data, char **new_env, int i)
+static void	append_vars(t_data *data,char **args, int i)
 {
 	int	token_count;
 
-	token_count = count_tokens(data->cmd_line) - 1;
-	if (!iterate_vars(data, new_env, i, token_count))
+	token_count = ft_strslen(args) - 1;
+	if (!iterate_vars(data,args,i,token_count))
 		return ;
 }
 

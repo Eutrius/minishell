@@ -44,7 +44,7 @@ int	find_eq_i(char *str)
 	return (i);
 }
 
-int iterate_vars(t_data *data, char **new_env, int i, int token_count)
+int iterate_vars(t_data *data, char **args, int i, int token_count)
 {
 	int  j;
 	char *current_token;
@@ -53,26 +53,22 @@ int iterate_vars(t_data *data, char **new_env, int i, int token_count)
 	j = 1;
 	while (token_count)
 	{
-		current_token = data->cmd_line[j++]->content;
-		to_sub = check_var_existence(new_env, current_token);
+		current_token = args[j];
+		to_sub = check_var_existence(data->env, current_token);
+		// if (to_sub < 0)
+		// 	to_sub = i;
+		// if (to_sub == i || check_equal(current_token))
+		// 	data->env[to_sub] = current_token;
 		if (to_sub >= 0)
 		{
 			if (check_equal(current_token))
-				new_env[to_sub] = ft_strdup(current_token);
+				data->env[to_sub] = current_token;
 		}
 		else
-			new_env[i++] = ft_strdup(current_token);
-		if (!new_env[to_sub] || !new_env[i - 1])
-		{
-			print_error(ERR_MALLOC);
-			ft_free_strs(new_env);
-			return 0;
-		}
+			data->env[i] = current_token;
+		i++;
 		token_count--;
 	}
-	free(data->env);
-	new_env[i] = NULL;
-	data->env = new_env;
 	return 1;
 }
 
@@ -153,6 +149,7 @@ int	check_var_existence(char **env, char *ptr)
 {
 	int	i;
 	int	equal_index;
+	int j;
 
 	i = 0;
 	while (ptr[i] && ptr[i] != '=')
@@ -161,7 +158,10 @@ int	check_var_existence(char **env, char *ptr)
 	i = 0;
 	while (env[i])
 	{
-		if (!ft_strncmp(env[i], ptr, equal_index))
+		j = 0;
+		while(env[i][j] && env[i][j] != '=')
+			j++;
+		if (!ft_strncmp(env[i], ptr, ft_maxint(j,equal_index)))
 			return (i);
 		i++;
 	}

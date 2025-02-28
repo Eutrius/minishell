@@ -27,13 +27,13 @@ int	parse(t_data *data)
 		return (1);
 	}
 	prepare_line(parser);
-	printf("\nTokens:\n");
-	print_tokens(parser->tokens);
-	printf("\n");
+	// printf("\nTokens:\n");
+	// print_tokens(parser->tokens);
+	// printf("\n");
 	root = parse_line(parser->tokens);
-	printf("line: %s \n", parser->buffer);
-	print_tree(root, 0);
-	printf("\n");
+	// printf("line: %s \n", parser->buffer);
+	// print_tree(root, 0);
+	// printf("\n");
 	data->cmd_line = parser->tokens;
 	data->root = root;
 	free(parser->buffer);
