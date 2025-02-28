@@ -58,17 +58,12 @@ typedef struct s_data
 typedef struct s_parser
 {
 	t_data					*data;
-
-	// split
 	char					*buffer;
 	t_token					**tokens;
 	t_token					*token;
 	char					*str;
 	t_type					last_token;
-
-	// check
 	int						parentesis;
-
 }							t_parser;
 
 // Token struct

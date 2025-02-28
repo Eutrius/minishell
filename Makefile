@@ -24,7 +24,7 @@ SRC = srcs/main.c \
 	  srcs/parse/extra.c \
 	  srcs/parse/prepare.c \
 	  srcs/parse/parse_utils.c \
-	  srcs/expand/expand.c\
+	  srcs/expand/expand_var.c\
 	  srcs/expand/expand_utils.c\
 	  srcs/builtins/utils.c\
 	  srcs/builtins/echo.c \
@@ -67,8 +67,10 @@ fclean:
 
 run: $(NAME)
 	@./$(NAME)
+valgrind: $(NAME)
+	@valgrind ./$(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re bonus run
+.PHONY: all clean fclean re bonus run valgrind
 

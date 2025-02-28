@@ -28,8 +28,7 @@ int	main(void)
 			continue ;
 		// check_value(&data);
 		data.root->content = expand_var(data.root->content);
-		printf("%s\n", (char *)data.root->content);
-		// is_builtin((parser.tokens[0])->content, &data);
+		is_builtin((parser.tokens[0])->content, &data);
 	}
 	exit(0);
 }
