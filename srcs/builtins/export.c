@@ -1,7 +1,6 @@
 #include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 static void	export_no_args(t_data *data);

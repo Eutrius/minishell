@@ -55,18 +55,12 @@ int iterate_vars(t_data *data, char **args, int i, int token_count)
 	{
 		current_token = args[j];
 		to_sub = check_var_existence(data->env, current_token);
-		// if (to_sub < 0)
-		// 	to_sub = i;
-		// if (to_sub == i || check_equal(current_token))
-		// 	data->env[to_sub] = current_token;
-		if (to_sub >= 0)
-		{
-			if (check_equal(current_token))
-				data->env[to_sub] = current_token;
-		}
-		else
-			data->env[i] = current_token;
+		if (to_sub < 0)
+			to_sub = i;
+		if (to_sub == i || check_equal(current_token))
+			data->env[to_sub] = current_token;
 		i++;
+    j++;
 		token_count--;
 	}
 	return 1;
