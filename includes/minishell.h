@@ -130,11 +130,23 @@ char						*ft_strjoin_with(char *s1, char *s2, char *c);
 char						*extract_var(char *ptr);
 char						*safe_join(char *s1, char *s2);
 
+
+
 // Execute
 
 char						*pathfinder(const char *cmd, char **env);
+void execute_cmd(char **args, t_data *data);
 
-char **fill_args_array(t_token *cmd, t_data *data);
+// Executor utils
+
+void print_redirects(t_token *root);
+void	custom_dup2(int fd, char *flag);
+void	custom_pipe(int fds[2]);
+// void	check_fork(pid_t pid, int wefd, int refd);
+void	close_fds(int wefd, int refd);
+void	custom_unlink(char *filepath);
+char	**fill_args_array(t_token *cmd, t_data *data);
+
 // Built in Utils
 
 int							check_exit_value(char *str);
@@ -154,7 +166,8 @@ int							var_replace(char **env, char *to_check);
 int							is_there_char(char *str, char c);
 int							check_var_existence(char **env, char *ptr);
 int							check_equal(char *ptr);
-int iterate_vars(t_data *data, char **new_env, int i, int token_count);
+int							iterate_vars(t_data *data, char **new_env, int i,
+								int token_count);
 // Pathfinder
 char						*pathfinder(const char *cmd, char **env);
 

@@ -36,7 +36,9 @@ SRC = srcs/main.c \
 	  srcs/builtins/unset.c \
 	  srcs/builtins/export_utils.c\
 	  srcs/utils/print_errors.c\
-	  srcs/executor/executor.c
+	  srcs/executor/executor.c\
+	  srcs/executor/utils.c\
+	  srcs/executor/custom_cmds.c
 
 OBJ = $(SRC:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 

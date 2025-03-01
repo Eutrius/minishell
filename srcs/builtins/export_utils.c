@@ -11,7 +11,6 @@ int	is_valid_identifier(char *str)
 	i = 0;
 	while (str[i] && str[i] != '=')
 	{
-		
 		if (!ft_isalpha(str[0]))
 			return (0);
 		if (!ft_isalnum(str[i]))
@@ -44,11 +43,11 @@ int	find_eq_i(char *str)
 	return (i);
 }
 
-int iterate_vars(t_data *data, char **args, int i, int token_count)
+int	iterate_vars(t_data *data, char **args, int i, int token_count)
 {
-	int  j;
-	char *current_token;
-	int  to_sub;
+	int		j;
+	char	*current_token;
+	int		to_sub;
 
 	j = 1;
 	while (token_count)
@@ -60,10 +59,10 @@ int iterate_vars(t_data *data, char **args, int i, int token_count)
 		if (to_sub == i || check_equal(current_token))
 			data->env[to_sub] = current_token;
 		i++;
-    j++;
+		j++;
 		token_count--;
 	}
-	return 1;
+	return (1);
 }
 
 char	*strdup_and_add_quotes(char *str)
@@ -83,9 +82,17 @@ char	*strdup_and_add_quotes(char *str)
 		return (NULL);
 	}
 	while (str[j] && str[j] != '=')
-		new[i++] = str[j++];
-	if (str[j++] == '=')
-		new[i++] = '=';
+  {
+		new[i] = str[j];
+    i++;
+    j++;
+  }
+	if (str[j] == '=')
+  {
+		new[i] = '=';
+    i++;
+    j++;
+  }
 	else
 	{
 		new[i] = '\0';
@@ -93,7 +100,11 @@ char	*strdup_and_add_quotes(char *str)
 	}
 	new[i++] = '"';
 	while (str[j])
-		new[i++] = str[j++];
+  {
+		new[i] = str[j];
+    i++;
+    j++;
+  }
 	new[i++] = '"';
 	new[i] = '\0';
 	return (new);
@@ -143,7 +154,7 @@ int	check_var_existence(char **env, char *ptr)
 {
 	int	i;
 	int	equal_index;
-	int j;
+	int	j;
 
 	i = 0;
 	while (ptr[i] && ptr[i] != '=')
@@ -153,9 +164,9 @@ int	check_var_existence(char **env, char *ptr)
 	while (env[i])
 	{
 		j = 0;
-		while(env[i][j] && env[i][j] != '=')
+		while (env[i][j] && env[i][j] != '=')
 			j++;
-		if (!ft_strncmp(env[i], ptr, ft_maxint(j,equal_index)))
+		if (!ft_strncmp(env[i], ptr, ft_maxint(j, equal_index)))
 			return (i);
 		i++;
 	}

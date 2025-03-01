@@ -31,13 +31,13 @@ void	custom_export(t_data *data, char **args)
 			g_status = 255;
 			i++;
 		}
-		export_with_args(data,args,not_valid);
+		export_with_args(data, args, not_valid);
 	}
 	if (tokens_count == 1)
 		export_no_args(data);
 }
 
-static void	export_with_args(t_data *data,char **args,int not_valid)
+static void	export_with_args(t_data *data, char **args, int not_valid)
 {
 	int		tokens_count;
 	int		i;
@@ -56,7 +56,7 @@ static void	export_with_args(t_data *data,char **args,int not_valid)
 		i++;
 	}
 	data->env = new_env;
-	append_vars(data,args, i);
+	append_vars(data, args, i);
 }
 
 static void	export_no_args(t_data *data)
@@ -84,12 +84,12 @@ static void	export_no_args(t_data *data)
 	ft_free_strs(sorted_exp);
 }
 
-static void	append_vars(t_data *data,char **args, int i)
+static void	append_vars(t_data *data, char **args, int i)
 {
 	int	token_count;
 
 	token_count = ft_strslen(args) - 1;
-	if (!iterate_vars(data,args,i,token_count))
+	if (!iterate_vars(data, args, i, token_count))
 		return ;
 }
 

@@ -8,7 +8,6 @@ static void	print_with_flag(char **args);
 
 void	custom_echo(char **args)
 {
-
 	if (!args || !args[0])
 		return ;
 	if (!args[1])

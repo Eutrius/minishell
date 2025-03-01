@@ -1,8 +1,8 @@
 #include "libft.h"
 #include "minishell.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdio.h>
 
 static void	unset_variable(t_data *data, char **new_env, char **to_remove);
 static char	**reallocate_env(t_data *data);
@@ -42,9 +42,10 @@ static char	**fill_to_remove(char **args)
 {
 	int		i;
 	char	**to_remove;
+	int		j;
 
 	i = 1;
-  int j = 0;
+	j = 0;
 	to_remove = ft_calloc((ft_strslen(args)), sizeof(char *));
 	if (!to_remove)
 		return (NULL);
@@ -57,7 +58,7 @@ static char	**fill_to_remove(char **args)
 			ft_free_strs(to_remove);
 			return (NULL);
 		}
-    j++;
+		j++;
 		i++;
 	}
 	return (to_remove);
@@ -75,14 +76,13 @@ static void	unset_variable(t_data *data, char **new_env, char **to_remove)
 	while (data->env[i])
 	{
 		are_equals = 0;
-		k = 0;
-		while (to_remove[k])
+		k = -1;
+		while (to_remove[++k])
 		{
 			are_equals = ft_strncmp(to_remove[k], data->env[i],
 					ft_strlen(to_remove[k]));
 			if (are_equals == 0 && data->env[i][ft_strlen(to_remove[k])] == '=')
 				break ;
-			k++;
 		}
 		if (!are_equals && data->env[i][ft_strlen(to_remove[k])] == '=')
 			free(data->env[i]);
@@ -90,7 +90,5 @@ static void	unset_variable(t_data *data, char **new_env, char **to_remove)
 			new_env[j++] = data->env[i];
 		i++;
 	}
-	new_env[j] = NULL;
 	ft_free_strs(to_remove);
 }
-

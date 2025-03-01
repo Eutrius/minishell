@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void	clean_exit(t_data *data,char **args)
+void	clean_exit(t_data *data, char **args)
 {
 	int	num_token;
 
@@ -21,8 +21,7 @@ void	clean_exit(t_data *data,char **args)
 	{
 		if (!check_exit_value(args[1]))
 		{
-			printf("B_Bros: exit: %s: numeric argument required\n",
-				args[1]);
+			printf("B_Bros: exit: %s: numeric argument required\n", args[1]);
 			exit(2);
 		}
 	}

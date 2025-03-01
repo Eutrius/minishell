@@ -17,6 +17,7 @@ int	main(void)
 {
 	static t_data	data;
 	static t_parser	parser;
+	char			**args;
 
 	init(&data, &parser);
 	while (1)
@@ -26,10 +27,11 @@ int	main(void)
 			continue ;
 		if (parse(&data))
 			continue ;
-		// check_value(&data);
-		// printf("%s\n",(char *)data.root->content);
-		char **args = fill_args_array(data.root,&data);
-		is_builtin(args, &data);
+		args = fill_args_array(data.root, &data);
+    // print_redirects(data.root);
+    // if (!is_builtin(args,&data))
+      // execute_cmd(args,&data);
+    free(args);
 	}
 	exit(0);
 }
