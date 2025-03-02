@@ -67,8 +67,8 @@ void	executor(t_data *data, t_token *root)
 		}
 		close(pipefd[0]);
 		close(pipefd[1]);
-		waitpid(pid2, &g_status, 0);
 		waitpid(pid1, &g_status, 0);
+		waitpid(pid2, &g_status, 0);
 	}
 	else if (root->sub_type & AND)
 	{
@@ -82,13 +82,13 @@ void	executor(t_data *data, t_token *root)
 		if (g_status != 0)
 			executor(data, root->right);
 	}
-	else
-	{
-		if (root->left)
-			executor(data, root->left);
-		if (root->right)
-			executor(data, root->right);
-	}
+	// else
+	// {
+	// 	if (root->left)
+	// 		executor(data, root->left);
+	// 	if (root->right)
+	// 		executor(data, root->right);
+	// }
 }
 
 /* T_TOKEN *CMD: Pointer to Structure T_token. (Current Token)
