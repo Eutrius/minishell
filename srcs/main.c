@@ -27,11 +27,9 @@ int	main(void)
 			continue ;
 		if (parse(&data))
 			continue ;
-		args = fill_args_array(data.root, &data);
-    // print_redirects(data.root);
-    // if (!is_builtin(args,&data))
-      // execute_cmd(args,&data);
-    free(args);
+    args = NULL;
+    executor(args, &data);
+    
 	}
 	exit(0);
 }

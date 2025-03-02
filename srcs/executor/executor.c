@@ -11,8 +11,16 @@
 #include <errno.h>
 #include <fcntl.h>
 
-void	execute_cmd(char **args, t_data *data);
+void	execute_cmd(t_token *cur_root, char **args, t_data *data);
 static void handle_redirects(t_token *root);
+static void handle_pipe(t_token *root,t_data *data, char **args);
+
+void executor(char **args,t_data *data)
+{
+  args = fill_args_array(data->root,data);
+  handle_redirects(data->root);
+  handle_pipe(data->root,data,args);
+}
 
 char	**fill_args_array(t_token *cmd, t_data *data)
 {
@@ -40,16 +48,17 @@ char	**fill_args_array(t_token *cmd, t_data *data)
 	return (args);
 }
 
-void execute_cmd(char **args, t_data *data)
+void execute_cmd(t_token *cur_root, char **args, t_data *data)
 {
 	pid_t pid;
 	char *cmd_path;
   int status;
-	t_token **token_array = data->cmd_line;
-	t_token *token = token_array[0];
+  printf("Executing command: %s\n",args[0]);
 
-  handle_redirects(data->root);
-	cmd_path = pathfinder(token->content,data->env);
+  handle_redirects(cur_root);
+  if (is_builtin(args,data))
+    return;
+  cmd_path = pathfinder(args[0],data->env);
   if (!cmd_path)
   {
     print_error2("minishell ",args[0],"command not found");
@@ -73,18 +82,74 @@ void execute_cmd(char **args, t_data *data)
   }
 }
 
-// static void handle_pipe(t_token *root)
-// {
-//   int pipe_fd[2];
+static void handle_pipe(t_token *root,t_data *data, char **args)
+{
+  int pipe_fd[2];
+  pid_t pid1;
+  pid_t pid2;
+  char **left_args;
+  char **right_args;
 
-//   if (root->sub_type & PIPE)
-//   {
+  if (!root)
+    return;
+    
+  if (root->sub_type & PIPE)
+  {
+    if (pipe(pipe_fd) == -1)
+    {
+      perror("pipe");
+      exit(EXIT_FAILURE);
+    }
+    pid1 = fork();
+    if (pid1 < 0)
+    {
+      perror("fork");
+      exit(EXIT_FAILURE);
+    }
+    if (pid1 == 0)
+    {
+      custom_dup2(pipe_fd[1],"STDOUT");
+      close_fds(pipe_fd[1],pipe_fd[0]);
+      if (root->left->sub_type & PIPE)
+        handle_pipe(root->left,data,args);
+      else
+      {
+        left_args = fill_args_array(root->left,data);
+        execute_cmd(root->left,left_args,data);
+        free(left_args);
+      }
+      exit(EXIT_SUCCESS);
+    }
 
-//   }
-//   handle_pipe(root->left);
-//   handle_pipe(root->right);
 
-// }
+    pid2 = fork();
+    if (pid2 < 0)
+    {
+      perror("fork");
+      exit(EXIT_FAILURE);
+    }
+    if (pid2 == 0) 
+    {
+      dup2(pipe_fd[0], STDIN_FILENO);
+      close_fds(pipe_fd[1],pipe_fd[0]);
+      if (root->right->sub_type & REDIRECT)
+        handle_redirects(root->right);
+      else
+      {
+        right_args = fill_args_array(root->right,data);
+        execute_cmd(root->right,right_args,data);
+        free(right_args);
+      }
+      exit(EXIT_SUCCESS);
+    }
+    close_fds(pipe_fd[1],pipe_fd[0]);
+    waitpid(pid1,&g_status, 0);
+    waitpid(pid2,&g_status, 0);
+    return;
+  }
+  handle_pipe(root->left,data,args);
+  handle_pipe(root->right,data,args);
+}
 
 static void handle_redirects(t_token *root)
 {
@@ -92,9 +157,7 @@ static void handle_redirects(t_token *root)
         return;
   if (root->sub_type & (R_IN | R_OUT | APPEND | PIPE))
   {
-    int fd = -1;
-    int pipe_fds[2];
-
+    int fd;
     if (root->sub_type & R_IN)
     {
       fd = open((char *)root->left->content, O_RDONLY);
@@ -105,6 +168,7 @@ static void handle_redirects(t_token *root)
         return ;
       }
       custom_dup2(fd,"STDIN");
+      close(fd);
     }
     else if (root->sub_type & R_OUT)
     {
@@ -116,6 +180,7 @@ static void handle_redirects(t_token *root)
         return ;
       }
       custom_dup2(fd,"STDOUT");
+      close(fd);
     }
     else if (root->sub_type & APPEND)
     {
@@ -127,12 +192,8 @@ static void handle_redirects(t_token *root)
         return ;
       }
       custom_dup2(fd,"STDOUT");
+      close(fd);
     }
-    else if (root->sub_type & PIPE)
-    {
-      custom_pipe(pipe_fds);
-    }
-    close(fd);
   }
   handle_redirects(root->left);
   handle_redirects(root->right);
