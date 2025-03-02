@@ -33,7 +33,7 @@ int	parse(t_data *data)
 	root = parse_line(parser->tokens);
 	// printf("line: %s \n", parser->buffer);
 	// print_tree(root, 0);
-	printf("\n");
+	// printf("\n");
 	data->cmd_line = parser->tokens;
 	data->root = root;
 	free(parser->buffer);

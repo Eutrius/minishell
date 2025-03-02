@@ -82,17 +82,17 @@ char	*strdup_and_add_quotes(char *str)
 		return (NULL);
 	}
 	while (str[j] && str[j] != '=')
-  {
+	{
 		new[i] = str[j];
-    i++;
-    j++;
-  }
+		i++;
+		j++;
+	}
 	if (str[j] == '=')
-  {
+	{
 		new[i] = '=';
-    i++;
-    j++;
-  }
+		i++;
+		j++;
+	}
 	else
 	{
 		new[i] = '\0';
@@ -100,11 +100,11 @@ char	*strdup_and_add_quotes(char *str)
 	}
 	new[i++] = '"';
 	while (str[j])
-  {
+	{
 		new[i] = str[j];
-    i++;
-    j++;
-  }
+		i++;
+		j++;
+	}
 	new[i++] = '"';
 	new[i] = '\0';
 	return (new);

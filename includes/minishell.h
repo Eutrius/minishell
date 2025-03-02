@@ -135,8 +135,8 @@ char						*safe_join(char *s1, char *s2);
 // Execute
 
 char						*pathfinder(const char *cmd, char **env);
-void execute_cmd(t_token *cur_root, char **args, t_data *data);
-void executor(char **args, t_data *data);
+int         execute_cmd(char **args, t_data *data);
+void executor(t_data *data, t_token *root);
 // Executor utils
 
 void print_redirects(t_token *root);

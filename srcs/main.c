@@ -17,7 +17,6 @@ int	main(void)
 {
 	static t_data	data;
 	static t_parser	parser;
-	char			**args;
 
 	init(&data, &parser);
 	while (1)
@@ -27,9 +26,7 @@ int	main(void)
 			continue ;
 		if (parse(&data))
 			continue ;
-    args = NULL;
-    executor(args, &data);
-    
+		executor(&data, data.root);
 	}
 	exit(0);
 }

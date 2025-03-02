@@ -5,22 +5,99 @@
 #include <readline/readline.h>
 // clang-format on
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
 
-void	execute_cmd(t_token *cur_root, char **args, t_data *data);
-static void handle_redirects(t_token *root);
-static void handle_pipe(t_token *root,t_data *data, char **args);
+int		execute_cmd(char **args, t_data *data);
+// static void handle_redirects(t_token *root);
+// static void handle_pipe(t_token *root,t_data *data, char **args);
+void	check_fork(pid_t pid, int wefd, int refd);
 
-void executor(char **args,t_data *data)
+/* T_data *data : General data struct
+ * t_token *root: Token at the top of the Binary tree.
+ * Core of the execution.
+ * Recursive function that call itselfs recursively.
+ * The tree structure at this pointe is already well defined
+ * so we can safely navigate it.
+ * Once it found a certain token type, it handles it GRACEFULLY.
+ */
+
+void	executor(t_data *data, t_token *root)
 {
-  args = fill_args_array(data->root,data);
-  handle_redirects(data->root);
-  handle_pipe(data->root,data,args);
+	char	**args;
+	int		pipefd[2];
+	pid_t	pid1;
+	pid_t	pid2;
+
+	if (root == NULL)
+		return ;
+	if (root->sub_type & CMD)
+	{
+		args = fill_args_array(root, data);
+		if (args)
+		{
+			execute_cmd(args, data);
+			free(args);
+		}
+	}
+	else if (root->sub_type & PIPE)
+	{
+		pipe(pipefd);
+		pid1 = fork();
+		if (pid1 == 0)
+		{
+			close(pipefd[0]);
+			custom_dup2(pipefd[1], "STDOUT");
+			close(pipefd[1]);
+			executor(data, root->left);
+			exit(g_status);
+		}
+		pid2 = fork();
+		if (pid2 == 0)
+		{
+			close(pipefd[1]);
+			custom_dup2(pipefd[0], "STDIN");
+			close(pipefd[0]);
+			executor(data, root->right);
+			exit(g_status);
+		}
+		close(pipefd[0]);
+		close(pipefd[1]);
+		waitpid(pid2, &g_status, 0);
+		waitpid(pid1, &g_status, 0);
+	}
+	else if (root->sub_type & AND)
+	{
+		executor(data, root->left);
+		if (g_status == 0)
+			executor(data, root->right);
+	}
+	else if (root->sub_type & OR)
+	{
+		executor(data, root->left);
+		if (g_status != 0)
+			executor(data, root->right);
+	}
+	else
+	{
+		if (root->left)
+			executor(data, root->left);
+		if (root->right)
+			executor(data, root->right);
+	}
 }
+
+/* T_TOKEN *CMD: Pointer to Structure T_token. (Current Token)
+ * T_data *data: Pointer to a general Data struct.
+ * Function to fill a string array with the various cmd_name flags and options.
+ * It will search inside the cmd_line (Array of tokens) thanks to index
+ * found inside given cmd_token.
+ * It will allocate enough spaces for all the args that we will then use
+ * inside execve.*/
 
 char	**fill_args_array(t_token *cmd, t_data *data)
 {
@@ -48,157 +125,100 @@ char	**fill_args_array(t_token *cmd, t_data *data)
 	return (args);
 }
 
-void execute_cmd(t_token *cur_root, char **args, t_data *data)
-{
-	pid_t pid;
-	char *cmd_path;
-  int status;
-  printf("Executing command: %s\n",args[0]);
+/* Args: Array of strings that contains cmd name, flags etc.
+ * Data: Pointer to a t_data struct (general struct)
+ * Execute cmd will first check if a function is a built in or not.
+ * If it's a builtin it will execute it. If its not a builtin
+ * it will use Pathfinder on args[0] (cmd name).
+ * Then it will just create sub process that will execute the cmd.
+ * If process is not a child, we'll just wait for child process to end
+ * and update g_status to its exit status.
+ * */
 
-  handle_redirects(cur_root);
-  if (is_builtin(args,data))
-    return;
-  cmd_path = pathfinder(args[0],data->env);
-  if (!cmd_path)
-  {
-    print_error2("minishell ",args[0],"command not found");
-    g_status = 127;
-    return ;
-  }
-  pid = fork();
-  if (pid == 0)
-  {
-    if (execve(cmd_path,args,data->env) == -1)
-    {
-      free(cmd_path);
-      g_status = 1;
-      exit(126);
-    }
-  }
-  else
-  {
-    waitpid(pid,&status,0);
-    free(cmd_path);
-  }
+int	execute_cmd(char **args, t_data *data)
+{
+	pid_t	pid;
+	char	*cmd_path;
+	int		status;
+
+	if (is_builtin(args, data))
+	{
+		g_status = 0;
+		return (0);
+	}
+	cmd_path = pathfinder(args[0], data->env);
+	if (!cmd_path)
+	{
+		print_error2("B_bros ", args[0], " command not found");
+		g_status = 127;
+		return (1);
+	}
+	pid = fork();
+	if (pid == 0)
+	{
+		if (execve(cmd_path, args, data->env) == -1)
+		{
+			free(cmd_path);
+			g_status = 1;
+			exit(126);
+		}
+	}
+	else
+	{
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			g_status = WEXITSTATUS(status);
+		free(cmd_path);
+		return (g_status);
+	}
+	return (0);
 }
 
-static void handle_pipe(t_token *root,t_data *data, char **args)
-{
-  int pipe_fd[2];
-  pid_t pid1;
-  pid_t pid2;
-  char **left_args;
-  char **right_args;
-
-  if (!root)
-    return;
-    
-  if (root->sub_type & PIPE)
-  {
-    if (pipe(pipe_fd) == -1)
-    {
-      perror("pipe");
-      exit(EXIT_FAILURE);
-    }
-    pid1 = fork();
-    if (pid1 < 0)
-    {
-      perror("fork");
-      exit(EXIT_FAILURE);
-    }
-    if (pid1 == 0)
-    {
-      custom_dup2(pipe_fd[1],"STDOUT");
-      close_fds(pipe_fd[1],pipe_fd[0]);
-      if (root->left->sub_type & PIPE)
-        handle_pipe(root->left,data,args);
-      else
-      {
-        left_args = fill_args_array(root->left,data);
-        execute_cmd(root->left,left_args,data);
-        free(left_args);
-      }
-      exit(EXIT_SUCCESS);
-    }
-
-
-    pid2 = fork();
-    if (pid2 < 0)
-    {
-      perror("fork");
-      exit(EXIT_FAILURE);
-    }
-    if (pid2 == 0) 
-    {
-      dup2(pipe_fd[0], STDIN_FILENO);
-      close_fds(pipe_fd[1],pipe_fd[0]);
-      if (root->right->sub_type & REDIRECT)
-        handle_redirects(root->right);
-      else
-      {
-        right_args = fill_args_array(root->right,data);
-        execute_cmd(root->right,right_args,data);
-        free(right_args);
-      }
-      exit(EXIT_SUCCESS);
-    }
-    close_fds(pipe_fd[1],pipe_fd[0]);
-    waitpid(pid1,&g_status, 0);
-    waitpid(pid2,&g_status, 0);
-    return;
-  }
-  handle_pipe(root->left,data,args);
-  handle_pipe(root->right,data,args);
-}
-
-static void handle_redirects(t_token *root)
-{
-  if (root == NULL)
-        return;
-  if (root->sub_type & (R_IN | R_OUT | APPEND | PIPE))
-  {
-    int fd;
-    if (root->sub_type & R_IN)
-    {
-      fd = open((char *)root->left->content, O_RDONLY);
-      if (fd == -1)
-      {
-        print_error2("Failed to redirect input: ", (char *)root->left->content, "file not found");
-        g_status = 1;
-        return ;
-      }
-      custom_dup2(fd,"STDIN");
-      close(fd);
-    }
-    else if (root->sub_type & R_OUT)
-    {
-      fd = open((char *)root->left->content, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-      if (fd == -1)
-      {
-        print_error2("Failed to redirect output: ", (char *)root->left->content, "\n");
-        g_status = 1;
-        return ;
-      }
-      custom_dup2(fd,"STDOUT");
-      close(fd);
-    }
-    else if (root->sub_type & APPEND)
-    {
-      fd = open((char *)root->left->content, O_WRONLY | O_CREAT | O_APPEND, 0644);
-      if (fd == -1)
-      {
-        print_error1("Failed to redirect output: ", (char *)root->left->content);
-        g_status = 1;
-        return ;
-      }
-      custom_dup2(fd,"STDOUT");
-      close(fd);
-    }
-  }
-  handle_redirects(root->left);
-  handle_redirects(root->right);
-}
-
+// static void handle_redirects(t_token *root)
+// {
+//   if (root == NULL)
+//         return ;
+//   if (root->sub_type & (R_IN | R_OUT | APPEND | PIPE))
+//   {
+//     int fd;
+//     if (root->sub_type & R_IN)
+//     {
+//       fd = open((char *)root->left->content, O_RDONLY);
+//       if (fd == -1)
+//       {
+//         print_error2("Failed to redirect input: ",(char *)root->left->content, "file not found");
+//         g_status = 1;
+//         return ;
+//       }
+//       custom_dup2(fd,"STDIN");
+//       close(fd);
+//     }
+//     else if (root->sub_type & R_OUT)
+//     {
+//       fd = open((char *)root->left->content, O_WRONLY | O_CREAT | O_TRUNC,0644);
+//       if (fd == -1)
+//       {
+//         print_error2("Failed to redirect output: ",(char *)root->left->content, "\n");
+//         g_status = 1;
+//         return ;
+//       }
+//       custom_dup2(fd,"STDOUT");
+//       close(fd);
+//     }
+//     else if (root->sub_type & APPEND)
+//     {
+//       fd = open((char *)root->left->content, O_WRONLY | O_CREAT | O_APPEND,0644);
+//       if (fd == -1)
+//       {
+//         print_error1("Failed to redirect output: ",(char *)root->left->content);
+//         g_status = 1;
+//         return ;
+//       }
+//       custom_dup2(fd,"STDOUT");
+//       close(fd);
+//     }
+//   }
+// }
 
 void	check_fork(pid_t pid, int wefd, int refd)
 {
