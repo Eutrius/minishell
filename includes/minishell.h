@@ -3,8 +3,8 @@
 
 # define NONEWLINE 'N'
 # define NEWLINE 'n'
-# define ERR_MALLOC "minishell: memory allocation failed"
-# define ERR_SYNTAX "minishell: syntax error"
+# define ERR_MALLOC "b_bros: memory allocation failed"
+# define ERR_SYNTAX "b_bros: syntax error"
 
 typedef struct s_data		t_data;
 typedef struct s_token		t_token;
@@ -15,7 +15,7 @@ extern int					g_status;
 
 typedef enum e_type
 {
-	NONE = 1 << 0,
+	NONE = 0,
 	PIPE = 1 << 1,
 	OR = 1 << 2,
 	AND = 1 << 3,
@@ -27,12 +27,11 @@ typedef enum e_type
 	R_OUT = 1 << 9,
 	END = 1 << 10,
 	START = 1 << 11,
-	NAME = 1 << 13,
-	CMD = 1 << 14,
-	DELIMITER = 1 << 15,
-	REDIRECT = 1 << 16,
-	FILENAME = 1 << 17,
-	LIMITER = 1 << 18,
+	CMD = 1 << 12,
+	LIMITER = 1 << 13,
+	DELIMITER = 1 << 14,
+	REDIRECT = 1 << 15,
+	FILENAME = 1 << 16,
 
 }							t_type;
 
@@ -112,9 +111,19 @@ void						parse_redirect(t_token **tokens, int *i,
 								t_token **root, t_token **last);
 void						parse_open(t_token **tokens, int *i, t_token **root,
 								t_token **last);
+char						**get_files(void);
+
+// Expand
+
+char						*expand_var(char *str);
+void						remove_quotes(char *str);
+void						check_quotes(char *str, int *i, int *in_quote);
+
+// Debug
+
+char						*get_enum(t_type type);
 void						print_tokens(t_token **tokens);
 void						print_tree(t_token *root, int level);
-char						*expand_var(char *str);
 
 // Token
 
@@ -171,8 +180,6 @@ void						custom_chdir(t_data *data);
 void						custom_env(t_data *data);
 void						custom_export(t_data *data);
 void						custom_unset(t_data *data);
-
-char						*get_enum(t_type type);
 
 // Utils
 

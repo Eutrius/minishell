@@ -1,4 +1,5 @@
 NAME = minishell
+TITLE = minishell
 
 LIBFT_PATH = libft
 LIBFT = $(LIBFT_PATH)/libft.a
@@ -26,6 +27,7 @@ SRC = srcs/main.c \
 	  srcs/parse/parse_utils.c \
 	  srcs/expand/expand_var.c\
 	  srcs/expand/expand_utils.c\
+	  srcs/expand/remove_quotes.c\
 	  srcs/builtins/utils.c\
 	  srcs/builtins/echo.c \
 	  srcs/builtins/exit.c \
@@ -41,10 +43,13 @@ OBJ = $(SRC:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 $(NAME): $(LIBFT) $(OBJ)
 	@$(CC) $(CFLAGS) -o $@ $^ $(LIBFT_FLAGS) -lreadline
-	@echo "LETS GO BASH BROS!"
+	@printf "\n\033[1A\033[K"
+	@printf "\033[0;32m$(TITLE) compiled OK!\n"
+	@printf "LETS GO BASH BROS!\n"
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(dir $@)
+	@printf "\033[0;37m Generating $(TITLE) objects... %-33.33s\r" $@
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 all: $(NAME)
@@ -58,19 +63,26 @@ clean:
 	@$(RM) $(OBJ)
 	@$(RM) $(OBJS_DIR)
 	@$(MAKE) -C $(LIBFT_PATH) clean --no-print-directory
+	@printf "\033[0;31m$(TITLE) cleaned!\n"
 
 fclean:
 	@$(RM) $(OBJ)
 	@$(RM) $(OBJS_DIR)
 	@$(RM) $(NAME)
 	@$(MAKE) -C $(LIBFT_PATH) fclean --no-print-directory
+	@printf "\033[0;31m$(TITLE) removed!\n"
 
-run: $(NAME)
-	@./$(NAME)
-valgrind: $(NAME)
-	@valgrind ./$(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re bonus run valgrind
+run: $(NAME)
+	@printf "\033[0;37m"
+	@./$(NAME)
+
+rerun: re run
+
+valgrind: $(NAME)
+	@valgrind ./$(NAME)
+
+.PHONY: all clean fclean re bonus run rerun valgrind
 

@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 12:11:27 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/27 23:32:50 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/03/03 10:41:21 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@ static char	*get_more_enum(t_type type);
 
 char	*get_enum(t_type type)
 {
-	if (type == NAME)
-		return ("NAME");
-	else if (type == OPEN)
+	if (type == OPEN)
 		return ("OPEN");
 	else if (type == CLOSE)
 		return ("CLOSE");

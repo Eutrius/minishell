@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 23:05:18 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/28 23:20:24 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/03/03 12:11:33 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-static void	check_quotes(char *str, int *i, int *in_quote);
 static int	sub_var(char *str, int *i, int *j, char **res);
 static int	sub_status(char *str, int *i, int *j, char **res);
 
@@ -94,17 +93,4 @@ static int	sub_status(char *str, int *i, int *j, char **res)
 	}
 	free(status);
 	return (0);
-}
-
-static void	check_quotes(char *str, int *i, int *in_quote)
-{
-	if (*in_quote == 0 && is_dquote(str[*i]))
-		*in_quote = 2;
-	else if (*in_quote == 2 && is_dquote(str[*i]))
-		*in_quote = 0;
-	else if (*in_quote == 0 && is_quote(str[*i]))
-		*in_quote = 1;
-	else if (*in_quote == 1 && is_quote(str[*i]))
-		*in_quote = 0;
-	(*i)++;
 }

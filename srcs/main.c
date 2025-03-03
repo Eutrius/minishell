@@ -17,6 +17,7 @@ int	main(void)
 {
 	static t_data	data;
 	static t_parser	parser;
+	char			**res;
 
 	init(&data, &parser);
 	while (1)
@@ -27,8 +28,9 @@ int	main(void)
 		if (parse(&data))
 			continue ;
 		// check_value(&data);
-		data.root->content = expand_var(data.root->content);
-		is_builtin((parser.tokens[0])->content, &data);
+		res = get_files();
+		ft_print_strs(res);
+		// is_builtin((parser.tokens[0])->content, &data);
 	}
 	exit(0);
 }
