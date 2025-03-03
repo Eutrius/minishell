@@ -1,6 +1,7 @@
 #include "libft.h"
 #include "minishell.h"
 // clang-format off
+#include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 // clang-format on
@@ -12,10 +13,10 @@
 #include <errno.h>
 #include <fcntl.h>
 
-int		execute_cmd(char **args, t_data *data);
-// static void handle_redirects(t_token *root);
+int			execute_cmd(char **args, t_data *data);
+static void	handle_redirects(t_token *root);
 // static void handle_pipe(t_token *root,t_data *data, char **args);
-void	check_fork(pid_t pid, int wefd, int refd);
+void		check_fork(pid_t pid, int wefd, int refd);
 
 /* T_data *data : General data struct
  * t_token *root: Token at the top of the Binary tree.
@@ -32,6 +33,7 @@ void	executor(t_data *data, t_token *root)
 	int		pipefd[2];
 	pid_t	pid1;
 	pid_t	pid2;
+	pid_t	pid3;
 
 	if (root == NULL)
 		return ;
@@ -82,13 +84,39 @@ void	executor(t_data *data, t_token *root)
 		if (g_status != 0)
 			executor(data, root->right);
 	}
-	// else
-	// {
-	// 	if (root->left)
-	// 		executor(data, root->left);
-	// 	if (root->right)
-	// 		executor(data, root->right);
-	// }
+	else if (root->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
+	{
+		pid3 = fork();
+		if (pid3 == 0)
+		{
+			handle_redirects(root);
+			if (g_status != 0)
+				exit(g_status);
+			if (root->left && root->left->sub_type & CMD)
+				executor(data, root->left);
+			else if (root->right && !(root->right->sub_type & (PIPE)))
+				executor(data, root->right);
+			exit(g_status);
+		}
+		else if (pid3 > 0)
+		{
+			waitpid(pid3, &g_status, 0);
+			if (WIFEXITED(g_status))
+				g_status = WEXITSTATUS(g_status);
+		}
+		else
+		{
+			print_error1("Failed to create process for redirection", "");
+			g_status = 1;
+		}
+	}
+	else
+	{
+		if (root->left)
+			executor(data, root->left);
+		if (root->right)
+			executor(data, root->right);
+	}
 }
 
 /* T_TOKEN *CMD: Pointer to Structure T_token. (Current Token)
@@ -139,7 +167,6 @@ int	execute_cmd(char **args, t_data *data)
 {
 	pid_t	pid;
 	char	*cmd_path;
-	int		status;
 
 	if (is_builtin(args, data))
 	{
@@ -165,62 +192,35 @@ int	execute_cmd(char **args, t_data *data)
 	}
 	else
 	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			g_status = WEXITSTATUS(status);
+		waitpid(pid, &g_status, 0);
+		if (WIFEXITED(g_status))
+			g_status = WEXITSTATUS(g_status);
 		free(cmd_path);
 		return (g_status);
 	}
 	return (0);
 }
 
-// static void handle_redirects(t_token *root)
-// {
-//   if (root == NULL)
-//         return ;
-//   if (root->sub_type & (R_IN | R_OUT | APPEND | PIPE))
-//   {
-//     int fd;
-//     if (root->sub_type & R_IN)
-//     {
-//       fd = open((char *)root->left->content, O_RDONLY);
-//       if (fd == -1)
-//       {
-//         print_error2("Failed to redirect input: ",(char *)root->left->content, "file not found");
-//         g_status = 1;
-//         return ;
-//       }
-//       custom_dup2(fd,"STDIN");
-//       close(fd);
-//     }
-//     else if (root->sub_type & R_OUT)
-//     {
-//       fd = open((char *)root->left->content, O_WRONLY | O_CREAT | O_TRUNC,0644);
-//       if (fd == -1)
-//       {
-//         print_error2("Failed to redirect output: ",(char *)root->left->content, "\n");
-//         g_status = 1;
-//         return ;
-//       }
-//       custom_dup2(fd,"STDOUT");
-//       close(fd);
-//     }
-//     else if (root->sub_type & APPEND)
-//     {
-//       fd = open((char *)root->left->content, O_WRONLY | O_CREAT | O_APPEND,0644);
-//       if (fd == -1)
-//       {
-//         print_error1("Failed to redirect output: ",(char *)root->left->content);
-//         g_status = 1;
-//         return ;
-//       }
-//       custom_dup2(fd,"STDOUT");
-//       close(fd);
-//     }
-//   }
-// }
+static void	handle_redirects(t_token *root)
+{
+	int fd;
 
-void	check_fork(pid_t pid, int wefd, int refd)
+	if (root == NULL)
+		return ;
+	if (root->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
+	{
+		if (root->sub_type & R_IN)
+			handle_redirect_input(root, &fd);
+		else if (root->sub_type & R_OUT)
+			handle_redirect_output(root,&fd);
+		else if (root->sub_type & APPEND)
+			handle_redirect_append(root,&fd);
+		else if (root->sub_type & HERE_DOC)
+			handle_redirect_heredoc(root);
+	}
+}
+
+void check_fork(pid_t pid, int wefd, int refd)
 {
 	if (pid < 0)
 	{
