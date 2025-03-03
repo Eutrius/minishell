@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 23:05:18 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/03/03 12:11:33 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/03/03 22:18:45 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 static int	sub_var(char *str, int *i, int *j, char **res);
 static int	sub_status(char *str, int *i, int *j, char **res);
+static void	init_vars(int *i, int *j, int *in_quote, char **res);
 
 char	*expand_var(char *str)
 {
@@ -24,10 +25,7 @@ char	*expand_var(char *str)
 	int		in_quote;
 	char	*res;
 
-	i = 0;
-	j = 0;
-	in_quote = 0;
-	res = NULL;
+	init_vars(&i, &j, &in_quote, &res);
 	while (str[i] != '\0')
 	{
 		if (in_quote != 1 && str[i] == '$')
@@ -39,11 +37,20 @@ char	*expand_var(char *str)
 			if (res == NULL)
 				return (NULL);
 		}
-		check_quotes(str, &i, &in_quote);
+		check_quotes(str[i], &in_quote);
+		i++;
 	}
 	if (str[j] != '\0')
 		res = safe_join(res, &str[j]);
 	return (res);
+}
+
+static void	init_vars(int *i, int *j, int *in_quote, char **res)
+{
+	*i = 0;
+	*j = 0;
+	*in_quote = 0;
+	*res = NULL;
 }
 
 static int	sub_var(char *str, int *i, int *j, char **res)

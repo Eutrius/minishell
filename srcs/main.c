@@ -17,7 +17,6 @@ int	main(void)
 {
 	static t_data	data;
 	static t_parser	parser;
-	char			**res;
 
 	init(&data, &parser);
 	while (1)
@@ -28,8 +27,10 @@ int	main(void)
 		if (parse(&data))
 			continue ;
 		// check_value(&data);
-		res = get_files();
-		ft_print_strs(res);
+		if (!is_file_valid(parser.tokens[0]->content,
+				parser.tokens[1]->content))
+			printf("MATCH");
+		printf("\n");
 		// is_builtin((parser.tokens[0])->content, &data);
 	}
 	exit(0);

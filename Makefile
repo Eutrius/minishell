@@ -26,8 +26,10 @@ SRC = srcs/main.c \
 	  srcs/parse/prepare.c \
 	  srcs/parse/parse_utils.c \
 	  srcs/expand/expand_var.c\
+	  srcs/expand/expand_wildcards.c\
 	  srcs/expand/expand_utils.c\
 	  srcs/expand/remove_quotes.c\
+	  srcs/expand/get_files.c\
 	  srcs/builtins/utils.c\
 	  srcs/builtins/echo.c \
 	  srcs/builtins/exit.c \

@@ -112,12 +112,13 @@ void						parse_redirect(t_token **tokens, int *i,
 void						parse_open(t_token **tokens, int *i, t_token **root,
 								t_token **last);
 char						**get_files(void);
+int							is_file_valid(char *pattern, char *filename);
 
 // Expand
 
 char						*expand_var(char *str);
 void						remove_quotes(char *str);
-void						check_quotes(char *str, int *i, int *in_quote);
+int							check_quotes(int c, int *in_quote);
 
 // Debug
 
