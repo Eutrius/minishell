@@ -12,6 +12,7 @@
 
 #include "libft.h"
 #include "minishell.h"
+#include <unistd.h>
 
 void	init(t_data *data, t_parser *parser)
 {
@@ -20,4 +21,8 @@ void	init(t_data *data, t_parser *parser)
 	data->parser = parser;
 	parser->data = data;
 	data->env = ft_strsdup(environ);
+	if (!data->env)
+		return;
+	data->stdin_orig = dup(STDIN_FILENO);
+	data->stdout_orig = dup(STDOUT_FILENO);
 }

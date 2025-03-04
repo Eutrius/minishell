@@ -52,6 +52,8 @@ typedef struct s_data
 	t_token					*root;
 	t_token					**cmd_line;
 	t_parser				*parser;
+	int						stdin_orig;
+	int						stdout_orig;
 
 }							t_data;
 
@@ -147,10 +149,10 @@ void handle_or_operator(t_data *data, t_token *root);
 void redirects(t_data *data, t_token *root);
 
 // void	handle_redirects(t_token *root);
-void handle_redirect_heredoc(t_token *root);
-void handle_redirect_append(t_token *root, int *fd);
-void handle_redirect_output(t_token *root, int *fd);
-void handle_redirect_input(t_token *root, int *fd);
+// void handle_redirect_heredoc(t_data * data,t_token *root);
+void handle_redirect_append(t_data *data,t_token *root, int *fd);
+void handle_redirect_output(t_data *data, t_token *root, int *fd);
+void handle_redirect_input(t_data *data, t_token *root, int *fd);
 
 void	custom_dup2(int fd, char *flag);
 void	custom_pipe(int fds[2]);
