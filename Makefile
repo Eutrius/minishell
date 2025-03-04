@@ -29,6 +29,7 @@ SRC = srcs/main.c \
 	  srcs/expand/expand_wildcards.c\
 	  srcs/expand/expand_utils.c\
 	  srcs/expand/remove_quotes.c\
+	  srcs/expand/match_wildcard.c\
 	  srcs/expand/get_files.c\
 	  srcs/builtins/utils.c\
 	  srcs/builtins/echo.c \

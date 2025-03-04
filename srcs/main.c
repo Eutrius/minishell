@@ -27,11 +27,7 @@ int	main(void)
 		if (parse(&data))
 			continue ;
 		// check_value(&data);
-		if (!is_file_valid(parser.tokens[0]->content,
-				parser.tokens[1]->content))
-			printf("MATCH");
-		printf("\n");
-		// is_builtin((parser.tokens[0])->content, &data);
+		is_builtin((data.cmd_line[0])->content, &data);
 	}
 	exit(0);
 }

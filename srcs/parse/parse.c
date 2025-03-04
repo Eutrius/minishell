@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 17:30:35 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/03/03 11:04:00 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/03/04 13:53:08 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 #include <stdlib.h>
 
 static int	expand_vars(t_parser *parser);
+static void	print_debug(t_data *data);
 
 int	parse(t_data *data)
 {
 	t_parser	*parser;
-	t_token		*root;
 
 	parser = data->parser;
 	if (split_line(parser) || check_line(parser) || expand_vars(parser))
@@ -29,15 +29,13 @@ int	parse(t_data *data)
 		return (1);
 	}
 	prepare_line(parser);
-	root = parse_line(parser->tokens);
-	/*printf("\nTokens:\n");*/
-	print_tokens(parser->tokens);
-	/*printf("\n");*/
-	/*printf("line: %s \n", parser->buffer);*/
-	/*print_tree(root, 0);*/
-	/*printf("\n");*/
+	data->root = parse_line(parser->tokens);
+	if (data->root == NULL)
+		return (1);
+	if (data->debug)
+		print_debug(data);
 	data->cmd_line = parser->tokens;
-	data->root = root;
+	parser->tokens = NULL;
 	free(parser->buffer);
 	return (0);
 }
@@ -93,4 +91,13 @@ static int	expand_vars(t_parser *parser)
 		i++;
 	}
 	return (0);
+}
+
+static void	print_debug(t_data *data)
+{
+	print_tokens(data->parser->tokens);
+	printf("\n");
+	printf("line: %s \n", data->parser->buffer);
+	print_tree(data->root, 0);
+	printf("\n");
 }

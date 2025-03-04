@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 21:26:00 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/27 23:35:04 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/03/04 11:48:23 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	parse_pipe(t_token *token, t_token **root, t_token **last)
 	}
 	else
 	{
-		token->left = *last;
+		token->left = (*root)->right;
 		(*root)->right = token;
 	}
 	*last = token;

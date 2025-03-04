@@ -5,65 +5,64 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/03 11:19:15 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/03/03 23:56:38 by jyriarte         ###   ########.fr       */
+/*   Created: 2025/03/04 11:17:41 by jyriarte          #+#    #+#             */
+/*   Updated: 2025/03/04 13:27:22 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "minishell.h"
+#include <stdlib.h>
 
-static int	match(char *pattern, char *filename, int in_quote);
-static int	skip_multi_ast(char *pattern, int *i);
-static int	recurse_rest(char *pattern, char *filename, int *j, int in_quote);
+static void	unshift_file(char **files, int *index);
+static int	is_wildcard(char *pattern);
 
-int	is_file_valid(char *pattern, char *filename)
+char	**expand_wildcard(char *pattern)
 {
-	return (match(pattern, filename, 0));
-}
-
-static int	match(char *pattern, char *filename, int in_quote)
-{
-	int	i;
-	int	j;
+	char	**files;
+	int		i;
 
 	i = 0;
-	j = 0;
-	if (pattern[i] == '\0')
-		return (!(filename[j] == '\0'));
-	if (check_quotes(pattern[i], &in_quote))
-		return (match(&pattern[i + 1], &filename[j], in_quote));
-	if (pattern[i] == '*' && in_quote == 0)
+	if (!is_wildcard(pattern))
+		return (NULL);
+	files = get_files(pattern[0] == '.');
+	if (files == NULL)
+		return (NULL);
+	while (files[i] != NULL)
 	{
-		if (!skip_multi_ast(pattern, &i))
-			return (0);
-		recurse_rest(&pattern[i + 1], filename, &j, in_quote);
-		return (match(&pattern[i + 1], &filename[j], in_quote));
+		if (match_wildcard(pattern, files[i], 0))
+			unshift_file(files, &i);
+		else
+			i++;
 	}
-	if (pattern[i] == filename[j])
-	{
-		if (filename[j] != '\0')
-			return (match(&pattern[i + 1], &filename[j + 1], in_quote));
-	}
-	return (1);
+	return (files);
 }
 
-static int	skip_multi_ast(char *pattern, int *i)
+static int	is_wildcard(char *pattern)
 {
-	while (pattern[*i + 1] == '*')
-		(*i)++;
-	if (pattern[*i + 1] == '\0')
-		return (0);
-	return (1);
+	int	i;
+	int	in_quote;
+
+	i = 0;
+	in_quote = 0;
+	while (pattern[i] != '\0')
+	{
+		check_quotes(pattern[i], &in_quote);
+		if (in_quote == 0 && pattern[i] == '*')
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
-static int	recurse_rest(char *pattern, char *filename, int *j, int in_quote)
+static void	unshift_file(char **files, int *index)
 {
-	while (filename[*j] != '\0')
+	int	i;
+
+	i = *index;
+	while (files[i] != NULL)
 	{
-		if (match(pattern, &filename[*j], in_quote) == 0)
-			return (0);
-		(*j)++;
+		files[i] = files[i + 1];
+		i++;
 	}
-	return (1);
 }

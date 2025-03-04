@@ -52,6 +52,8 @@ typedef struct s_data
 	t_token					**cmd_line;
 	t_parser				*parser;
 
+	int						debug;
+
 }							t_data;
 
 typedef struct s_parser
@@ -96,7 +98,6 @@ int							is_dquote(int c);
 int							is_quote(int c);
 void						extract(t_parser *parser, int *index,
 								int (*ctrl)(int), t_mode mode);
-void						expand_variable(t_parser *parser);
 void						join_last(t_parser *parser);
 char						*if_double(char *str, int *index, char *twice,
 								char *once);
@@ -111,14 +112,15 @@ void						parse_redirect(t_token **tokens, int *i,
 								t_token **root, t_token **last);
 void						parse_open(t_token **tokens, int *i, t_token **root,
 								t_token **last);
-char						**get_files(void);
-int							is_file_valid(char *pattern, char *filename);
-
 // Expand
 
 char						*expand_var(char *str);
+char						**expand_wildcard(char *pattern);
 void						remove_quotes(char *str);
 int							check_quotes(int c, int *in_quote);
+char						**get_files(int hidden);
+int							match_wildcard(char *pattern, char *filename,
+								int in_quote);
 
 // Debug
 
