@@ -6,16 +6,8 @@
 
 void		free_paths(char **path, char *error);
 int			is_path_given(char *full_path);
-
-static char	**get_paths(char **env)
-{
-	char	**path;
-
-	while (!ft_strnstr((*env), "PATH=", 5))
-		env++;
-	path = ft_split(*env + 5, ':');
-	return (path);
-}
+static int check_absolute_path(const char *cmd);
+static char	**get_paths(char **env);
 
 char	*pathfinder(const char *cmd, char **env)
 {
@@ -24,6 +16,8 @@ char	*pathfinder(const char *cmd, char **env)
 	char	*return_path;
 	size_t	len;
 
+  if (check_absolute_path(cmd))
+    return ft_strdup(cmd);
 	return_path = NULL;
 	i = 0;
 	path = get_paths(env);
@@ -42,24 +36,27 @@ char	*pathfinder(const char *cmd, char **env)
 	}
 	if (path && !path[i])
 		return_path = NULL;
-	// free_paths(path, "NO_ERROR");
 	return (return_path);
 }
 
-/*Function to check if command is given as full path*/
-
-int	is_path_given(char *full_path)
+static char	**get_paths(char **env)
 {
-	struct stat	buf;
+	char	**path;
 
-	if (stat(full_path, &buf) == 0)
-	{
-		if (!S_ISREG(buf.st_mode) || S_ISDIR(buf.st_mode))
-			return (0);
-	}
-	if (access(full_path, F_OK | X_OK) == 0)
-		return (1);
-	return (0);
+	while (!ft_strnstr((*env), "PATH=", 5))
+		env++;
+	path = ft_split(*env + 5, ':');
+	return (path);
+}
+
+static int check_absolute_path(const char *cmd)
+{
+  if (cmd[0] == '/' || ft_strncmp(cmd, "./", 2) == 0 || ft_strncmp(cmd, "../", 3) == 0)
+  {
+    if (access(cmd, X_OK) == 0)
+      return 1;
+  }
+  return 0;
 }
 
 void	free_paths(char **path, char *error)

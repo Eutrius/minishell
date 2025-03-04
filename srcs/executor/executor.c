@@ -33,7 +33,7 @@ void	executor(t_data *data, t_token *root)
 	int		pipefd[2];
 	pid_t	pid1;
 	pid_t	pid2;
-	// pid_t	pid3;
+	pid_t	pid3;
 
 	if (root == NULL)
 		return ;
@@ -74,37 +74,39 @@ void	executor(t_data *data, t_token *root)
 	}
 	else if (root->sub_type & AND)
 	{
-    // dup2(data->stdin_orig, STDIN_FILENO);
-    // dup2(data->stdout_orig, STDOUT_FILENO);
 		executor(data, root->left);
 		if (g_status == 0)
-    {
-      // dup2(data->stdin_orig, STDIN_FILENO);
-      // dup2(data->stdout_orig, STDOUT_FILENO);
 			executor(data, root->right);
-    }
   }
 	else if (root->sub_type & OR)
 	{
-    // dup2(data->stdin_orig, STDIN_FILENO);
-    // dup2(data->stdout_orig, STDOUT_FILENO);
 		executor(data, root->left);
 		if (g_status != 0)
-    {
-      // dup2(data->stdin_orig, STDIN_FILENO);
-      // dup2(data->stdout_orig, STDOUT_FILENO);
 			executor(data, root->right);
-    }
 	}
 	else if (root->sub_type & (R_IN | R_OUT | APPEND))
 	{
-		handle_redirects(data,root);
-		executor(data, root->right);
-    if (root->sub_type & (R_IN))
-      dup2(data->stdin_orig,STDIN_FILENO);
-    if (root->sub_type & (R_OUT | APPEND))
-      dup2(data->stdout_orig,STDOUT_FILENO);
-  }
+    pid3 = fork();
+		if (pid3 == 0)
+		{
+			handle_redirects(data,root);
+			if (g_status != 0)
+				exit(g_status);
+			executor(data, root->right);
+			exit(g_status);
+		}
+		else if (pid3 > 0)
+		{
+			waitpid(pid3, &g_status, 0);
+			if (WIFEXITED(g_status))
+				g_status = WEXITSTATUS(g_status);
+		}
+		else
+		{
+			print_error1("Failed to create process for redirection", "");
+			g_status = 1;
+		}
+	}
 }
 
 /* T_TOKEN *CMD: Pointer to Structure T_token. (Current Token)
