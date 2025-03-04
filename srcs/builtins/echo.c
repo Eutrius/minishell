@@ -15,7 +15,7 @@ void	custom_echo(char **args)
 		printf("\n");
 		return ;
 	}
-	if (args[1] && !ft_strcmp(args[1], "-n") && !args[2])
+	if (args[1] && !ft_strcmp(args[1], "-n")  && !args[2])
 		return ;
 	if (args[1] && !ft_strcmp(args[1], "-n"))
 		print_with_flag(args);
@@ -43,6 +43,8 @@ static void	print_with_flag(char **args)
 				if (args[i + 1])
 					printf(" ");
 			}
+			if (args[0][0] == '-' && args[0][1] == 'n')
+				return ;
 			i++;
 		}
 		return ;
