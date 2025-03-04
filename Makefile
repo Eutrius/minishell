@@ -24,6 +24,7 @@ SRC = srcs/main.c \
 	  srcs/parse/token.c \
 	  srcs/parse/extra.c \
 	  srcs/parse/prepare.c \
+	  srcs/parse/heredoc.c \
 	  srcs/parse/parse_utils.c \
 	  srcs/expand/expand_var.c\
 	  srcs/expand/expand_wildcards.c\

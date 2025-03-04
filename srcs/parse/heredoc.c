@@ -13,29 +13,29 @@
 #include <errno.h>
 #include <fcntl.h>
 
-void handle_redirect_heredoc(t_token *root)
+void	handle_redirect_heredoc(t_token *root)
 {
-	int tmp_file;
-	char *line;
-	char *limiter;
+	int		tmp_file;
+	char	*line;
+	char	*limiter;
 
-	tmp_file = open("tmp_file.txt", O_WRONLY | O_CREAT | O_APPEND,0644);
+	tmp_file = open("tmp_file.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (root->left->sub_type & LIMITER)
 		limiter = root->left->content;
-	while(1)
+	while (1)
 	{
 		line = readline(">");
 		if (!line)
 			break ;
-		if (ft_strcmp(line,limiter) == 0)
+		if (ft_strcmp(line, limiter) == 0)
 			break ;
-		ft_putstr_fd(line,tmp_file);
-		ft_putchar_fd('\n',tmp_file);
+		ft_putstr_fd(line, tmp_file);
+		ft_putchar_fd('\n', tmp_file);
 		free(line);
-		}
+	}
 	close(tmp_file);
 	tmp_file = open("tmp_file.txt", O_RDONLY);
-	dup2(tmp_file,STDIN_FILENO);
-	close (tmp_file);
+	dup2(tmp_file, STDIN_FILENO);
+	close(tmp_file);
 	unlink("tmp_file.txt");
 }
