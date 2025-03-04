@@ -10,10 +10,11 @@ static void	append_vars(t_data *data, char **new_env, int i);
 
 void	custom_export(t_data *data, char **args)
 {
-	int		tokens_count;
-	char	*name;
-	int		i;
-	int		not_valid;
+	int			tokens_count;
+	char		*name;
+	int			i;
+	int			not_valid;
+	extern char	**environ;
 
 	i = 1;
 	not_valid = 0;
@@ -35,6 +36,7 @@ void	custom_export(t_data *data, char **args)
 	}
 	if (tokens_count == 1)
 		export_no_args(data);
+	environ = data->env;
 }
 
 static void	export_with_args(t_data *data, char **args, int not_valid)

@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 15:55:33 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/02/27 23:33:03 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/03/04 14:08:04 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,11 @@ static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 
 void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 {
-	int	status;
-
 	if (mode == OPERATOR)
-		status = extract_op(parser, index);
+		extract_op(parser, index);
 	else
-		status = extract_str(parser, index, ctrl, mode);
-	if (parser->str == NULL && status)
+		extract_str(parser, index, ctrl, mode);
+	if (parser->str == NULL)
 		return (parse_error(parser));
 	if ((parser->last_token & (CMD | FILENAME | LIMITER)) && mode != OPERATOR)
 		return (join_last(parser));

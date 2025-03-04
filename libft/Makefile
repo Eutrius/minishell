@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 NAME = libft.a
+TITLE = libft
 CC = cc
 AR = ar rcs
 RM = rm -f
@@ -57,21 +58,23 @@ OBJ = $(LIBFT_SRC:.c=.o) $(FR_PRINTF_SRC:.c=.o) $(GET_NEXT_LINE_SRC:.c=.o) $(OTH
 
 $(NAME): $(OBJ)
 	@$(AR) $@ $^
-	@echo "libft compiled OK!"
+	@printf "\n\033[1A\033[K"
+	@printf "\033[0;32m$(TITLE) compiled OK!\n"
 
 %.o: %.c
+	@printf "\033[0;37m Generating $(TITLE) objects... %-33.33s\r" $@
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 all: $(NAME)
 
 clean:
 	@$(RM) $(OBJ)
-	@echo "libft cleaned!"
+	@printf "\033[0;31m$(TITLE) cleaned!\n"
 
 fclean: 
 	@$(RM) $(OBJ)
 	@$(RM) $(NAME) 
-	@echo "libft removed!"
+	@printf "\033[0;31m$(TITLE) removed!\n"
 
 re: fclean all
 

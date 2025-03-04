@@ -27,8 +27,8 @@ int	main(void)
 		if (parse(&data))
 			continue ;
 		executor(&data, data.root);
-		dup2(data.stdout_orig,STDOUT_FILENO);
-		dup2(data.stdin_orig,STDIN_FILENO);
+		dup2(data.stdout_orig, STDOUT_FILENO);
+		dup2(data.stdin_orig, STDIN_FILENO);
 	}
 	exit(0);
 }
