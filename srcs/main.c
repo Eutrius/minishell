@@ -35,6 +35,6 @@ int	main(void)
 
 static void	read_line(t_data *data)
 {
-	data->parser->buffer = readline("B_Bros > ");
+	data->parser->buffer = readline("bashbros > ");
 	add_history(data->parser->buffer);
 }

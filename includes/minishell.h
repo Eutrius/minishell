@@ -3,8 +3,8 @@
 
 # define NONEWLINE 'N'
 # define NEWLINE 'n'
-# define ERR_MALLOC "b_bros: memory allocation failed"
-# define ERR_SYNTAX "b_bros: syntax error"
+# define ERR_MALLOC "bashbros: memory allocation failed"
+# define ERR_SYNTAX "bashbros: syntax error"
 
 typedef struct s_data		t_data;
 typedef struct s_token		t_token;
@@ -148,34 +148,34 @@ char						*ft_strjoin_with(char *s1, char *s2, char *c);
 char						*extract_var(char *ptr);
 char						*safe_join(char *s1, char *s2);
 
-
-
 // Execute
 
 char						*pathfinder(const char *cmd, char **env);
-int         execute_cmd(char **args, t_data *data);
-void executor(t_data *data, t_token *root);
+int							execute_cmd(char **args, t_data *data);
+void						executor(t_data *data, t_token *root);
 // Executor utils
 
-
-void handle_basic_cmd(t_data *data, t_token *root);
-void handle_pipe(t_data *data, t_token *root);
-void handle_and_operator(t_data *data, t_token *root);
-void handle_or_operator(t_data *data, t_token *root);
-void redirects(t_data *data, t_token *root);
+void						handle_basic_cmd(t_data *data, t_token *root);
+void						handle_pipe(t_data *data, t_token *root);
+void						handle_and_operator(t_data *data, t_token *root);
+void						handle_or_operator(t_data *data, t_token *root);
+void						redirects(t_data *data, t_token *root);
 
 // void	handle_redirects(t_token *root);
 // void handle_redirect_heredoc(t_data * data,t_token *root);
-void handle_redirect_append(t_data *data,t_token *root, int *fd);
-void handle_redirect_output(t_data *data, t_token *root, int *fd);
-void handle_redirect_input(t_data *data, t_token *root, int *fd);
+void						handle_redirect_append(t_data *data, t_token *root,
+								int *fd);
+void						handle_redirect_output(t_data *data, t_token *root,
+								int *fd);
+void						handle_redirect_input(t_data *data, t_token *root,
+								int *fd);
 
-void	custom_dup2(int fd, char *flag);
-void	custom_pipe(int fds[2]);
+void						custom_dup2(int fd, char *flag);
+void						custom_pipe(int fds[2]);
 // void	check_fork(pid_t pid, int wefd, int refd);
-void	close_fds(int wefd, int refd);
-void	custom_unlink(char *filepath);
-char	**fill_args_array(t_token *cmd, t_data *data);
+void						close_fds(int wefd, int refd);
+void						custom_unlink(char *filepath);
+char						**fill_args_array(t_token *cmd, t_data *data);
 
 // Built in Utils
 

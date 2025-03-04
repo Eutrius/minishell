@@ -53,7 +53,7 @@ $(NAME): $(LIBFT) $(OBJ)
 	@$(CC) $(CFLAGS) -o $@ $^ $(LIBFT_FLAGS) -lreadline
 	@printf "\n\033[1A\033[K"
 	@printf "\033[0;32m$(TITLE) compiled OK!\n"
-	@printf "LETS GO BASH BROS!\n"
+	@printf "LETS GO BASH BROS!\n\033[0;37m"
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(dir $@)
@@ -84,13 +84,11 @@ fclean:
 re: fclean all
 
 run: $(NAME)
-	@printf "\033[0;37m"
+	@clear
 	@./$(NAME)
-
-rerun: re run
 
 valgrind: $(NAME)
 	@valgrind ./$(NAME)
 
-.PHONY: all clean fclean re bonus run rerun valgrind
+.PHONY: all clean fclean re bonus run valgrind
 

@@ -29,7 +29,7 @@ char	**get_files(int hidden)
 	dir = opendir(".");
 	if (dir == NULL)
 	{
-		perror("b_bros: opendir:");
+		perror("bashbros: opendir:");
 		return (NULL);
 	}
 	res = ft_calloc(1, sizeof(char *));
@@ -51,7 +51,7 @@ static int	check_entry(struct dirent *entry, char ***res, int hidden)
 	if (entry == NULL)
 	{
 		if (errno != 0)
-			perror("b_bros: readdir:");
+			perror("bashbros: readdir:");
 		else
 			return (1);
 	}
