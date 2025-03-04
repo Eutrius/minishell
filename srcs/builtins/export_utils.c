@@ -11,7 +11,6 @@ int	is_valid_identifier(char *str)
 	i = 0;
 	while (str[i] && str[i] != '=')
 	{
-		
 		if (!ft_isalpha(str[0]))
 			return (0);
 		if (!ft_isalnum(str[i]))
@@ -44,36 +43,26 @@ int	find_eq_i(char *str)
 	return (i);
 }
 
-int iterate_vars(t_data *data, char **new_env, int i, int token_count)
+int	iterate_vars(t_data *data, char **args, int i, int token_count)
 {
-	int  j;
-	char *current_token;
-	int  to_sub;
+	int		j;
+	char	*current_token;
+	int		to_sub;
 
 	j = 1;
 	while (token_count)
 	{
-		current_token = data->cmd_line[j++]->content;
-		to_sub = check_var_existence(new_env, current_token);
-		if (to_sub >= 0)
-		{
-			if (check_equal(current_token))
-				new_env[to_sub] = ft_strdup(current_token);
-		}
-		else
-			new_env[i++] = ft_strdup(current_token);
-		if (!new_env[to_sub] || !new_env[i - 1])
-		{
-			print_error(ERR_MALLOC);
-			ft_free_strs(new_env);
-			return 0;
-		}
+		current_token = args[j];
+		to_sub = check_var_existence(data->env, current_token);
+		if (to_sub < 0)
+			to_sub = i;
+		if (to_sub == i || check_equal(current_token))
+			data->env[to_sub] = current_token;
+		i++;
+		j++;
 		token_count--;
 	}
-	free(data->env);
-	new_env[i] = NULL;
-	data->env = new_env;
-	return 1;
+	return (1);
 }
 
 char	*strdup_and_add_quotes(char *str)
@@ -93,9 +82,17 @@ char	*strdup_and_add_quotes(char *str)
 		return (NULL);
 	}
 	while (str[j] && str[j] != '=')
-		new[i++] = str[j++];
-	if (str[j++] == '=')
-		new[i++] = '=';
+	{
+		new[i] = str[j];
+		i++;
+		j++;
+	}
+	if (str[j] == '=')
+	{
+		new[i] = '=';
+		i++;
+		j++;
+	}
 	else
 	{
 		new[i] = '\0';
@@ -103,7 +100,11 @@ char	*strdup_and_add_quotes(char *str)
 	}
 	new[i++] = '"';
 	while (str[j])
-		new[i++] = str[j++];
+	{
+		new[i] = str[j];
+		i++;
+		j++;
+	}
 	new[i++] = '"';
 	new[i] = '\0';
 	return (new);
@@ -153,6 +154,7 @@ int	check_var_existence(char **env, char *ptr)
 {
 	int	i;
 	int	equal_index;
+	int	j;
 
 	i = 0;
 	while (ptr[i] && ptr[i] != '=')
@@ -161,7 +163,10 @@ int	check_var_existence(char **env, char *ptr)
 	i = 0;
 	while (env[i])
 	{
-		if (!ft_strncmp(env[i], ptr, equal_index))
+		j = 0;
+		while (env[i][j] && env[i][j] != '=')
+			j++;
+		if (!ft_strncmp(env[i], ptr, ft_maxint(j, equal_index)))
 			return (i);
 		i++;
 	}

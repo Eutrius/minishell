@@ -26,8 +26,9 @@ int	main(void)
 			continue ;
 		if (parse(&data))
 			continue ;
-		// check_value(&data);
-		is_builtin((data.cmd_line[0])->content, &data);
+		executor(&data, data.root);
+		dup2(data.stdout_orig, STDOUT_FILENO);
+		dup2(data.stdin_orig, STDIN_FILENO);
 	}
 	exit(0);
 }
