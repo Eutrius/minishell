@@ -74,21 +74,37 @@ void	executor(t_data *data, t_token *root)
 	}
 	else if (root->sub_type & AND)
 	{
+    // dup2(data->stdin_orig, STDIN_FILENO);
+    // dup2(data->stdout_orig, STDOUT_FILENO);
 		executor(data, root->left);
 		if (g_status == 0)
+    {
+      // dup2(data->stdin_orig, STDIN_FILENO);
+      // dup2(data->stdout_orig, STDOUT_FILENO);
 			executor(data, root->right);
-	}
+    }
+  }
 	else if (root->sub_type & OR)
 	{
+    // dup2(data->stdin_orig, STDIN_FILENO);
+    // dup2(data->stdout_orig, STDOUT_FILENO);
 		executor(data, root->left);
 		if (g_status != 0)
+    {
+      // dup2(data->stdin_orig, STDIN_FILENO);
+      // dup2(data->stdout_orig, STDOUT_FILENO);
 			executor(data, root->right);
+    }
 	}
 	else if (root->sub_type & (R_IN | R_OUT | APPEND))
 	{
 		handle_redirects(data,root);
 		executor(data, root->right);
-	}
+    if (root->sub_type & (R_IN))
+      dup2(data->stdin_orig,STDIN_FILENO);
+    if (root->sub_type & (R_OUT | APPEND))
+      dup2(data->stdout_orig,STDOUT_FILENO);
+  }
 }
 
 /* T_TOKEN *CMD: Pointer to Structure T_token. (Current Token)
@@ -176,9 +192,10 @@ int	execute_cmd(char **args, t_data *data)
 static void	handle_redirects(t_data *data, t_token *root)
 {
 	int fd;
-
 	if (root == NULL)
-		return ;
+    return ;
+  // dup2(data->stdin_orig, STDIN_FILENO);
+  // dup2(data->stdout_orig, STDOUT_FILENO);
 	if (root->sub_type & (R_IN | R_OUT | APPEND))
 	{
 		if (root->sub_type & R_IN)
