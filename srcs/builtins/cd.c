@@ -1,13 +1,16 @@
+#include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-void	custom_chdir(t_data *data)
+void	custom_chdir(char **args)
 {
 	int	tokens_count;
 
-	tokens_count = count_tokens(data->cmd_line);
+	// tokens_count = count_tokens(data->cmd_line);
+	// print_string_array(args);
+	tokens_count = ft_strslen(args);
 	if (tokens_count == 1 && chdir(getenv("HOME")) == -1)
 	{
 		g_status = 1;
@@ -20,7 +23,7 @@ void	custom_chdir(t_data *data)
 		g_status = 1;
 		return ;
 	}
-	if (data->cmd_line[1] && chdir(data->cmd_line[1]->content) == -1)
+	if (args[1] && chdir(args[1]) == -1)
 	{
 		g_status = 1;
 		perror("Error");

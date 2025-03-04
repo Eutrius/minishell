@@ -1,4 +1,5 @@
 #include "libft.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -40,8 +41,8 @@ char	*pathfinder(const char *cmd, char **env)
 		free(return_path);
 	}
 	if (path && !path[i])
-		return_path = ft_strdup("");
-	free_paths(path, "NO_ERROR");
+		return_path = NULL;
+	// free_paths(path, "NO_ERROR");
 	return (return_path);
 }
 

@@ -1,20 +1,21 @@
 #include "libft.h"
 #include "minishell.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 static void	unset_variable(t_data *data, char **new_env, char **to_remove);
 static char	**reallocate_env(t_data *data);
-static char	**fill_to_remove(t_data *data);
+static char	**fill_to_remove(char **args);
 
-void	custom_unset(t_data *data)
+void	custom_unset(t_data *data, char **args)
 {
 	char	**new_env;
 	char	**to_remove;
 
-	if (!data->cmd_line[1])
+	if (!args[1])
 		return ;
-	to_remove = fill_to_remove(data);
+	to_remove = fill_to_remove(args);
 	new_env = reallocate_env(data);
 	if (!new_env)
 		return ;
@@ -37,24 +38,27 @@ static char	**reallocate_env(t_data *data)
 	return (new_env);
 }
 
-static char	**fill_to_remove(t_data *data)
+static char	**fill_to_remove(char **args)
 {
 	int		i;
 	char	**to_remove;
+	int		j;
 
 	i = 1;
-	to_remove = ft_calloc((count_tokens(data->cmd_line) - 1), sizeof(char *));
+	j = 0;
+	to_remove = ft_calloc((ft_strslen(args)), sizeof(char *));
 	if (!to_remove)
 		return (NULL);
-	while (data->cmd_line[i])
+	while (args[i])
 	{
-		to_remove[i - 1] = ft_strdup(data->cmd_line[i]->content);
-		if (!to_remove[i - 1])
+		to_remove[j] = ft_strdup(args[i]);
+		if (!to_remove[j])
 		{
-			to_remove[i - 1] = NULL;
+			to_remove[j] = NULL;
 			ft_free_strs(to_remove);
 			return (NULL);
 		}
+		j++;
 		i++;
 	}
 	return (to_remove);
@@ -72,14 +76,13 @@ static void	unset_variable(t_data *data, char **new_env, char **to_remove)
 	while (data->env[i])
 	{
 		are_equals = 0;
-		k = 0;
-		while (to_remove[k])
+		k = -1;
+		while (to_remove[++k])
 		{
 			are_equals = ft_strncmp(to_remove[k], data->env[i],
 					ft_strlen(to_remove[k]));
-			if (!are_equals && data->env[i][ft_strlen(to_remove[k])] == '=')
+			if (are_equals == 0 && data->env[i][ft_strlen(to_remove[k])] == '=')
 				break ;
-			k++;
 		}
 		if (!are_equals && data->env[i][ft_strlen(to_remove[k])] == '=')
 			free(data->env[i]);
@@ -87,6 +90,5 @@ static void	unset_variable(t_data *data, char **new_env, char **to_remove)
 			new_env[j++] = data->env[i];
 		i++;
 	}
-	new_env[j] = NULL;
 	ft_free_strs(to_remove);
 }

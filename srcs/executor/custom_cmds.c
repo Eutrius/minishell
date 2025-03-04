@@ -38,16 +38,16 @@ void	custom_pipe(int fds[2])
 	}
 }
 
-void	check_fork(pid_t pid, int wefd, int refd)
-{
-	if (pid < 0)
-	{
-		close(wefd);
-		close(refd);
-		ft_putstr_fd(strerror(errno), 2);
-		exit(EXIT_FAILURE);
-	}
-}
+// void	check_fork(pid_t pid, int wefd, int refd)
+// {
+// 	if (pid < 0)
+// 	{
+// 		close(wefd);
+// 		close(refd);
+// 		ft_putstr_fd(strerror(errno), 2);
+// 		exit(EXIT_FAILURE);
+// 	}
+// }
 
 void	close_fds(int wefd, int refd)
 {

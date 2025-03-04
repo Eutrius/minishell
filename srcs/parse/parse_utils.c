@@ -79,7 +79,7 @@ static void	parse_pipe(t_token *token, t_token **root, t_token **last)
 	}
 	else
 	{
-		token->left = *last;
+		token->left = (*root)->right;
 		(*root)->right = token;
 	}
 	*last = token;
