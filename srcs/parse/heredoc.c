@@ -80,7 +80,7 @@ static int	heredoc(int filefd, char *limiter)
 	char	*line;
 	int		expand_flag;
 
-	expand_flag = has_quotes(limiter);
+	expand_flag = !has_quotes(limiter);
 	remove_quotes(limiter);
 	while (1)
 	{
@@ -111,7 +111,7 @@ static int	expand_line(char **line, int flag)
 			free(*line);
 			return (1);
 		}
-		free(line);
+		free(*line);
 		*line = tmp;
 	}
 	return (0);

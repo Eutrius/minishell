@@ -42,7 +42,7 @@ char	**get_files(int hidden)
 		if (check_entry(entry, &res, hidden))
 			break ;
 	}
-	// closedir(dir);
+	closedir(dir);
 	sort_files(res);
 	return (res);
 }
@@ -55,8 +55,7 @@ static int	check_entry(struct dirent *entry, char ***res, int hidden)
 	{
 		if (errno != 0)
 			perror("bashbros: readdir:");
-		else
-			return (1);
+		return (1);
 	}
 	else
 	{

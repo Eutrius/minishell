@@ -13,8 +13,6 @@
 #include "libft.h"
 #include "minishell.h"
 #include <dirent.h>
-#include <errno.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 char	*safe_join(char *s1, char *s2)

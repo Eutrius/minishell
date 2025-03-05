@@ -50,7 +50,6 @@ void	executor(t_data *data, t_token *root)
 			executor(data, root->left);
 			exit(g_status);
 		}
-		waitpid(pid1, &g_status, 0);
 		pid2 = fork();
 		if (pid2 == 0)
 		{
@@ -62,6 +61,7 @@ void	executor(t_data *data, t_token *root)
 		}
 		close(pipefd[0]);
 		close(pipefd[1]);
+		waitpid(pid1, &g_status, 0);
 		waitpid(pid2, &g_status, 0);
 	}
 	else if (root->sub_type & AND)
@@ -76,7 +76,7 @@ void	executor(t_data *data, t_token *root)
 		if (g_status != 0)
 			executor(data, root->right);
 	}
-	else if (root->sub_type & (R_IN | R_OUT | APPEND))
+	else if (root->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
 	{
 		pid3 = fork();
 		if (pid3 == 0)

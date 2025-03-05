@@ -33,9 +33,10 @@ char	*expand_var(char *str)
 			if (str[i + 1] == '?')
 				sub_status(str, &i, &j, &res);
 			else if (is_valid(str[i + 1]))
-				sub_var(str, &i, &j, &res);
-			if (res == NULL)
-				return (NULL);
+			{
+				if (sub_var(str, &i, &j, &res))
+					break ;
+			}
 		}
 		check_quotes(str[i], &in_quote);
 		i++;
