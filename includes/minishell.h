@@ -161,14 +161,14 @@ void executor(t_data *data, t_token *root);
 // Executor utils
 
 
+void	filter_redirects(t_token *root);
 void handle_basic_cmd(t_data *data, t_token *root);
 void handle_pipe(t_data *data, t_token *root);
 void handle_and_operator(t_data *data, t_token *root);
 void handle_or_operator(t_data *data, t_token *root);
-void redirects(t_data *data, t_token *root);
 
-// void	handle_redirects(t_token *root);
-// void handle_redirect_heredoc(t_data * data,t_token *root);
+void handle_redirect(t_data *data, t_token *root);
+void handle_pipe(t_data *data, t_token *root);
 void handle_redirect_heredoc(t_token *root, int *fd);
 void handle_redirect_append(t_token *root, int *fd);
 void handle_redirect_output(t_token *root, int *fd);

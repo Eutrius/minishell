@@ -5,17 +5,12 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 // clang-format on
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
-
-static void	handle_redirects(t_token *root);
-// static void handle_pipe(t_token *root,t_data *data, char **args);
-void		check_fork(pid_t pid, int wefd, int refd);
 
 /* T_data *data : General data struct
  * t_token *root: Token at the top of the Binary tree.
@@ -28,47 +23,18 @@ void		check_fork(pid_t pid, int wefd, int refd);
 
 void	executor(t_data *data, t_token *root)
 {
-	int		pipefd[2];
-	pid_t	pid1;
-	pid_t	pid2;
-	pid_t	pid3;
-
 	if (root == NULL)
 		return ;
 	if (root->sub_type & CMD)
-			execute_cmd(root, data);
+		execute_cmd(root, data);
 	else if (root->sub_type & PIPE)
-	{
-		pipe(pipefd);
-		pid1 = fork();
-		if (pid1 == 0)
-		{
-			close(pipefd[0]);
-			custom_dup2(pipefd[1], "STDOUT");
-			close(pipefd[1]);
-			executor(data, root->left);
-			exit(g_status);
-		}
-		waitpid(pid1, &g_status, 0);
-		pid2 = fork();
-		if (pid2 == 0)
-		{
-			close(pipefd[1]);
-			custom_dup2(pipefd[0], "STDIN");
-			close(pipefd[0]);
-			executor(data, root->right);
-			exit(g_status);
-		}
-		close(pipefd[0]);
-		close(pipefd[1]);
-		waitpid(pid2, &g_status, 0);
-	}
+		handle_pipe(data, root);
 	else if (root->sub_type & AND)
 	{
 		executor(data, root->left);
 		if (g_status == 0)
 			executor(data, root->right);
-  }
+	}
 	else if (root->sub_type & OR)
 	{
 		executor(data, root->left);
@@ -76,28 +42,7 @@ void	executor(t_data *data, t_token *root)
 			executor(data, root->right);
 	}
 	else if (root->sub_type & (R_IN | R_OUT | APPEND))
-	{
-		pid3 = fork();
-		if (pid3 == 0)
-		{
-			handle_redirects(root);
-			if (g_status != 0)
-				exit(g_status);
-			executor(data, root->right);
-			exit(g_status);
-		}
-		else if (pid3 > 0)
-		{
-			waitpid(pid3, &g_status, 0);
-			if (WIFEXITED(g_status))
-				g_status = WEXITSTATUS(g_status);
-		}
-		else
-		{
-			print_error1("Failed to create process for redirection", "");
-			g_status = 1;
-		}
-	}
+		handle_redirect(data, root);
 }
 
 /* T_TOKEN *CMD: Pointer to Structure T_token. (Current Token)
@@ -115,7 +60,6 @@ char	**fill_args_array(t_token *cmd, t_data *data)
 	t_token	**cmd_array;
 	char	**args;
 
-	i = 0;
 	idx = cmd->index;
 	cmd_array = data->cmd_line;
 	i = idx;
@@ -131,7 +75,7 @@ char	**fill_args_array(t_token *cmd, t_data *data)
 		if (!args[i])
 		{
 			ft_free_strs(args);
-			return NULL;
+			return (NULL);
 		}
 		idx++;
 		i++;
@@ -149,15 +93,15 @@ char	**fill_args_array(t_token *cmd, t_data *data)
  * and update g_status to its exit status.
  * */
 
-int	execute_cmd(t_token  *root, t_data *data)
+int	execute_cmd(t_token *root, t_data *data)
 {
 	pid_t	pid;
 	char	*cmd_path;
-	char **args;
+	char	**args;
 
-	args = fill_args_array(root,data);
+	args = fill_args_array(root, data);
 	if (!args)
-		return 0;
+		return (0);
 	args = expand_cmd(args);
 	if (is_builtin(args, data))
 	{
@@ -193,25 +137,26 @@ int	execute_cmd(t_token  *root, t_data *data)
 	return (0);
 }
 
-static void	handle_redirects(t_token *root)
+void	filter_redirects(t_token *root)
 {
-	int fd;
+	int	fd;
+
 	if (root == NULL)
-    return ;
+		return ;
 	if (root->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
 	{
 		if (root->sub_type & R_IN)
 			handle_redirect_input(root, &fd);
 		else if (root->sub_type & R_OUT)
-			handle_redirect_output(root,&fd);
+			handle_redirect_output(root, &fd);
 		else if (root->sub_type & APPEND)
-			handle_redirect_append(root,&fd);
+			handle_redirect_append(root, &fd);
 		else
-			handle_redirect_heredoc(root,&fd);
+			handle_redirect_heredoc(root, &fd);
 	}
 }
 
-void check_fork(pid_t pid, int wefd, int refd)
+void	check_fork(pid_t pid, int wefd, int refd)
 {
 	if (pid < 0)
 	{
