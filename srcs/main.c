@@ -22,6 +22,11 @@ int	main(void)
 	while (1)
 	{
 		read_line(&data);
+		if (!ft_strcmp("debug", parser.buffer))
+		{
+			data.debug = !(data.debug == 1);
+			continue ;
+		}
 		if (parser.buffer == NULL || ft_strlen(parser.buffer) == 0)
 			continue ;
 		if (parse(&data))

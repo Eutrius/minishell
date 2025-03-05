@@ -5,6 +5,7 @@
 # define NEWLINE 'n'
 # define ERR_MALLOC "bashbros: memory allocation failed"
 # define ERR_SYNTAX "bashbros: syntax error"
+# define ERR_OPEN "bashbros: opening file failed"
 
 typedef struct s_data		t_data;
 typedef struct s_token		t_token;
@@ -114,6 +115,7 @@ void						parse_redirect(t_token **tokens, int *i,
 								t_token **root, t_token **last);
 void						parse_open(t_token **tokens, int *i, t_token **root,
 								t_token **last);
+int							parse_heredoc(t_token *token);
 // Expand
 
 char						*expand_var(char *str);

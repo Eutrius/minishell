@@ -33,8 +33,8 @@ void	executor(t_data *data, t_token *root)
 	int		pipefd[2];
 	pid_t	pid1;
 	pid_t	pid2;
-	// pid_t	pid3;
 
+	// pid_t	pid3;
 	if (root == NULL)
 		return ;
 	if (root->sub_type & CMD)
@@ -86,7 +86,7 @@ void	executor(t_data *data, t_token *root)
 	}
 	else if (root->sub_type & (R_IN | R_OUT | APPEND))
 	{
-		handle_redirects(data,root);
+		handle_redirects(data, root);
 		executor(data, root->right);
 	}
 }
@@ -175,22 +175,22 @@ int	execute_cmd(char **args, t_data *data)
 
 static void	handle_redirects(t_data *data, t_token *root)
 {
-	int fd;
+	int	fd;
 
 	if (root == NULL)
 		return ;
 	if (root->sub_type & (R_IN | R_OUT | APPEND))
 	{
 		if (root->sub_type & R_IN)
-			handle_redirect_input(data,root, &fd);
+			handle_redirect_input(data, root, &fd);
 		else if (root->sub_type & R_OUT)
-			handle_redirect_output(data,root,&fd);
-		else 
-			handle_redirect_append(data,root,&fd);
+			handle_redirect_output(data, root, &fd);
+		else
+			handle_redirect_append(data, root, &fd);
 	}
 }
 
-void check_fork(pid_t pid, int wefd, int refd)
+void	check_fork(pid_t pid, int wefd, int refd)
 {
 	if (pid < 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 22:04:27 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/03/04 12:30:41 by jyriarte         ###   ########.fr       */
+/*   Updated: 2025/03/05 12:17:31 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 static int	cmp_files(char *str1, char *str2);
 static void	sort_files(char **sorted_exp);
 static int	check_entry(struct dirent *entry, char ***res, int hidden);
+static int	check_filename(char *filename, int hidden);
 
 char	**get_files(int hidden)
 {
@@ -48,6 +49,8 @@ char	**get_files(int hidden)
 
 static int	check_entry(struct dirent *entry, char ***res, int hidden)
 {
+	char	*filename;
+
 	if (entry == NULL)
 	{
 		if (errno != 0)
@@ -57,19 +60,27 @@ static int	check_entry(struct dirent *entry, char ***res, int hidden)
 	}
 	else
 	{
-		if (hidden && entry->d_name[0] == '.')
+		if (check_filename(entry->d_name, hidden))
+			return (0);
+		filename = ft_strdup(entry->d_name);
+		if (filename == NULL)
 		{
-			*res = ft_strscat(*res, entry->d_name);
-			if (*res == NULL)
-				print_error(ERR_MALLOC);
+			ft_free_strs(*res);
+			print_error(ERR_MALLOC);
 		}
-		else if (!hidden && entry->d_name[0] != '.')
-		{
-			*res = ft_strscat(*res, entry->d_name);
-			if (*res == NULL)
-				print_error(ERR_MALLOC);
-		}
+		*res = ft_strscat(*res, filename);
+		if (*res == NULL)
+			print_error(ERR_MALLOC);
 	}
+	return (0);
+}
+
+static int	check_filename(char *filename, int hidden)
+{
+	if (hidden && filename[0] != '.')
+		return (1);
+	else if (!hidden && filename[0] == '.')
+		return (1);
 	return (0);
 }
 

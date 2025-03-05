@@ -54,6 +54,7 @@ void	parse_error(t_parser *parser)
 {
 	free_tokens(parser->tokens);
 	parser->tokens = NULL;
+	parser->token = NULL;
 	free(parser->str);
 	parser->str = NULL;
 	free(parser->buffer);
