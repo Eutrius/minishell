@@ -41,7 +41,7 @@ char	**get_files(int hidden)
 		if (check_entry(entry, &res, hidden))
 			break ;
 	}
-	closedir(dir);
+	// closedir(dir);
 	sort_files(res);
 	return (res);
 }

@@ -13,25 +13,35 @@
 #include <errno.h>
 #include <fcntl.h>
 
-void handle_redirect_input(t_data *data,t_token *root, int *fd)
+void handle_redirect_input(t_token *root, int *fd)
 {
-	dup2(data->stdin_orig,STDIN_FILENO);
-		*fd = open((char *)root->left->content, O_RDONLY);
-		if (*fd == -1)
-		{
-			print_error2("Failed to redirect input: ",
-				(char *)root->left->content, "file not found");
-			g_status = 1;
-			return ;
-		}
-		dup2(*fd, STDIN_FILENO);
-		close(*fd);
+	char *file = expand_files((char *)root->left->content);
+	if (!file)
+	{
+		g_status = 1;
+		return;
+	}
+	*fd = open(file, O_RDONLY);
+	if (*fd == -1)
+	{
+		print_error2("Failed to redirect input: ",
+			(char *)root->left->content, "file not found");
+		g_status = 1;
+		return ;
+	}
+	dup2(*fd, STDIN_FILENO);
+	close(*fd);
 }
 
-void handle_redirect_output(t_data *data,t_token *root, int *fd)
+void handle_redirect_output(t_token *root, int *fd)
 {
 
-	dup2(data->stdout_orig,STDOUT_FILENO);
+	char *file = expand_files((char *)root->left->content);
+	if (!file)
+	{
+		g_status = 1;
+		return;
+	}
 	*fd = open((char *)root->left->content, O_WRONLY | O_CREAT | O_TRUNC,0644);
 	if (*fd == -1)
 	{
@@ -44,9 +54,14 @@ void handle_redirect_output(t_data *data,t_token *root, int *fd)
 	close(*fd);
 }
 
-void handle_redirect_append(t_data *data,t_token *root, int *fd)
+void handle_redirect_append(t_token *root, int *fd)
 {
-	dup2(data->stdout_orig,STDOUT_FILENO);
+	char *file = expand_files((char *)root->left->content);
+	if (!file)
+	{
+		g_status = 1;
+		return;
+	}
 	*fd = open((char *)root->left->content,O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (*fd == -1)
 	{
@@ -59,3 +74,8 @@ void handle_redirect_append(t_data *data,t_token *root, int *fd)
 	close(*fd);
 }
 
+void handle_redirect_heredoc(t_token *root, int *fd)
+{
+	fd = (int *)root->left->content;
+	dup2(*fd, STDIN_FILENO);
+}
