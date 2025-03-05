@@ -22,6 +22,11 @@ int	main(void)
 	while (1)
 	{
 		read_line(&data);
+		if (!ft_strcmp("debug", parser.buffer))
+		{
+			data.debug = !(data.debug == 1);
+			continue ;
+		}
 		if (parser.buffer == NULL || ft_strlen(parser.buffer) == 0)
 			continue ;
 		if (parse(&data))
@@ -35,6 +40,6 @@ int	main(void)
 
 static void	read_line(t_data *data)
 {
-	data->parser->buffer = readline("B_Bros > ");
+	data->parser->buffer = readline("bashbros > ");
 	add_history(data->parser->buffer);
 }

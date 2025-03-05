@@ -13,6 +13,7 @@
 #include "libft.h"
 #include "minishell.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 t_token	*create_token(void *content, t_type type)
 {
@@ -31,6 +32,11 @@ void	free_token(t_token *token)
 {
 	if (!token)
 		return ;
+	if (token->sub_type & LIMITER)
+	{
+		if (token->content != NULL)
+			close(*(int *)token->content);
+	}
 	free(token->content);
 	free(token);
 }

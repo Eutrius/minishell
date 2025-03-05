@@ -12,24 +12,38 @@
 
 #include "libft.h"
 #include "minishell.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 static int	extract_op(t_parser *parser, int *index);
+static void	append_token(t_parser *parser);
 static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 				t_mode mode);
 
 void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 {
+	int	status;
+
 	if (mode == OPERATOR)
-		extract_op(parser, index);
+		status = extract_op(parser, index);
 	else
-		extract_str(parser, index, ctrl, mode);
-	if (parser->str == NULL)
+		status = extract_str(parser, index, ctrl, mode);
+	if (status || parser->str == NULL)
 		return (parse_error(parser));
 	if ((parser->last_token & (CMD | FILENAME | LIMITER)) && mode != OPERATOR)
 		return (join_last(parser));
+	if (parser->token && parser->token->sub_type & LIMITER)
+	{
+		if (parse_heredoc(parser->token))
+			return (parse_error(parser));
+	}
 	if (gen_token(parser, mode))
 		return (parse_error(parser));
+	append_token(parser);
+}
+
+static void	append_token(t_parser *parser)
+{
 	parser->tokens = add_token(parser->tokens, parser->token);
 	if (parser->tokens == NULL)
 	{
