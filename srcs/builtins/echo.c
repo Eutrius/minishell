@@ -5,6 +5,7 @@
 
 static void	print_without_flag(char **args);
 static void	print_with_flag(char **args);
+static int	is_flag(char *args);
 
 void	custom_echo(char **args)
 {
@@ -15,11 +16,11 @@ void	custom_echo(char **args)
 		printf("\n");
 		return ;
 	}
-	if (args[1] && !ft_strcmp(args[1], "-n") && !args[2])
+	if (args[1] && is_flag(args[1]) && !args[2])
 		return ;
-	if (args[1] && !ft_strcmp(args[1], "-n"))
+	if (args[1] && is_flag(args[1]))
 		print_with_flag(args);
-	else if (args[1] && ft_strcmp(args[1], "-n"))
+	else if (args[1] && !is_flag(args[1]))
 		print_without_flag(args);
 }
 
@@ -74,4 +75,20 @@ static void	print_without_flag(char **args)
 	}
 	if (tokens_count == 1)
 		printf("%s\n", args[1]);
+}
+
+static int	is_flag(char *args)
+{
+	int	i;
+
+	i = 2;
+	if (args[0] != '-' || args[1] != 'n')
+		return (0);
+	while (args[i])
+	{
+		if (args[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
 }

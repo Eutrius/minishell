@@ -22,7 +22,7 @@ void	init(t_data *data, t_parser *parser)
 	parser->data = data;
 	data->env = ft_strsdup(environ);
 	if (!data->env)
-		return;
+		return ;
 	data->stdin_orig = dup(STDIN_FILENO);
 	data->stdout_orig = dup(STDOUT_FILENO);
 }

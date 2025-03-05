@@ -118,6 +118,8 @@ void						parse_open(t_token **tokens, int *i, t_token **root,
 int							parse_heredoc(t_token *token);
 // Expand
 
+char						*expand_files(char *file);
+char						**expand_cmd(char **args);
 char						*expand_var(char *str);
 char						**expand_wildcard(char *pattern);
 void						remove_quotes(char *str);
@@ -153,7 +155,7 @@ char						*safe_join(char *s1, char *s2);
 // Execute
 
 char						*pathfinder(const char *cmd, char **env);
-int							execute_cmd(char **args, t_data *data);
+int							execute_cmd(t_token *root, t_data *data);
 void						executor(t_data *data, t_token *root);
 // Executor utils
 
@@ -163,14 +165,10 @@ void						handle_and_operator(t_data *data, t_token *root);
 void						handle_or_operator(t_data *data, t_token *root);
 void						redirects(t_data *data, t_token *root);
 
-// void	handle_redirects(t_token *root);
-// void handle_redirect_heredoc(t_data * data,t_token *root);
-void						handle_redirect_append(t_data *data, t_token *root,
-								int *fd);
-void						handle_redirect_output(t_data *data, t_token *root,
-								int *fd);
-void						handle_redirect_input(t_data *data, t_token *root,
-								int *fd);
+void						handle_redirect_heredoc(t_token *root, int *fd);
+void						handle_redirect_append(t_token *root, int *fd);
+void						handle_redirect_output(t_token *root, int *fd);
+void						handle_redirect_input(t_token *root, int *fd);
 
 void						custom_dup2(int fd, char *flag);
 void						custom_pipe(int fds[2]);
