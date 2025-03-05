@@ -13,8 +13,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
-int			execute_cmd(char **args, t_data *data);
-static void	handle_redirects(t_data *data, t_token *root);
+static void	handle_redirects(t_token *root);
 // static void handle_pipe(t_token *root,t_data *data, char **args);
 void		check_fork(pid_t pid, int wefd, int refd);
 
@@ -29,7 +28,6 @@ void		check_fork(pid_t pid, int wefd, int refd);
 
 void	executor(t_data *data, t_token *root)
 {
-	char	**args;
 	int		pipefd[2];
 	pid_t	pid1;
 	pid_t	pid2;
@@ -38,14 +36,7 @@ void	executor(t_data *data, t_token *root)
 	if (root == NULL)
 		return ;
 	if (root->sub_type & CMD)
-	{
-		args = fill_args_array(root, data);
-		if (args)
-		{
-			execute_cmd(args, data);
-			free(args);
-		}
-	}
+			execute_cmd(root, data);
 	else if (root->sub_type & PIPE)
 	{
 		pipe(pipefd);
@@ -86,10 +77,10 @@ void	executor(t_data *data, t_token *root)
 	}
 	else if (root->sub_type & (R_IN | R_OUT | APPEND))
 	{
-    pid3 = fork();
+		pid3 = fork();
 		if (pid3 == 0)
 		{
-			handle_redirects(data,root);
+			handle_redirects(root);
 			if (g_status != 0)
 				exit(g_status);
 			executor(data, root->right);
@@ -136,7 +127,12 @@ char	**fill_args_array(t_token *cmd, t_data *data)
 	i = 0;
 	while (cmd_array[idx] && (cmd_array[idx]->type & CMD))
 	{
-		args[i] = cmd_array[idx]->content;
+		args[i] = ft_strdup(cmd_array[idx]->content);
+		if (!args[i])
+		{
+			ft_free_strs(args);
+			return NULL;
+		}
 		idx++;
 		i++;
 	}
@@ -153,11 +149,16 @@ char	**fill_args_array(t_token *cmd, t_data *data)
  * and update g_status to its exit status.
  * */
 
-int	execute_cmd(char **args, t_data *data)
+int	execute_cmd(t_token  *root, t_data *data)
 {
 	pid_t	pid;
 	char	*cmd_path;
+	char **args;
 
+	args = fill_args_array(root,data);
+	if (!args)
+		return 0;
+	args = expand_cmd(args);
 	if (is_builtin(args, data))
 	{
 		g_status = 0;
@@ -186,26 +187,27 @@ int	execute_cmd(char **args, t_data *data)
 		if (WIFEXITED(g_status))
 			g_status = WEXITSTATUS(g_status);
 		free(cmd_path);
+		// free(args);
 		return (g_status);
 	}
 	return (0);
 }
 
-static void	handle_redirects(t_data *data, t_token *root)
+static void	handle_redirects(t_token *root)
 {
 	int fd;
 	if (root == NULL)
     return ;
-  // dup2(data->stdin_orig, STDIN_FILENO);
-  // dup2(data->stdout_orig, STDOUT_FILENO);
-	if (root->sub_type & (R_IN | R_OUT | APPEND))
+	if (root->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
 	{
 		if (root->sub_type & R_IN)
-			handle_redirect_input(data,root, &fd);
+			handle_redirect_input(root, &fd);
 		else if (root->sub_type & R_OUT)
-			handle_redirect_output(data,root,&fd);
-		else 
-			handle_redirect_append(data,root,&fd);
+			handle_redirect_output(root,&fd);
+		else if (root->sub_type & APPEND)
+			handle_redirect_append(root,&fd);
+		else
+			handle_redirect_heredoc(root,&fd);
 	}
 }
 
