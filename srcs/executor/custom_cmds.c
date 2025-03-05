@@ -1,7 +1,7 @@
 #include "libft.h"
 #include "minishell.h"
 // clang-format off
-#include <unistd.h>
+#include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <readline/history.h>

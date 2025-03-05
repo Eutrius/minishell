@@ -18,6 +18,30 @@ static int	sub_var(char *str, int *i, int *j, char **res);
 static int	sub_status(char *str, int *i, int *j, char **res);
 static void	init_vars(int *i, int *j, int *in_quote, char **res);
 
+int	expand_vars(t_parser *parser)
+{
+	int		i;
+	char	*tmp;
+	t_token	*curr_token;
+
+	i = 0;
+	tmp = NULL;
+	while (parser->tokens[i] != NULL)
+	{
+		curr_token = parser->tokens[i];
+		if (curr_token->type & (CMD | FILENAME))
+		{
+			tmp = expand_var(curr_token->content);
+			if (tmp == NULL)
+				return (1);
+			free(curr_token->content);
+			curr_token->content = tmp;
+		}
+		i++;
+	}
+	return (0);
+}
+
 char	*expand_var(char *str)
 {
 	int		i;
@@ -32,7 +56,7 @@ char	*expand_var(char *str)
 		{
 			if (str[i + 1] == '?')
 				sub_status(str, &i, &j, &res);
-			else if (is_valid(str[i + 1]))
+			else if (str[i + 1] != '\0' && str[i + 1] != '$')
 			{
 				if (sub_var(str, &i, &j, &res))
 					break ;

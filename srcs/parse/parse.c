@@ -14,30 +14,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int	expand_vars(t_parser *parser);
 static void	print_debug(t_data *data);
+static int	reset_parser(t_parser *parser, int return_value);
 
-int	parse(t_data *data)
+int	parse(t_data *data, t_parser *parser)
 {
-	t_parser	*parser;
+	t_token	*root;
 
-	parser = data->parser;
-	if (split_line(parser) || check_line(parser) || expand_vars(parser))
-	{
-		free(parser->buffer);
-		parser->buffer = NULL;
-		return (1);
-	}
-	prepare_line(parser);
-	data->root = parse_line(parser->tokens);
-	if (data->root == NULL)
-		return (1);
+	if (prepare_line(parser))
+		return (reset_parser(parser, 1));
+	root = parse_line(parser->tokens);
+	if (root == NULL)
+		return (reset_parser(parser, 1));
 	if (data->debug)
+	{
 		print_debug(data);
-	data->cmd_line = parser->tokens;
-	parser->tokens = NULL;
-	free(parser->buffer);
-	return (0);
+		return (reset_parser(parser, 1));
+	}
+	data->tokens = parser->tokens;
+	data->root = root;
+	return (reset_parser(parser, 0));
 }
 
 t_token	*parse_line(t_token **tokens)
@@ -69,28 +65,19 @@ t_token	*parse_line(t_token **tokens)
 	return (root);
 }
 
-static int	expand_vars(t_parser *parser)
+static int	reset_parser(t_parser *parser, int return_value)
 {
-	int		i;
-	char	*tmp;
-	t_token	*curr_token;
-
-	i = 0;
-	tmp = NULL;
-	while (parser->tokens[i] != NULL)
+	if (return_value)
 	{
-		curr_token = parser->tokens[i];
-		if (curr_token->type & (CMD | FILENAME))
-		{
-			tmp = expand_var(curr_token->content);
-			if (tmp == NULL)
-				return (1);
-			free(curr_token->content);
-			curr_token->content = tmp;
-		}
-		i++;
+		free_tokens(parser->tokens);
+		free(parser->str);
 	}
-	return (0);
+	parser->tokens = NULL;
+	parser->token = NULL;
+	parser->str = NULL;
+	free(parser->buffer);
+	parser->buffer = NULL;
+	return (return_value);
 }
 
 static void	print_debug(t_data *data)

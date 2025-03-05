@@ -14,34 +14,49 @@
 #include <stdio.h>
 
 static void	shift_redirect(t_token **tokens, int *index);
-static void	organize_redirect(t_parser *parser, int *index);
+static int	prepare_redirect(t_parser *parser, int *index, t_token *current);
 static void	assign_index(t_parser *parser);
 
-void	prepare_line(t_parser *parser)
+int	prepare_line(t_parser *parser)
 {
 	int		i;
 	t_token	*current;
 
 	i = 0;
+	if (split_line(parser))
+		return (1);
 	parser->last_token = START;
 	while (parser->tokens[i] != NULL)
 	{
 		current = parser->tokens[i];
 		if (current->sub_type & (APPEND | HERE_DOC | R_IN | R_OUT))
 		{
-			organize_redirect(parser, &i);
-			parser->last_token = parser->tokens[i]->type;
-			i++;
-			continue ;
+			if (prepare_redirect(parser, &i, current))
+				return (1);
 		}
 		else if (current->sub_type & PIPE)
 			current->type = REDIRECT;
 		else if (current->sub_type & (AND | OR))
 			current->type = DELIMITER;
-		parser->last_token = current->type;
+		parser->last_token = parser->tokens[i]->type;
 		i++;
 	}
 	assign_index(parser);
+	return (0);
+}
+
+static int	prepare_redirect(t_parser *parser, int *index, t_token *current)
+{
+	if (current->sub_type & HERE_DOC)
+	{
+		if (heredoc(parser->tokens[*index + 1]))
+			return (1);
+	}
+	current->type = REDIRECT;
+	(*index)++;
+	if (parser->last_token & (CMD))
+		shift_redirect(parser->tokens, index);
+	return (0);
 }
 
 static void	shift_redirect(t_token **tokens, int *index)
@@ -63,17 +78,6 @@ static void	shift_redirect(t_token **tokens, int *index)
 	}
 	tokens[i + 1] = redirect;
 	tokens[i + 2] = name;
-}
-
-static void	organize_redirect(t_parser *parser, int *index)
-{
-	t_token	*current;
-
-	current = parser->tokens[*index];
-	current->type = REDIRECT;
-	(*index)++;
-	if (parser->last_token & (CMD | FILENAME | LIMITER))
-		shift_redirect(parser->tokens, index);
 }
 
 static void	assign_index(t_parser *parser)

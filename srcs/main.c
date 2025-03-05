@@ -29,11 +29,10 @@ int	main(void)
 		}
 		if (parser.buffer == NULL || ft_strlen(parser.buffer) == 0)
 			continue ;
-		if (parse(&data))
+		if (parse(&data, &parser))
 			continue ;
 		executor(&data, data.root);
-		dup2(data.stdout_orig, STDOUT_FILENO);
-		dup2(data.stdin_orig, STDIN_FILENO);
+		free_tokens(data.tokens);
 	}
 	exit(0);
 }

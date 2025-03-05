@@ -3,9 +3,13 @@
 
 # define NONEWLINE 'N'
 # define NEWLINE 'n'
+# define TMP_HERE_DOC "/tmp/bashbros_heredoc"
 # define ERR_MALLOC "bashbros: memory allocation failed"
 # define ERR_SYNTAX "bashbros: syntax error"
 # define ERR_OPEN "bashbros: opening file failed"
+# define ERR_OPENDIR "bashbros: opening directory failed"
+# define ERR_UNLINK "bashbros: unlinking file failed"
+# define ERR_CLOSEFD "bashbros: closing file descriptor failed"
 
 typedef struct s_data		t_data;
 typedef struct s_token		t_token;
@@ -50,7 +54,7 @@ typedef struct s_data
 {
 	char					**env;
 	t_token					*root;
-	t_token					**cmd_line;
+	t_token					**tokens;
 	t_parser				*parser;
 	int						stdin_orig;
 	int						stdout_orig;
@@ -90,23 +94,26 @@ void						init_operators(t_operators *operators);
 
 // Parse
 
-int							parse(t_data *data);
+int							parse(t_data *data, t_parser *parser);
+int							prepare_line(t_parser *parser);
 int							split_line(t_parser *parser);
 int							check_line(t_parser *parser);
-void						prepare_line(t_parser *parser);
-void						parse_error(t_parser *parser);
+t_token						*parse_line(t_token **tokens);
+
+int							heredoc(t_token *token);
 int							gen_token(t_parser *parser, t_mode mode);
 int							is_special(int c);
 int							is_dquote(int c);
 int							is_quote(int c);
-void						extract(t_parser *parser, int *index,
+int							has_quotes(char *limiter);
+
+int							extract(t_parser *parser, int *index,
 								int (*ctrl)(int), t_mode mode);
-void						join_last(t_parser *parser);
+int							join_last(t_parser *parser);
 char						*if_double(char *str, int *index, char *twice,
 								char *once);
 void						count_parentesis(int *parentesis, t_token *token);
 
-t_token						*parse_line(t_token **tokens);
 void						parse_cmd(t_token *token, t_token **root,
 								t_token **last);
 void						parse_pipe(t_token *token, t_token **root,
@@ -115,18 +122,22 @@ void						parse_redirect(t_token **tokens, int *i,
 								t_token **root, t_token **last);
 void						parse_open(t_token **tokens, int *i, t_token **root,
 								t_token **last);
-int							parse_heredoc(t_token *token);
+
 // Expand
 
 char						*expand_files(char *file);
 char						**expand_cmd(char **args);
+int							expand_vars(t_parser *parser);
 char						*expand_var(char *str);
 char						**expand_wildcard(char *pattern);
 void						remove_quotes(char *str);
-int							check_quotes(int c, int *in_quote);
 char						**get_files(int hidden);
+
+int							check_quotes(int c, int *in_quote);
 int							match_wildcard(char *pattern, char *filename,
 								int in_quote);
+char						*safe_join(char *s1, char *s2);
+int							is_valid(char c);
 
 // Debug
 
@@ -140,17 +151,6 @@ void						free_token(t_token *token);
 void						free_tokens(t_token **tokens);
 t_token						*create_token(void *content, t_type type);
 t_token						**add_token(t_token **tokens, t_token *token);
-
-// Expand
-
-void						check_value(t_data *data);
-int							calculate_var_len(char *str);
-int							is_valid(char c);
-char						*extract_before_dollar(char *ptr);
-char						*extract_after_dollar(char *ptr);
-char						*ft_strjoin_with(char *s1, char *s2, char *c);
-char						*extract_var(char *ptr);
-char						*safe_join(char *s1, char *s2);
 
 // Execute
 

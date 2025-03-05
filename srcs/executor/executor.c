@@ -118,7 +118,7 @@ char	**fill_args_array(t_token *cmd, t_data *data)
 
 	i = 0;
 	idx = cmd->index;
-	cmd_array = data->cmd_line;
+	cmd_array = data->tokens;
 	i = idx;
 	while (cmd_array[i] && (cmd_array[i]->type & CMD))
 		i++;

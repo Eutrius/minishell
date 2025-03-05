@@ -22,35 +22,32 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-static int	heredoc(int filefd, char *limiter);
-static int	has_quotes(char *limiter);
+static int	readline_doc(int filefd, char *limiter);
 static int	expand_line(char **line, int expand_flag);
 static int	assign_fd(t_token *token, int filefd);
 
-int	parse_heredoc(t_token *token)
+int	heredoc(t_token *token)
 {
 	int	filefd;
 
-	filefd = open(".bashbros_tmp", O_WRONLY | O_CREAT | O_APPEND, 0644);
+	filefd = open(TMP_HERE_DOC, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (filefd == -1)
-	{
-		perror("bashbros: open:");
-		return (1);
-	}
-	if (heredoc(filefd, (char *)token->content))
+		return (print_error1(ERR_OPEN, TMP_HERE_DOC));
+	if (readline_doc(filefd, (char *)token->content))
 	{
 		free(token->content);
 		token->content = NULL;
-		close(filefd);
+		if (close(filefd) == -1)
+			print_error(ERR_CLOSEFD);
+		if (unlink(TMP_HERE_DOC) == -1)
+			print_error1(ERR_UNLINK, TMP_HERE_DOC);
 		return (1);
 	}
-	close(filefd);
-	filefd = open(".bashbros_tmp", O_RDONLY);
+	if (close(filefd == -1))
+		print_error(ERR_CLOSEFD);
+	filefd = open(TMP_HERE_DOC, O_RDONLY);
 	if (filefd == -1)
-	{
-		perror("bashbros: open:");
-		return (1);
-	}
+		return (print_error1(ERR_OPEN, TMP_HERE_DOC));
 	return (assign_fd(token, filefd));
 }
 
@@ -63,19 +60,20 @@ static int	assign_fd(t_token *token, int filefd)
 	fd = malloc(sizeof(int));
 	if (fd == NULL)
 	{
-		close(filefd);
-		if (unlink(".bashbros_tmp") == -1)
-			perror("bashbros: unlink:");
+		if (close(filefd) == -1)
+			print_error(ERR_CLOSEFD);
+		if (unlink(TMP_HERE_DOC) == -1)
+			print_error1(ERR_UNLINK, TMP_HERE_DOC);
 		return (print_error(ERR_MALLOC));
 	}
 	*fd = filefd;
 	token->content = fd;
-	if (unlink(".bashbros_tmp") == -1)
-		perror("bashbros: unlink:");
+	if (unlink(TMP_HERE_DOC) == -1)
+		print_error1(ERR_UNLINK, TMP_HERE_DOC);
 	return (0);
 }
 
-static int	heredoc(int filefd, char *limiter)
+static int	readline_doc(int filefd, char *limiter)
 {
 	char	*line;
 	int		expand_flag;
@@ -113,20 +111,6 @@ static int	expand_line(char **line, int flag)
 		}
 		free(*line);
 		*line = tmp;
-	}
-	return (0);
-}
-
-static int	has_quotes(char *limiter)
-{
-	int	i;
-
-	i = 0;
-	while (limiter[i] != '\0')
-	{
-		if (is_quote(limiter[i]) && is_dquote(limiter[i]))
-			return (1);
-		i++;
 	}
 	return (0);
 }
