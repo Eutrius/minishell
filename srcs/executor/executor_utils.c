@@ -40,10 +40,8 @@ void	handle_pipe(t_data *data, t_token *root)
 	pid_t	pid1;
 	pid_t	pid2;
 
-	// pipe(pipefd);
 	custom_pipe(pipefd);
 	pid1 = fork();
-	// check_fork(pid1,pipefd[1],pipefd[0]);
 	if (pid1 == 0)
 	{
 		custom_dup2(pipefd[1], "STDOUT");

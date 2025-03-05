@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
+static int	fork_command(t_data *data, char *cmd_path, char **args);
 /* T_data *data : General data struct
  * t_token *root: Token at the top of the Binary tree.
  * Core of the execution.
@@ -45,44 +46,6 @@ void	executor(t_data *data, t_token *root)
 		handle_redirect(data, root);
 }
 
-/* T_TOKEN *CMD: Pointer to Structure T_token. (Current Token)
- * T_data *data: Pointer to a general Data struct.
- * Function to fill a string array with the various cmd_name flags and options.
- * It will search inside the cmd_line (Array of tokens) thanks to index
- * found inside given cmd_token.
- * It will allocate enough spaces for all the args that we will then use
- * inside execve.*/
-
-char	**fill_args_array(t_token *cmd, t_data *data)
-{
-	int		i;
-	int		idx;
-	t_token	**cmd_array;
-	char	**args;
-
-	idx = cmd->index;
-	cmd_array = data->cmd_line;
-	i = idx;
-	while (cmd_array[i] && (cmd_array[i]->type & CMD))
-		i++;
-	args = ft_calloc(i - idx + 1, sizeof(char *));
-	if (!args)
-		return (NULL);
-	i = 0;
-	while (cmd_array[idx] && (cmd_array[idx]->type & CMD))
-	{
-		args[i] = ft_strdup(cmd_array[idx]->content);
-		if (!args[i])
-		{
-			ft_free_strs(args);
-			return (NULL);
-		}
-		idx++;
-		i++;
-	}
-	return (args);
-}
-
 /* Args: Array of strings that contains cmd name, flags etc.
  * Data: Pointer to a t_data struct (general struct)
  * Execute cmd will first check if a function is a built in or not.
@@ -95,7 +58,6 @@ char	**fill_args_array(t_token *cmd, t_data *data)
 
 int	execute_cmd(t_token *root, t_data *data)
 {
-	pid_t	pid;
 	char	*cmd_path;
 	char	**args;
 
@@ -104,10 +66,7 @@ int	execute_cmd(t_token *root, t_data *data)
 		return (0);
 	args = expand_cmd(args);
 	if (is_builtin(args, data))
-	{
-		g_status = 0;
 		return (0);
-	}
 	cmd_path = pathfinder(args[0], data->env);
 	if (!cmd_path)
 	{
@@ -115,6 +74,49 @@ int	execute_cmd(t_token *root, t_data *data)
 		g_status = 127;
 		return (1);
 	}
+	return (fork_command(data, cmd_path, args));
+}
+
+/* T_TOKEN *CMD: Pointer to Structure T_token. (Current Token)
+ * T_data *data: Pointer to a general Data struct.
+ * Function to fill a string array with the various cmd_name flags and options.
+ * It will search inside the cmd_line (Array of tokens) thanks to index
+ * found inside given cmd_token.
+ * It will allocate enough spaces for all the args that we will then use
+ * inside execve.*/
+
+char	**fill_args_array(t_token *cmd, t_data *data)
+{
+	int		i;
+	t_token	**cmd_array;
+	char	**args;
+
+	cmd_array = data->cmd_line;
+	i = cmd->index;
+	while (cmd_array[i] && (cmd_array[i]->type & CMD))
+		i++;
+	args = ft_calloc(i - cmd->index + 1, sizeof(char *));
+	if (!args)
+		return (NULL);
+	i = 0;
+	while (cmd_array[cmd->index] && (cmd_array[cmd->index]->type & CMD))
+	{
+		args[i] = ft_strdup(cmd_array[cmd->index]->content);
+		if (!args[i])
+		{
+			ft_free_strs(args);
+			return (NULL);
+		}
+		cmd->index++;
+		i++;
+	}
+	return (args);
+}
+
+static int	fork_command(t_data *data, char *cmd_path, char **args)
+{
+	pid_t	pid;
+
 	pid = fork();
 	if (pid == 0)
 	{
@@ -131,7 +133,7 @@ int	execute_cmd(t_token *root, t_data *data)
 		if (WIFEXITED(g_status))
 			g_status = WEXITSTATUS(g_status);
 		free(cmd_path);
-		// free(args);
+		free(args);
 		return (g_status);
 	}
 	return (0);
@@ -153,16 +155,5 @@ void	filter_redirects(t_token *root)
 			handle_redirect_append(root, &fd);
 		else
 			handle_redirect_heredoc(root, &fd);
-	}
-}
-
-void	check_fork(pid_t pid, int wefd, int refd)
-{
-	if (pid < 0)
-	{
-		close(wefd);
-		close(refd);
-		ft_putstr_fd(strerror(errno), 2);
-		exit(EXIT_FAILURE);
 	}
 }

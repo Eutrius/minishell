@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 static void	unset_variable(t_data *data, char **new_env, char **to_remove);
+static int	is_variable_to_unset(char *env_var, char **to_remove);
 static char	**reallocate_env(t_data *data);
 static char	**fill_to_remove(char **args);
 
@@ -20,7 +21,7 @@ void	custom_unset(t_data *data, char **args)
 	if (!new_env)
 		return ;
 	unset_variable(data, new_env, to_remove);
-	free(data->env);
+	// free(data->env);
 	data->env = new_env;
 }
 
@@ -68,27 +69,38 @@ static void	unset_variable(t_data *data, char **new_env, char **to_remove)
 {
 	int	i;
 	int	j;
-	int	k;
-	int	are_equals;
 
 	i = 0;
 	j = 0;
 	while (data->env[i])
 	{
-		are_equals = 0;
-		k = -1;
-		while (to_remove[++k])
-		{
-			are_equals = ft_strncmp(to_remove[k], data->env[i],
-					ft_strlen(to_remove[k]));
-			if (are_equals == 0 && data->env[i][ft_strlen(to_remove[k])] == '=')
-				break ;
-		}
-		if (!are_equals && data->env[i][ft_strlen(to_remove[k])] == '=')
+		if (is_variable_to_unset(data->env[i], to_remove))
 			free(data->env[i]);
 		else
 			new_env[j++] = data->env[i];
 		i++;
 	}
 	ft_free_strs(to_remove);
+}
+
+static int	is_variable_to_unset(char *env_var, char **to_remove)
+{
+	int		k;
+	size_t	var_len;
+	char	*equals_pos;
+
+	k = 0;
+	equals_pos = ft_strchr(env_var, '=');
+	if (equals_pos)
+		var_len = equals_pos - env_var;
+	else
+		var_len = ft_strlen(env_var);
+	while (to_remove[k])
+	{
+		if (ft_strlen(to_remove[k]) == var_len && ft_strncmp(env_var,
+				to_remove[k], var_len) == 0)
+			return (1);
+		k++;
+	}
+	return (0);
 }

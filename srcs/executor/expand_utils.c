@@ -24,6 +24,8 @@ char	**expand_cmd(char **args)
 
 	i = 0;
 	new_args = ft_calloc(1, sizeof(char *));
+	if (!new_args)
+		return (NULL);
 	while (args[i])
 	{
 		expanded_arg = expand_wildcard(args[i]);
@@ -76,15 +78,12 @@ char	*expand_files(char *file)
 
 static char	**ft_strsjoin(char **strs_dest, char **strs_join)
 {
-	int		strs_dest_len;
-	int		strs_join_len;
 	char	**res;
 	int		i;
 	int		j;
 
-	strs_dest_len = ft_strslen(strs_dest);
-	strs_join_len = ft_strslen(strs_join);
-	res = ft_calloc((strs_dest_len + strs_join_len + 1), sizeof(char *));
+	res = ft_calloc((ft_strslen(strs_dest) + ft_strslen(strs_join) + 1),
+			sizeof(char *));
 	if (!res)
 		return (NULL);
 	i = 0;
