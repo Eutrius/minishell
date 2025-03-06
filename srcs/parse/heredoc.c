@@ -101,7 +101,7 @@ static int	expand_line(char **line, int expand_flag)
 {
 	char	*tmp;
 
-	if (!expand_flag)
+	if (!expand_flag && ft_strlen(*line) != 0)
 	{
 		tmp = expand_var(*line);
 		if (tmp == NULL)
