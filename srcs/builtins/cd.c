@@ -8,8 +8,6 @@ void	custom_chdir(char **args)
 {
 	int	tokens_count;
 
-	// tokens_count = count_tokens(data->cmd_line);
-	// print_string_array(args);
 	tokens_count = ft_strslen(args);
 	if (tokens_count == 1 && chdir(getenv("HOME")) == -1)
 	{

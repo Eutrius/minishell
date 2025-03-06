@@ -6,7 +6,7 @@
 
 void		free_paths(char **path, char *error);
 int			is_path_given(char *full_path);
-static int check_absolute_path(const char *cmd);
+static int	check_absolute_path(const char *cmd);
 static char	**get_paths(char **env);
 
 char	*pathfinder(const char *cmd, char **env)
@@ -16,9 +16,8 @@ char	*pathfinder(const char *cmd, char **env)
 	char	*return_path;
 	size_t	len;
 
-  if (check_absolute_path(cmd))
-    return ft_strdup(cmd);
-	return_path = NULL;
+	if (check_absolute_path(cmd))
+		return (ft_strdup(cmd));
 	i = 0;
 	path = get_paths(env);
 	while (path && path[i])
@@ -31,12 +30,10 @@ char	*pathfinder(const char *cmd, char **env)
 		return_path[ft_strlen(path[i++])] = '/';
 		ft_strlcat(return_path, cmd, len);
 		if (access(return_path, F_OK | X_OK) == 0)
-			break ;
+			return (return_path);
 		free(return_path);
 	}
-	if (path && !path[i])
-		return_path = NULL;
-	return (return_path);
+	return (NULL);
 }
 
 static char	**get_paths(char **env)
@@ -49,14 +46,15 @@ static char	**get_paths(char **env)
 	return (path);
 }
 
-static int check_absolute_path(const char *cmd)
+static int	check_absolute_path(const char *cmd)
 {
-  if (cmd[0] == '/' || ft_strncmp(cmd, "./", 2) == 0 || ft_strncmp(cmd, "../", 3) == 0)
-  {
-    if (access(cmd, X_OK) == 0)
-      return 1;
-  }
-  return 0;
+	if (cmd[0] == '/' || ft_strncmp(cmd, "./", 2) == 0 || ft_strncmp(cmd, "../",
+			3) == 0)
+	{
+		if (access(cmd, F_OK | X_OK) == 0)
+			return (1);
+	}
+	return (0);
 }
 
 void	free_paths(char **path, char *error)

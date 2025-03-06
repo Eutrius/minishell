@@ -11,7 +11,6 @@ static void	append_vars(t_data *data, char **new_env, int i);
 void	custom_export(t_data *data, char **args)
 {
 	int			tokens_count;
-	char		*name;
 	int			i;
 	int			not_valid;
 	extern char	**environ;
@@ -23,10 +22,9 @@ void	custom_export(t_data *data, char **args)
 	{
 		while (i < tokens_count)
 		{
-			name = args[i];
-			if (!is_valid_identifier(name))
+			if (!is_valid_identifier(args[i]))
 			{
-				printf("bash: export: '%s': not a valid identifier\n", name);
+				printf("bash: export: '%s': not a valid identifier\n", args[i]);
 				not_valid++;
 			}
 			g_status = 255;
@@ -46,13 +44,17 @@ static void	export_with_args(t_data *data, char **args, int not_valid)
 	char	**new_env;
 	int		strs;
 
+	strs = 0;
 	tokens_count = ft_strslen(args) - 1 - not_valid;
+	if (tokens_count <= 0)
+		return ;
 	i = 0;
-	strs = ft_strslen(data->env);
+	if (data->env)
+		strs = ft_strslen(data->env);
 	new_env = ft_calloc(strs + tokens_count + 1, sizeof(char *));
 	if (!new_env)
 		return ;
-	while (data->env[i])
+	while (data->env && data->env[i])
 	{
 		new_env[i] = data->env[i];
 		i++;
@@ -88,11 +90,25 @@ static void	export_no_args(t_data *data)
 
 static void	append_vars(t_data *data, char **args, int i)
 {
-	int	token_count;
+	int		j;
+	char	*current_token;
+	int		to_sub;
 
-	token_count = ft_strslen(args) - 1;
-	if (!iterate_vars(data, args, i, token_count))
-		return ;
+	j = 1;
+	while (args[j] != NULL)
+	{
+		current_token = args[j];
+		if (is_valid_identifier(current_token))
+		{
+			to_sub = check_var_existence(data->env, current_token);
+			if (to_sub < 0)
+				to_sub = i;
+			if (to_sub == i || check_equal(current_token))
+				data->env[to_sub] = current_token;
+			i++;
+		}
+		j++;
+	}
 }
 
 static void	sort_export(char **sorted_exp)

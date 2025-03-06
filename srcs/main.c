@@ -38,8 +38,6 @@ int	main(void)
 			continue ;
 		executor(&data, data.root);
 		free_tokens(data.tokens);
-		dup2(data.stdin_orig, STDIN_FILENO);
-		dup2(data.stdout_orig, STDOUT_FILENO);
 	}
 	exit(0);
 }

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "libft.h"
 #include <stdlib.h>
 
 static void	unshift_file(char **files, int *index);
@@ -33,6 +34,11 @@ char	**expand_wildcard(char *pattern)
 			unshift_file(files, &i);
 		else
 			i++;
+	}
+	if (ft_strslen(files) == 0)
+	{
+		free(files);
+		files = NULL;
 	}
 	return (files);
 }

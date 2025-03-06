@@ -5,12 +5,8 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 // clang-format on
-#include <stdio.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <stdlib.h>
-#include <errno.h>
 #include <fcntl.h>
 
 void	handle_redirect_input(t_token *root, int *fd)
