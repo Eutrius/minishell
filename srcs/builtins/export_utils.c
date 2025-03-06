@@ -23,90 +23,46 @@ int	is_valid_identifier(char *str)
 void	value_checker(char **sorted_exp, int i)
 {
 	char	*tmp;
+	int		eq_index;
 
-	if (ft_strchr(sorted_exp[i], '=') && sorted_exp[i][find_eq_i(sorted_exp[i])
-		+ 1] == '\0')
+	eq_index = 0;
+	while (sorted_exp[i][eq_index] && sorted_exp[i][eq_index] != '=')
+		eq_index++;
+	if (sorted_exp[i][eq_index] == '=' && sorted_exp[i][eq_index + 1] == '\0')
 	{
 		tmp = sorted_exp[i];
 		sorted_exp[i] = ft_strjoin(sorted_exp[i], "\"\"");
+		if (!sorted_exp[i])
+			return ;
 		free(tmp);
 	}
 }
 
-int	find_eq_i(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] && str[i] != '=')
-		i++;
-	return (i);
-}
-
-int	iterate_vars(t_data *data, char **args, int i, int token_count)
-{
-	int		j;
-	char	*current_token;
-	int		to_sub;
-
-	j = 1;
-	while (token_count)
-	{
-		current_token = args[j];
-		to_sub = check_var_existence(data->env, current_token);
-		if (to_sub < 0)
-			to_sub = i;
-		if (to_sub == i || check_equal(current_token))
-			data->env[to_sub] = current_token;
-		i++;
-		j++;
-		token_count--;
-	}
-	return (1);
-}
-
 char	*strdup_and_add_quotes(char *str)
 {
-	int		len;
 	int		i;
 	int		j;
 	char	*new;
 
-	i = 0;
-	j = 0;
-	len = ft_strlen(str) + 3;
-	new = ft_calloc(len, 1);
+	new = ft_calloc(ft_strlen(str) + 3, 1);
 	if (!new)
 	{
 		print_error(ERR_MALLOC);
 		return (NULL);
 	}
-	while (str[j] && str[j] != '=')
+	i = 0;
+	j = 0;
+	while (str + j != ft_strchr(str, '=') && str[j])
+		new[i++] = str[j++];
+	if (ft_strchr(str, '='))
 	{
-		new[i] = str[j];
-		i++;
+		new[i++] = '=';
 		j++;
+		new[i++] = '"';
+		while (str[j])
+			new[i++] = str[j++];
+		new[i++] = '"';
 	}
-	if (str[j] == '=')
-	{
-		new[i] = '=';
-		i++;
-		j++;
-	}
-	else
-	{
-		new[i] = '\0';
-		return (new);
-	}
-	new[i++] = '"';
-	while (str[j])
-	{
-		new[i] = str[j];
-		i++;
-		j++;
-	}
-	new[i++] = '"';
-	new[i] = '\0';
 	return (new);
 }
 
@@ -134,20 +90,6 @@ char	**export_strsdup(char **strs)
 	}
 	new_env[i] = NULL;
 	return (new_env);
-}
-
-int	check_equal(char *ptr)
-{
-	int	has_equals;
-	int	k;
-
-	has_equals = 0;
-	k = 0;
-	while (ptr[k] && ptr[k] != '=')
-		k++;
-	if (ptr[k] == '=')
-		has_equals = 1;
-	return (has_equals);
 }
 
 int	check_var_existence(char **env, char *ptr)

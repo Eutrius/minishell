@@ -13,14 +13,6 @@
 #include <fcntl.h>
 
 static int	fork_command(t_data *data, char *cmd_path, char **args);
-/* T_data *data : General data struct
- * t_token *root: Token at the top of the Binary tree.
- * Core of the execution.
- * Recursive function that call itselfs recursively.
- * The tree structure at this pointe is already well defined
- * so we can safely navigate it.
- * Once it found a certain token type, it handles it GRACEFULLY.
- */
 
 void	executor(t_data *data, t_token *root)
 {
@@ -46,16 +38,6 @@ void	executor(t_data *data, t_token *root)
 		handle_redirect(data, root);
 }
 
-/* Args: Array of strings that contains cmd name, flags etc.
- * Data: Pointer to a t_data struct (general struct)
- * Execute cmd will first check if a function is a built in or not.
- * If it's a builtin it will execute it. If its not a builtin
- * it will use Pathfinder on args[0] (cmd name).
- * Then it will just create sub process that will execute the cmd.
- * If process is not a child, we'll just wait for child process to end
- * and update g_status to its exit status.
- * */
-
 int	execute_cmd(t_token *root, t_data *data)
 {
 	char	*cmd_path;
@@ -77,40 +59,23 @@ int	execute_cmd(t_token *root, t_data *data)
 	return (fork_command(data, cmd_path, args));
 }
 
-/* T_TOKEN *CMD: Pointer to Structure T_token. (Current Token)
- * T_data *data: Pointer to a general Data struct.
- * Function to fill a string array with the various cmd_name flags and options.
- * It will search inside the cmd_line (Array of tokens) thanks to index
- * found inside given cmd_token.
- * It will allocate enough spaces for all the args that we will then use
- * inside execve.*/
-
-char	**fill_args_array(t_token *cmd, t_data *data)
+void	filter_redirects(t_token *root)
 {
-	int		i;
-	t_token	**cmd_array;
-	char	**args;
+	int	fd;
 
-	cmd_array = data->cmd_line;
-	i = cmd->index;
-	while (cmd_array[i] && (cmd_array[i]->type & CMD))
-		i++;
-	args = ft_calloc(i - cmd->index + 1, sizeof(char *));
-	if (!args)
-		return (NULL);
-	i = 0;
-	while (cmd_array[cmd->index] && (cmd_array[cmd->index]->type & CMD))
+	if (root == NULL)
+		return ;
+	if (root->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
 	{
-		args[i] = ft_strdup(cmd_array[cmd->index]->content);
-		if (!args[i])
-		{
-			ft_free_strs(args);
-			return (NULL);
-		}
-		cmd->index++;
-		i++;
+		if (root->sub_type & R_IN)
+			handle_redirect_input(root, &fd);
+		else if (root->sub_type & R_OUT)
+			handle_redirect_output(root, &fd);
+		else if (root->sub_type & APPEND)
+			handle_redirect_append(root, &fd);
+		else
+			handle_redirect_heredoc(root, &fd);
 	}
-	return (args);
 }
 
 static int	fork_command(t_data *data, char *cmd_path, char **args)
@@ -139,21 +104,29 @@ static int	fork_command(t_data *data, char *cmd_path, char **args)
 	return (0);
 }
 
-void	filter_redirects(t_token *root)
+char	**fill_args_array(t_token *cmd, t_data *data)
 {
-	int	fd;
+	int		i;
+	t_token	**cmd_array;
+	char	**args;
 
-	if (root == NULL)
-		return ;
-	if (root->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
+	cmd_array = data->cmd_line;
+	i = cmd->index;
+	while (cmd_array[i] && (cmd_array[i]->type & CMD))
+		i++;
+	args = ft_calloc(i - cmd->index + 2, sizeof(char *));
+	if (!args)
+		return (NULL);
+	i = 0;
+	while (cmd_array[cmd->index + i] && (cmd_array[cmd->index + i]->type & CMD))
 	{
-		if (root->sub_type & R_IN)
-			handle_redirect_input(root, &fd);
-		else if (root->sub_type & R_OUT)
-			handle_redirect_output(root, &fd);
-		else if (root->sub_type & APPEND)
-			handle_redirect_append(root, &fd);
-		else
-			handle_redirect_heredoc(root, &fd);
+		args[i] = ft_strdup(cmd_array[cmd->index + i]->content);
+		if (!args[i])
+		{
+			ft_free_strs(args);
+			return (NULL);
+		}
+		i++;
 	}
+	return (args);
 }

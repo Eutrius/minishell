@@ -14,32 +14,23 @@
 #include <fcntl.h>
 
 static char	**ft_strsjoin(char **strs_dest, char **strs_join);
+static int	wildcard_is_null(char ***new_args, char **args, int i);
 
 char	**expand_cmd(char **args)
 {
 	int		i;
 	char	**new_args;
 	char	**expanded_arg;
-	char	*tmp;
 
 	i = 0;
 	new_args = ft_calloc(1, sizeof(char *));
-	if (!new_args)
-		return (NULL);
 	while (args[i])
 	{
 		expanded_arg = expand_wildcard(args[i]);
 		if (expanded_arg == NULL)
 		{
-			remove_quotes(args[i]);
-			tmp = ft_strdup(args[i]);
-			if (!tmp)
-			{
-				ft_free_strs(args);
-				ft_free_strs(new_args);
+			if (!wildcard_is_null(&new_args, args, i))
 				return (NULL);
-			}
-			new_args = ft_strscat(new_args, tmp);
 		}
 		else
 			new_args = ft_strsjoin(new_args, expanded_arg);
@@ -52,6 +43,22 @@ char	**expand_cmd(char **args)
 	}
 	ft_free_strs(args);
 	return (new_args);
+}
+
+static int	wildcard_is_null(char ***new_args, char **args, int i)
+{
+	char	*tmp;
+
+	remove_quotes(args[i]);
+	tmp = ft_strdup(args[i]);
+	if (!tmp)
+	{
+		ft_free_strs(args);
+		ft_free_strs(*new_args);
+		return (0);
+	}
+	*new_args = ft_strscat(*new_args, tmp);
+	return (1);
 }
 
 char	*expand_files(char *file)

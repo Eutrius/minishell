@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 static void	handle_sign(char *str, int *i, int *sign);
+int			overflow_check(int sign, long long num, char *str, int i);
 
 int	check_exit_value(char *str)
 {
@@ -28,10 +29,9 @@ int	check_exit_value(char *str)
 	{
 		if (str[i] < '0' || str[i] > '9')
 			return (0);
-		if (num > (LLONG_MAX - (str[i] - '0')) / 10)
+		if (!overflow_check(sign, num, str, i))
 			return (0);
-		num = (num * 10) + (str[i] - '0');
-		i++;
+		num = (num * 10) + (str[i++] - '0');
 	}
 	return (1);
 }
@@ -46,6 +46,20 @@ static void	handle_sign(char *str, int *i, int *sign)
 	}
 }
 
+int	overflow_check(int sign, long long num, char *str, int i)
+{
+	if (sign == 1 && num > (LLONG_MAX - (str[i] - '0')) / 10)
+		return (0);
+	else if (sign == -1)
+	{
+		if (num > LLONG_MAX / 10)
+			return (0);
+		if (num == LLONG_MAX / 10 && (str[i] - '0') > 7)
+			return (0);
+	}
+	return (1);
+}
+
 void	print_string_array(char **strs)
 {
 	int	i;
@@ -58,52 +72,16 @@ void	print_string_array(char **strs)
 	}
 }
 
-int	count_tokens(t_token **token)
+int	check_equal(char *ptr)
 {
-	int	i;
+	int	has_equals;
+	int	k;
 
-	i = 0;
-	while (token[i])
-		i++;
-	return (i);
-}
-
-int	is_builtin(char **args, t_data *data)
-{
-	if (!ft_strcmp(args[0], "echo"))
-	{
-		custom_echo(args);
-		return (1);
-	}
-	if (!ft_strcmp(args[0], "cd"))
-	{
-		custom_chdir(args);
-		return (1);
-	}
-	if (!ft_strcmp(args[0], "pwd"))
-	{
-		custom_pwd();
-		return (1);
-	}
-	if (!ft_strcmp(args[0], "export"))
-	{
-		custom_export(data, args);
-		return (1);
-	}
-	if (!ft_strcmp(args[0], "unset"))
-	{
-		custom_unset(data, args);
-		return (1);
-	}
-	if (!ft_strcmp(args[0], "env"))
-	{
-		custom_env(data);
-		return (1);
-	}
-	if (!ft_strcmp(args[0], "exit"))
-	{
-		clean_exit(data, args);
-		return (1);
-	}
-	return (0);
+	has_equals = 0;
+	k = 0;
+	while (ptr[k] && ptr[k] != '=')
+		k++;
+	if (ptr[k] == '=')
+		has_equals = 1;
+	return (has_equals);
 }

@@ -21,7 +21,6 @@ void	custom_unset(t_data *data, char **args)
 	if (!new_env)
 		return ;
 	unset_variable(data, new_env, to_remove);
-	// free(data->env);
 	data->env = new_env;
 }
 
