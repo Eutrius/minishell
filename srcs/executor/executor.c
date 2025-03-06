@@ -9,7 +9,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <fcntl.h>
 
 static int	fork_command(t_data *data, char *cmd_path, char **args);
@@ -110,7 +109,7 @@ char	**fill_args_array(t_token *cmd, t_data *data)
 	t_token	**cmd_array;
 	char	**args;
 
-	cmd_array = data->cmd_line;
+	cmd_array = data->tokens;
 	i = cmd->index;
 	while (cmd_array[i] && (cmd_array[i]->type & CMD))
 		i++;

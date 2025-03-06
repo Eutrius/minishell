@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdlib.h>
 
 int	is_special(int c)
 {
@@ -50,14 +49,18 @@ int	is_dquote(int c)
 	return (0);
 }
 
-void	parse_error(t_parser *parser)
+int	has_quotes(char *limiter)
 {
-	free_tokens(parser->tokens);
-	parser->tokens = NULL;
-	free(parser->str);
-	parser->str = NULL;
-	free(parser->buffer);
-	parser->buffer = NULL;
+	int	i;
+
+	i = 0;
+	while (limiter[i] != '\0')
+	{
+		if (is_quote(limiter[i]) || is_dquote(limiter[i]))
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 void	count_parentesis(int *parentesis, t_token *token)

@@ -24,6 +24,7 @@ SRC = srcs/main.c \
 	  srcs/parse/token.c \
 	  srcs/parse/extra.c \
 	  srcs/parse/prepare.c \
+	  srcs/parse/heredoc.c \
 	  srcs/parse/parse_utils.c \
 	  srcs/expand/expand_var.c\
 	  srcs/expand/expand_wildcards.c\
@@ -55,6 +56,7 @@ $(NAME): $(LIBFT) $(OBJ)
 	@printf "\n\033[1A\033[K"
 	@printf "\033[0;32m$(TITLE) compiled OK!\n"
 	@printf "LETS GO BASH BROS!\n"
+	@printf "\033[0;37m"
 
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(dir $@)
@@ -73,6 +75,7 @@ clean:
 	@$(RM) $(OBJS_DIR)
 	@$(MAKE) -C $(LIBFT_PATH) clean --no-print-directory
 	@printf "\033[0;31m$(TITLE) cleaned!\n"
+	@printf "\033[0;37m"
 
 fclean:
 	@$(RM) $(OBJ)
@@ -80,18 +83,17 @@ fclean:
 	@$(RM) $(NAME)
 	@$(MAKE) -C $(LIBFT_PATH) fclean --no-print-directory
 	@printf "\033[0;31m$(TITLE) removed!\n"
+	@printf "\033[0;37m"
 
 
 re: fclean all
 
 run: $(NAME)
-	@printf "\033[0;37m"
+	@clear
 	@./$(NAME)
 
-rerun: re run
-
 valgrind: $(NAME)
-	@valgrind ./$(NAME)
+	@valgrind --leak-check=full --show-leak-kinds=all --suppressions=supp.supp ./$(NAME)
 
-.PHONY: all clean fclean re bonus run rerun valgrind
+.PHONY: all clean fclean re bonus run valgrind
 

@@ -60,6 +60,7 @@ $(NAME): $(OBJ)
 	@$(AR) $@ $^
 	@printf "\n\033[1A\033[K"
 	@printf "\033[0;32m$(TITLE) compiled OK!\n"
+	@printf "\033[0;37m"
 
 %.o: %.c
 	@printf "\033[0;37m Generating $(TITLE) objects... %-33.33s\r" $@
@@ -70,11 +71,13 @@ all: $(NAME)
 clean:
 	@$(RM) $(OBJ)
 	@printf "\033[0;31m$(TITLE) cleaned!\n"
+	@printf "\033[0;37m"
 
 fclean: 
 	@$(RM) $(OBJ)
 	@$(RM) $(NAME) 
 	@printf "\033[0;31m$(TITLE) removed!\n"
+	@printf "\033[0;37m"
 
 re: fclean all
 

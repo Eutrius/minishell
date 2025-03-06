@@ -12,34 +12,57 @@
 
 #include "libft.h"
 #include "minishell.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 static int	extract_op(t_parser *parser, int *index);
+static int	append_token(t_parser *parser);
 static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 				t_mode mode);
 
-void	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
+int	extract(t_parser *parser, int *index, int (*ctrl)(int), t_mode mode)
 {
+	int	status;
+
 	if (mode == OPERATOR)
-		extract_op(parser, index);
+		status = extract_op(parser, index);
 	else
-		extract_str(parser, index, ctrl, mode);
-	if (parser->str == NULL)
-		return (parse_error(parser));
+		status = extract_str(parser, index, ctrl, mode);
+	if (status)
+		return (1);
 	if ((parser->last_token & (CMD | FILENAME | LIMITER)) && mode != OPERATOR)
 		return (join_last(parser));
 	if (gen_token(parser, mode))
-		return (parse_error(parser));
-	parser->tokens = add_token(parser->tokens, parser->token);
-	if (parser->tokens == NULL)
+		return (1);
+	return (append_token(parser));
+}
+
+static int	append_token(t_parser *parser)
+{
+	int		len;
+	t_token	**res;
+
+	len = 0;
+	while (parser->tokens[len] != NULL)
+		len++;
+	res = ft_calloc(len + 2, sizeof(t_token *));
+	if (res == NULL)
 	{
-		free_token(parser->token);
+		free(parser->token);
 		parser->token = NULL;
-		print_error(ERR_MALLOC);
-		return (parse_error(parser));
+		return (print_error(ERR_MALLOC));
 	}
-	parser->str = NULL;
+	res[len] = parser->token;
+	len--;
+	while (len >= 0)
+	{
+		res[len] = parser->tokens[len];
+		len--;
+	}
+	free(parser->tokens);
+	parser->tokens = res;
 	parser->last_token = parser->token->sub_type;
+	return (0);
 }
 
 static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),

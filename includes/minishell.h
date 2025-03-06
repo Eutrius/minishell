@@ -3,8 +3,13 @@
 
 # define NONEWLINE 'N'
 # define NEWLINE 'n'
-# define ERR_MALLOC "b_bros: memory allocation failed"
-# define ERR_SYNTAX "b_bros: syntax error"
+# define TMP_HERE_DOC "/tmp/bashbros_heredoc"
+# define ERR_MALLOC "bashbros: memory allocation failed"
+# define ERR_SYNTAX "bashbros: syntax error"
+# define ERR_OPEN "bashbros: opening file failed"
+# define ERR_OPENDIR "bashbros: opening directory failed"
+# define ERR_UNLINK "bashbros: unlinking file failed"
+# define ERR_CLOSEFD "bashbros: closing file descriptor failed"
 
 typedef struct s_data		t_data;
 typedef struct s_token		t_token;
@@ -47,7 +52,7 @@ typedef struct s_data
 {
 	char					**env;
 	t_token					*root;
-	t_token					**cmd_line;
+	t_token					**tokens;
 	t_parser				*parser;
 	int						stdin_orig;
 	int						stdout_orig;
@@ -84,23 +89,26 @@ void						init_operators(t_operators *operators);
 
 // Parse
 
-int							parse(t_data *data);
+int							parse(t_data *data, t_parser *parser);
+int							prepare_line(t_parser *parser);
 int							split_line(t_parser *parser);
 int							check_line(t_parser *parser);
-void						prepare_line(t_parser *parser);
-void						parse_error(t_parser *parser);
+t_token						*parse_line(t_token **tokens);
+
+int							heredoc(t_token *token);
 int							gen_token(t_parser *parser, t_mode mode);
 int							is_special(int c);
 int							is_dquote(int c);
 int							is_quote(int c);
-void						extract(t_parser *parser, int *index,
+int							has_quotes(char *limiter);
+
+int							extract(t_parser *parser, int *index,
 								int (*ctrl)(int), t_mode mode);
-void						join_last(t_parser *parser);
+int							join_last(t_parser *parser);
 char						*if_double(char *str, int *index, char *twice,
 								char *once);
 void						count_parentesis(int *parentesis, t_token *token);
 
-t_token						*parse_line(t_token **tokens);
 void						parse_cmd(t_token *token, t_token **root,
 								t_token **last);
 void						parse_pipe(t_token *token, t_token **root,
@@ -109,17 +117,22 @@ void						parse_redirect(t_token **tokens, int *i,
 								t_token **root, t_token **last);
 void						parse_open(t_token **tokens, int *i, t_token **root,
 								t_token **last);
+
 // Expand
 
 char						*expand_files(char *file);
 char						**expand_cmd(char **args);
+int							expand_vars(t_parser *parser);
 char						*expand_var(char *str);
 char						**expand_wildcard(char *pattern);
 void						remove_quotes(char *str);
-int							check_quotes(int c, int *in_quote);
 char						**get_files(int hidden);
+
+int							check_quotes(int c, int *in_quote);
 int							match_wildcard(char *pattern, char *filename,
 								int in_quote);
+char						*safe_join(char *s1, char *s2);
+int							is_valid(char c);
 
 // Debug
 
@@ -134,19 +147,7 @@ void						free_tokens(t_token **tokens);
 t_token						*create_token(void *content, t_type type);
 t_token						**add_token(t_token **tokens, t_token *token);
 
-// Expand
-
-void						check_value(t_data *data);
-int							calculate_var_len(char *str);
-int							is_valid(char c);
-char						*extract_before_dollar(char *ptr);
-char						*extract_after_dollar(char *ptr);
-char						*ft_strjoin_with(char *s1, char *s2, char *c);
-char						*extract_var(char *ptr);
-char						*safe_join(char *s1, char *s2);
-
 // Execute
-
 char						*pathfinder(const char *cmd, char **env);
 int							execute_cmd(t_token *root, t_data *data);
 void						executor(t_data *data, t_token *root);
@@ -157,9 +158,8 @@ void						handle_basic_cmd(t_data *data, t_token *root);
 void						handle_pipe(t_data *data, t_token *root);
 void						handle_and_operator(t_data *data, t_token *root);
 void						handle_or_operator(t_data *data, t_token *root);
-
 void						handle_redirect(t_data *data, t_token *root);
-void						handle_pipe(t_data *data, t_token *root);
+
 void						handle_redirect_heredoc(t_token *root, int *fd);
 void						handle_redirect_append(t_token *root, int *fd);
 void						handle_redirect_output(t_token *root, int *fd);
@@ -167,7 +167,6 @@ void						handle_redirect_input(t_token *root, int *fd);
 
 void						custom_dup2(int fd, char *flag);
 void						custom_pipe(int fds[2]);
-// void	check_fork(pid_t pid, int wefd, int refd);
 void						close_fds(int wefd, int refd);
 void						custom_unlink(char *filepath);
 char						**fill_args_array(t_token *cmd, t_data *data);

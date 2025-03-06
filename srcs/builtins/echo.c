@@ -1,7 +1,6 @@
 #include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
-#include <unistd.h>
 
 static void	print_without_flag(char **args);
 static void	print_with_flag(char **args);

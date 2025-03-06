@@ -27,7 +27,7 @@ char	*if_double(char *str, int *index, char *twice, char *once)
 		return (ft_strdup(once));
 }
 
-void	join_last(t_parser *parser)
+int	join_last(t_parser *parser)
 {
 	char	*new_content;
 	char	*old_content;
@@ -35,14 +35,12 @@ void	join_last(t_parser *parser)
 	old_content = parser->token->content;
 	new_content = ft_strjoin(old_content, parser->str);
 	if (new_content == NULL)
-	{
-		print_error(ERR_MALLOC);
-		return (parse_error(parser));
-	}
+		return (print_error(ERR_MALLOC));
 	parser->token->content = new_content;
 	free(old_content);
 	free(parser->str);
 	parser->str = NULL;
+	return (0);
 }
 
 int	gen_token(t_parser *parser, t_mode mode)
@@ -60,6 +58,7 @@ int	gen_token(t_parser *parser, t_mode mode)
 		gen_op_token(parser);
 	if (parser->token == NULL)
 		return (print_error(ERR_MALLOC));
+	parser->str = NULL;
 	return (0);
 }
 

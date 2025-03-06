@@ -54,7 +54,7 @@ int	overflow_check(int sign, long long num, char *str, int i)
 	{
 		if (num > LLONG_MAX / 10)
 			return (0);
-		if (num == LLONG_MAX / 10 && (str[i] - '0') > 7)
+		if (num == LLONG_MAX / 10 && (str[i] - '0') > 8)
 			return (0);
 	}
 	return (1);

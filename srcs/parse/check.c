@@ -27,6 +27,8 @@ int	check_line(t_parser *parser)
 	while (parser->tokens[i] != NULL)
 	{
 		count_parentesis(&parser->parentesis, parser->tokens[i]);
+		if (parser->parentesis < 0)
+			return (unexpected_error(")"));
 		if (check_type(parser->tokens[i], parser->tokens[i + 1]))
 		{
 			if (parser->tokens[i + 1])
@@ -38,9 +40,7 @@ int	check_line(t_parser *parser)
 	}
 	if (parser->parentesis > 0)
 		return (print_error1(ERR_SYNTAX, ": unexpected end of file"));
-	else if (parser->parentesis < 0)
-		return (unexpected_error(")"));
-	return (0);
+	return (expand_vars(parser));
 }
 
 static int	check_type(t_token *c_token, t_token *n_token)

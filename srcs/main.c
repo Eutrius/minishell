@@ -24,17 +24,29 @@ int	main(void)
 		read_line(&data);
 		if (parser.buffer == NULL || ft_strlen(parser.buffer) == 0)
 			continue ;
-		if (parse(&data))
+		if (!ft_strcmp("debug", parser.buffer))
+		{
+			if (data.debug)
+				data.debug = 0;
+			else
+				data.debug = 1;
+			free(parser.buffer);
+			parser.buffer = NULL;
+			continue ;
+		}
+		if (parse(&data, &parser))
 			continue ;
 		executor(&data, data.root);
-		dup2(data.stdout_orig, STDOUT_FILENO);
-		dup2(data.stdin_orig, STDIN_FILENO);
+		free_tokens(data.tokens);
 	}
 	exit(0);
 }
 
 static void	read_line(t_data *data)
 {
-	data->parser->buffer = readline("B_Bros > ");
+	if (data->debug)
+		data->parser->buffer = readline("debug > ");
+	else
+		data->parser->buffer = readline("bashbros > ");
 	add_history(data->parser->buffer);
 }
