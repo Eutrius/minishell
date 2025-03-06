@@ -87,6 +87,14 @@ typedef struct s_token
 void						init(t_data *data, t_parser *parser);
 void						init_operators(t_operators *operators);
 
+// Signal
+
+void						handlec(int s);
+void						handlec_process(int s);
+void						handleq(int s);
+void						handled(int s);
+void						handlec_heredoc(int s);
+
 // Parse
 
 int							parse(t_data *data, t_parser *parser);

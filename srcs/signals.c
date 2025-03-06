@@ -1,33 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jyriarte <jyriarte@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/20 17:41:47 by jyriarte          #+#    #+#             */
-/*   Updated: 2025/03/06 16:00:30 by jyriarte         ###   ########.fr       */
+/*   Created: 2025/03/06 15:27:22 by jyriarte          #+#    #+#             */
+/*   Updated: 2025/03/06 16:03:36 by jyriarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <termios.h>
+#include <readline/readline.h>
+#include <signal.h>
 #include <unistd.h>
 
-void	init(t_data *data, t_parser *parser)
+void	handlec(int s)
 {
-	extern char	**environ;
+	(void)s;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
 
-	data->parser = parser;
-	parser->data = data;
-	data->env = ft_strsdup(environ);
-	if (!data->env)
-	{
-		print_error(ERR_MALLOC);
-		exit(1);
-	}
-	data->stdin_orig = dup(STDIN_FILENO);
-	data->stdout_orig = dup(STDOUT_FILENO);
+void	handlec_process(int s)
+{
+	(void)s;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+}
+
+void	handleq(int s)
+{
+	(void)s;
+	printf("Quit (core dumped)\n");
+	signal(SIGQUIT, SIG_IGN);
+	kill(0, SIGQUIT);
 }

@@ -1,6 +1,7 @@
 #include "libft.h"
 #include "minishell.h"
 // clang-format off
+#include <signal.h>
 #include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
@@ -36,6 +37,8 @@ int	main(void)
 		}
 		if (parse(&data, &parser))
 			continue ;
+		signal(SIGQUIT, handleq);
+		signal(SIGINT, handlec_process);
 		executor(&data, data.root);
 		free_tokens(data.tokens);
 	}
@@ -44,9 +47,16 @@ int	main(void)
 
 static void	read_line(t_data *data)
 {
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, handlec);
 	if (data->debug)
 		data->parser->buffer = readline("debug > ");
 	else
 		data->parser->buffer = readline("bashbros > ");
+	if (data->parser->buffer == NULL)
+	{
+		printf("exit\n");
+		exit(0);
+	}
 	add_history(data->parser->buffer);
 }
