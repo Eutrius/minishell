@@ -22,23 +22,33 @@ int	main(void)
 	while (1)
 	{
 		read_line(&data);
-		if (!ft_strcmp("debug", parser.buffer))
-		{
-			data.debug = !(data.debug == 1);
-			continue ;
-		}
 		if (parser.buffer == NULL || ft_strlen(parser.buffer) == 0)
 			continue ;
+		if (!ft_strcmp("debug", parser.buffer))
+		{
+			if (data.debug)
+				data.debug = 0;
+			else
+				data.debug = 1;
+			free(parser.buffer);
+			parser.buffer = NULL;
+			continue ;
+		}
 		if (parse(&data, &parser))
 			continue ;
 		executor(&data, data.root);
 		free_tokens(data.tokens);
+		dup2(data.stdin_orig, STDIN_FILENO);
+		dup2(data.stdout_orig, STDOUT_FILENO);
 	}
 	exit(0);
 }
 
 static void	read_line(t_data *data)
 {
-	data->parser->buffer = readline("bashbros > ");
+	if (data->debug)
+		data->parser->buffer = readline("debug > ");
+	else
+		data->parser->buffer = readline("bashbros > ");
 	add_history(data->parser->buffer);
 }

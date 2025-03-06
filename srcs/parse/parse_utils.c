@@ -67,27 +67,31 @@ void	parse_open(t_token **tokens, int *i, t_token **root, t_token **last)
 	parse_predirect(tokens, i, &tmp);
 	if (*root == NULL)
 		*root = tmp;
-	else if ((*last)->type & (DELIMITER | REDIRECT))
+	else if ((*last)->type & (DELIMITER | REDIRECT | CMD))
 		(*last)->right = tmp;
 	*last = tmp;
 }
 
 static void	parse_predirect(t_token **tokens, int *i, t_token **tmp)
 {
+	t_token	*last_redirect;
+
 	(*i)++;
+	last_redirect = *tmp;
 	while (tokens[*i]
 		&& tokens[*i]->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
 	{
-		if ((*tmp)->type & DELIMITER || (*tmp)->sub_type & PIPE)
+		if ((*tmp)->type & (DELIMITER | CMD) || (*tmp)->sub_type & PIPE)
 		{
 			tokens[*i]->right = *tmp;
 			*tmp = tokens[*i];
 		}
 		else
 		{
-			tokens[*i]->right = (*tmp)->right;
-			(*tmp)->right = tokens[*i];
+			tokens[*i]->right = last_redirect->right;
+			last_redirect->right = tokens[*i];
 		}
+		last_redirect = tokens[*i];
 		tokens[*i]->left = tokens[*i + 1];
 		(*i) += 2;
 	}

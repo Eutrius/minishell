@@ -54,7 +54,7 @@ static int	prepare_redirect(t_parser *parser, int *index, t_token *current)
 	}
 	current->type = REDIRECT;
 	(*index)++;
-	if (parser->last_token & (CMD))
+	if (parser->last_token & (CMD | FILENAME | LIMITER))
 		shift_redirect(parser->tokens, index);
 	return (0);
 }

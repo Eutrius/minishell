@@ -30,7 +30,7 @@ int	heredoc(t_token *token)
 {
 	int	filefd;
 
-	filefd = open(TMP_HERE_DOC, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	filefd = open(TMP_HERE_DOC, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (filefd == -1)
 		return (print_error1(ERR_OPEN, TMP_HERE_DOC));
 	if (readline_doc(filefd, (char *)token->content))
@@ -43,7 +43,7 @@ int	heredoc(t_token *token)
 			print_error1(ERR_UNLINK, TMP_HERE_DOC);
 		return (1);
 	}
-	if (close(filefd == -1))
+	if (close(filefd) == -1)
 		print_error(ERR_CLOSEFD);
 	filefd = open(TMP_HERE_DOC, O_RDONLY);
 	if (filefd == -1)
@@ -78,7 +78,7 @@ static int	readline_doc(int filefd, char *limiter)
 	char	*line;
 	int		expand_flag;
 
-	expand_flag = !has_quotes(limiter);
+	expand_flag = has_quotes(limiter);
 	remove_quotes(limiter);
 	while (1)
 	{
@@ -97,11 +97,11 @@ static int	readline_doc(int filefd, char *limiter)
 	return (0);
 }
 
-static int	expand_line(char **line, int flag)
+static int	expand_line(char **line, int expand_flag)
 {
 	char	*tmp;
 
-	if (flag)
+	if (!expand_flag)
 	{
 		tmp = expand_var(*line);
 		if (tmp == NULL)

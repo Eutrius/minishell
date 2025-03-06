@@ -56,7 +56,7 @@ int	has_quotes(char *limiter)
 	i = 0;
 	while (limiter[i] != '\0')
 	{
-		if (is_quote(limiter[i]) && is_dquote(limiter[i]))
+		if (is_quote(limiter[i]) || is_dquote(limiter[i]))
 			return (1);
 		i++;
 	}

@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void	print_debug(t_data *data);
+static void	print_debug(t_data *data, t_token *root);
 static int	reset_parser(t_parser *parser, int return_value);
 
 int	parse(t_data *data, t_parser *parser)
@@ -28,7 +28,7 @@ int	parse(t_data *data, t_parser *parser)
 		return (reset_parser(parser, 1));
 	if (data->debug)
 	{
-		print_debug(data);
+		print_debug(data, root);
 		return (reset_parser(parser, 1));
 	}
 	data->tokens = parser->tokens;
@@ -80,11 +80,11 @@ static int	reset_parser(t_parser *parser, int return_value)
 	return (return_value);
 }
 
-static void	print_debug(t_data *data)
+static void	print_debug(t_data *data, t_token *root)
 {
 	print_tokens(data->parser->tokens);
 	printf("\n");
 	printf("line: %s \n", data->parser->buffer);
-	print_tree(data->root, 0);
+	print_tree(root, 0);
 	printf("\n");
 }
