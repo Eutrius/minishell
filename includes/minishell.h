@@ -212,6 +212,9 @@ void						custom_env(t_data *data);
 void						custom_export(t_data *data, char **args);
 void						custom_unset(t_data *data, char **args);
 
+// Memory handling
+void	free_memory(t_data *data, char **args);
+
 // Utils
 
 int							print_error(char *msg);

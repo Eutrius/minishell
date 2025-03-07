@@ -43,6 +43,7 @@ SRC = srcs/main.c \
 	  srcs/builtins/unset.c \
 	  srcs/builtins/export_utils.c\
 	  srcs/builtins/filter_builtins.c\
+	  srcs/builtins/memory_handling.c\
 	  srcs/utils/print_errors.c\
 	  srcs/executor/executor.c\
 	  srcs/executor/custom_cmds.c\

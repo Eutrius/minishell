@@ -30,9 +30,13 @@ char	*pathfinder(const char *cmd, char **env)
 		return_path[ft_strlen(path[i++])] = '/';
 		ft_strlcat(return_path, cmd, len);
 		if (access(return_path, F_OK | X_OK) == 0)
-			return (return_path);
+		{
+			ft_free_strs(path);
+			return(return_path);
+		}
 		free(return_path);
 	}
+	ft_free_strs(path);
 	return (NULL);
 }
 

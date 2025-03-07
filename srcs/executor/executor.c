@@ -47,11 +47,15 @@ int	execute_cmd(t_token *root, t_data *data)
 		return (0);
 	args = expand_cmd(args);
 	if (is_builtin(args, data))
+	{
+		ft_free_strs(args);
 		return (0);
+	}
 	cmd_path = pathfinder(args[0], data->env);
 	if (!cmd_path)
 	{
 		print_error2("B_bros ", args[0], " command not found");
+		ft_free_strs(args);
 		g_status = 127;
 		return (1);
 	}
@@ -97,7 +101,7 @@ static int	fork_command(t_data *data, char *cmd_path, char **args)
 		if (WIFEXITED(g_status))
 			g_status = WEXITSTATUS(g_status);
 		free(cmd_path);
-		free(args);
+		ft_free_strs(args);
 		return (g_status);
 	}
 	return (0);

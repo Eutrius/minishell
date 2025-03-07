@@ -21,12 +21,16 @@ void	clean_exit(t_data *data, char **args)
 	{
 		if (!check_exit_value(args[1]))
 		{
+			free_memory(data,args);
 			printf("B_Bros: exit: %s: numeric argument required\n", args[1]);
 			exit(2);
 		}
 	}
 	if (args[1])
+	{
+		free_memory(data,args);
 		exit(ft_atoi(args[1]));
-	ft_free_strs(data->env);
+	}
+	free_memory(data,args);
 	exit(0);
 }

@@ -65,6 +65,7 @@ static void	unshift_file(char **files, int *index)
 	int	i;
 
 	i = *index;
+	free(files[i]);
 	while (files[i] != NULL)
 	{
 		files[i] = files[i + 1];

@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
-
+#include <stdlib.h>
 void	handle_redirect_input(t_token *root, int *fd)
 {
 	char	*file;
