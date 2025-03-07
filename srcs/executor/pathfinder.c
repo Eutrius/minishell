@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pathfinder.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lonulli <lonulli@student.42roma.it>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/07 22:33:53 by lonulli           #+#    #+#             */
+/*   Updated: 2025/03/07 22:33:54 by lonulli          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +26,7 @@ char	*pathfinder(const char *cmd, char **env)
 	char	**path;
 	int		i;
 	char	*return_path;
-	size_t	len;
+	char	*temp;
 
 	if (check_absolute_path(cmd))
 		return (ft_strdup(cmd));
@@ -22,19 +34,16 @@ char	*pathfinder(const char *cmd, char **env)
 	path = get_paths(env);
 	while (path && path[i])
 	{
-		len = ft_strlen((char *)cmd) + ft_strlen(path[i]) + 2;
-		return_path = ft_calloc(sizeof(char), (len));
-		if (!return_path)
-			free_paths(path, "ERROR");
-		ft_strlcat(return_path, path[i], len);
-		return_path[ft_strlen(path[i++])] = '/';
-		ft_strlcat(return_path, cmd, len);
+		temp = ft_strjoin(path[i], "/");
+		return_path = ft_strjoin(temp, cmd);
+		free(temp);
 		if (access(return_path, F_OK | X_OK) == 0)
 		{
 			ft_free_strs(path);
 			return (return_path);
 		}
 		free(return_path);
+		i++;
 	}
 	ft_free_strs(path);
 	return (NULL);

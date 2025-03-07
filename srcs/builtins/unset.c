@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lonulli <lonulli@student.42roma.it>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/07 22:34:29 by lonulli           #+#    #+#             */
+/*   Updated: 2025/03/07 22:34:29 by lonulli          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
@@ -34,8 +46,9 @@ void	custom_unset(t_data *data, char **args)
 static char	**reallocate_env(t_data *data, char **to_remove)
 {
 	char	**new_env;
+	int		i;
+	int		count;
 
-	int i, count;
 	i = 0;
 	count = 0;
 	while (data->env[i])
@@ -75,6 +88,7 @@ static char	**fill_to_remove(char **args)
 	}
 	return (to_remove);
 }
+
 static void	unset_variable(t_data *data, char **new_env, char **to_remove)
 {
 	int		i;
@@ -89,7 +103,7 @@ static void	unset_variable(t_data *data, char **new_env, char **to_remove)
 		if (is_variable_to_unset(old_env[i], to_remove))
 			free(old_env[i]);
 		else
-			new_env[j++] = old_env[i]; 
+			new_env[j++] = old_env[i];
 		i++;
 	}
 	free(old_env);
