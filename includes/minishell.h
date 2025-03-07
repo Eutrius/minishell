@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lonulli <lonulli@student.42roma.it>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/07 22:35:19 by lonulli           #+#    #+#             */
+/*   Updated: 2025/03/07 22:35:52 by lonulli          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -213,7 +225,7 @@ void						custom_export(t_data *data, char **args);
 void						custom_unset(t_data *data, char **args);
 
 // Memory handling
-void	free_memory(t_data *data, char **args);
+void						free_memory(t_data *data, char **args);
 
 // Utils
 

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lonulli <lonulli@student.42roma.it>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/07 22:33:47 by lonulli           #+#    #+#             */
+/*   Updated: 2025/03/07 22:33:48 by lonulli          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 #include "minishell.h"
 // clang-format off
@@ -48,6 +60,7 @@ int	execute_cmd(t_token *root, t_data *data)
 	args = expand_cmd(args);
 	if (is_builtin(args, data))
 	{
+		g_status = 0;
 		ft_free_strs(args);
 		return (0);
 	}

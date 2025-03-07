@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lonulli <lonulli@student.42roma.it>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/07 22:34:18 by lonulli           #+#    #+#             */
+/*   Updated: 2025/03/07 22:34:18 by lonulli          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 static void	export_no_args(t_data *data);
@@ -43,6 +56,7 @@ static void	export_with_args(t_data *data, char **args, int not_valid)
 	int		i;
 	char	**new_env;
 	int		strs;
+	char	**old_env;
 
 	strs = 0;
 	tokens_count = ft_strslen(args) - 1 - not_valid;
@@ -59,33 +73,35 @@ static void	export_with_args(t_data *data, char **args, int not_valid)
 		new_env[i] = data->env[i];
 		i++;
 	}
+	old_env = data->env;
 	data->env = new_env;
 	append_vars(data, args, i);
+	free(old_env);
 }
 
 static void	export_no_args(t_data *data)
 {
-	char	**sorted_exp;
 	int		i;
+	char	*equal_sign;
 
 	i = 0;
-	sorted_exp = export_strsdup(data->env);
-	if (!sorted_exp)
-		return ;
-	while (sorted_exp[i])
+	while (data->env[i])
 	{
-		sorted_exp[i] = ft_strjoin("declare -x ", sorted_exp[i]);
-		if (!sorted_exp[i])
+		equal_sign = ft_strchr(data->env[i], '=');
+		if (equal_sign)
 		{
-			ft_free_strs(sorted_exp);
-			return ;
+			write(1, "declare -x ", 11);
+			write(1, data->env[i], equal_sign - data->env[i] + 1);
+			write(1, "\"", 1);
+			write(1, equal_sign + 1, ft_strlen(equal_sign + 1));
+			write(1, "\"", 1);
+			write(1, "\n", 1);
 		}
-		value_checker(sorted_exp, i);
+		else
+			printf("declare -x %s\n", data->env[i]);
 		i++;
 	}
-	sort_export(sorted_exp);
-	print_string_array(sorted_exp);
-	ft_free_strs(sorted_exp);
+	sort_export(data->env);
 }
 
 static void	append_vars(t_data *data, char **args, int i)
@@ -102,10 +118,16 @@ static void	append_vars(t_data *data, char **args, int i)
 		{
 			to_sub = check_var_existence(data->env, current_token);
 			if (to_sub < 0)
+			{
 				to_sub = i;
-			if (to_sub == i || check_equal(current_token))
-				data->env[to_sub] = current_token;
-			i++;
+				data->env[to_sub] = ft_strdup(current_token);
+				i++;
+			}
+			else if (check_equal(current_token))
+			{
+				free(data->env[to_sub]);
+				data->env[to_sub] = ft_strdup(current_token);
+			}
 		}
 		j++;
 	}

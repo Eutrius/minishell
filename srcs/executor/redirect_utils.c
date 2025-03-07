@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirect_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lonulli <lonulli@student.42roma.it>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/07 22:33:57 by lonulli           #+#    #+#             */
+/*   Updated: 2025/03/07 22:33:57 by lonulli          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "libft.h"
 #include "minishell.h"
 // clang-format off
@@ -9,6 +21,7 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <stdlib.h>
+
 void	handle_redirect_input(t_token *root, int *fd)
 {
 	char	*file;
