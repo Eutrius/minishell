@@ -32,7 +32,7 @@ char	*pathfinder(const char *cmd, char **env)
 		if (access(return_path, F_OK | X_OK) == 0)
 		{
 			ft_free_strs(path);
-			return(return_path);
+			return (return_path);
 		}
 		free(return_path);
 	}

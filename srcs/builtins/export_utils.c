@@ -38,60 +38,6 @@ void	value_checker(char **sorted_exp, int i)
 	}
 }
 
-char	*strdup_and_add_quotes(char *str)
-{
-	int		i;
-	int		j;
-	char	*new;
-
-	new = ft_calloc(ft_strlen(str) + 3, 1);
-	if (!new)
-	{
-		print_error(ERR_MALLOC);
-		return (NULL);
-	}
-	i = 0;
-	j = 0;
-	while (str + j != ft_strchr(str, '=') && str[j])
-		new[i++] = str[j++];
-	if (ft_strchr(str, '='))
-	{
-		new[i++] = '=';
-		j++;
-		new[i++] = '"';
-		while (str[j])
-			new[i++] = str[j++];
-		new[i++] = '"';
-	}
-	return (new);
-}
-
-char	**export_strsdup(char **strs)
-{
-	int		i;
-	int		quantity;
-	char	**new_env;
-
-	i = 0;
-	quantity = ft_strslen(strs);
-	new_env = ft_calloc(quantity + 1, sizeof(char *));
-	if (!new_env)
-		return (NULL);
-	while (strs[i])
-	{
-		new_env[i] = strdup_and_add_quotes(strs[i]);
-		if (!new_env[i])
-		{
-			ft_free_strs(strs);
-			print_error(ERR_MALLOC);
-			return (NULL);
-		}
-		i++;
-	}
-	new_env[i] = NULL;
-	return (new_env);
-}
-
 int	check_var_existence(char **env, char *ptr)
 {
 	int	i;
