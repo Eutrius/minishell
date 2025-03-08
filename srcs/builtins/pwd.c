@@ -26,7 +26,7 @@ void	custom_pwd(void)
 		g_status = 1;
 		return ;
 	}
-  g_status = 0;
+	g_status = 0;
 	printf("%s\n", buf);
 	free(buf);
 }

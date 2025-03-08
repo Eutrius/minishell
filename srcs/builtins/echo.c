@@ -18,28 +18,30 @@
 // static void	print_with_flag(char **args);
 static int	is_flag(char *args);
 
-void custom_echo(char **args)
+void	custom_echo(char **args)
 {
-    int i = 1;
-    int no_newline = 0;
-    
-    if (!args || !args[0])
-        return;
-    while (args[i] && is_flag(args[i]))
-    {
-        no_newline = 1;
-        i++;
-    }
-    while (args[i])
-    {
-        printf("%s", args[i]);
-        if (args[i + 1])
-            printf(" ");
-        i++;
-    }
-    if (!no_newline)
-        printf("\n");
-    g_status = 0;
+	int	i;
+	int	no_newline;
+
+	i = 1;
+	no_newline = 0;
+	if (!args || !args[0])
+		return ;
+	while (args[i] && is_flag(args[i]))
+	{
+		no_newline = 1;
+		i++;
+	}
+	while (args[i])
+	{
+		printf("%s", args[i]);
+		if (args[i + 1])
+			printf(" ");
+		i++;
+	}
+	if (!no_newline)
+		printf("\n");
+	g_status = 0;
 }
 
 static int	is_flag(char *args)

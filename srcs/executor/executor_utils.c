@@ -20,6 +20,9 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
+static int	first_command(t_data *data, t_token *root, int *pipefd);
+static int	second_command(t_data *data, t_token *root, int *pipefd);
+
 void	handle_redirect(t_data *data, t_token *root)
 {
 	pid_t	pid3;
@@ -27,10 +30,11 @@ void	handle_redirect(t_data *data, t_token *root)
 	pid3 = fork();
 	if (pid3 == 0)
 	{
-		filter_redirects(root);
+		filter_redirects(data, root);
 		if (g_status != 0)
 			exit(g_status);
 		executor(data, root->right);
+		free_memory(data, NULL);
 		exit(g_status);
 	}
 	else if (pid3 > 0)
@@ -41,7 +45,7 @@ void	handle_redirect(t_data *data, t_token *root)
 	}
 	else
 	{
-		print_error1("Failed to create process for redirection", "");
+		print_error("Failed to create process for redirection");
 		g_status = 1;
 	}
 }
@@ -52,24 +56,43 @@ void	handle_pipe(t_data *data, t_token *root)
 	pid_t	pid1;
 	pid_t	pid2;
 
-	custom_pipe(pipefd);
-	pid1 = fork();
+	if (custom_pipe(pipefd) == 0)
+		return ;
+	if (custom_fork(&pid1) == -1)
+		return ;
 	if (pid1 == 0)
 	{
-		custom_dup2(pipefd[1], "STDOUT");
-		close_fds(pipefd[1], pipefd[0]);
-		executor(data, root->left);
-		exit(g_status);
+		if (first_command(data, root, pipefd) == 0)
+			return ;
 	}
-	pid2 = fork();
+	if (custom_fork(&pid2) == -1)
+		return ;
 	if (pid2 == 0)
 	{
-		custom_dup2(pipefd[0], "STDIN");
-		close_fds(pipefd[1], pipefd[0]);
-		executor(data, root->right);
-		exit(g_status);
+		if (second_command(data, root, pipefd) == 0)
+			return ;
 	}
 	close_fds(pipefd[1], pipefd[0]);
 	waitpid(pid1, &g_status, 0);
 	waitpid(pid2, &g_status, 0);
+}
+
+static int	first_command(t_data *data, t_token *root, int *pipefd)
+{
+	if (custom_dup2(pipefd[1], "STDOUT") == 0)
+		return (0);
+	close_fds(pipefd[1], pipefd[0]);
+	executor(data, root->left);
+	free_memory(data, NULL);
+	exit(g_status);
+}
+
+static int	second_command(t_data *data, t_token *root, int *pipefd)
+{
+	if (custom_dup2(pipefd[0], "STDIN") == 0)
+		return (0);
+	close_fds(pipefd[1], pipefd[0]);
+	executor(data, root->right);
+	free_memory(data, NULL);
+	exit(g_status);
 }

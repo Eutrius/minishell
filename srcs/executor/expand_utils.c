@@ -36,7 +36,7 @@ char	**expand_cmd(char **args)
 
 	i = 0;
 	new_args = ft_calloc(1, sizeof(char *));
-	while (args[i])
+	while (new_args && args && args[i])
 	{
 		expanded_arg = expand_wildcard(args[i]);
 		if (expanded_arg == NULL)
@@ -103,16 +103,14 @@ static char	**ft_strsjoin(char **strs_dest, char **strs_join)
 
 	res = ft_calloc((ft_strslen(strs_dest) + ft_strslen(strs_join) + 1),
 			sizeof(char *));
-	if (!res)
-		return (NULL);
 	i = 0;
 	j = 0;
-	while (strs_dest && strs_dest[i])
+	while (res && strs_dest && strs_dest[i])
 	{
 		res[i] = strs_dest[i];
 		i++;
 	}
-	while (strs_join && strs_join[j])
+	while (res && strs_join && strs_join[j])
 	{
 		res[i] = strs_join[j];
 		j++;

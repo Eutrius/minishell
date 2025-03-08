@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+static void	print_error_and_free(t_data *data, char **args);
+
 void	clean_exit(t_data *data, char **args)
 {
 	int	exit_value;
@@ -32,12 +34,7 @@ void	clean_exit(t_data *data, char **args)
 	if (ft_strslen(args) == 2 && args[1])
 	{
 		if (!check_exit_value(args[1]))
-		{
-			print_error3("bashbros: ", "exit: ", args[1],
-				" numeric argument required");
-			free_memory(data, args);
-			exit(2);
-		}
+			print_error_and_free(data, args);
 	}
 	if (args[1])
 	{
@@ -47,4 +44,11 @@ void	clean_exit(t_data *data, char **args)
 	}
 	free_memory(data, args);
 	exit(g_status);
+}
+
+static void	print_error_and_free(t_data *data, char **args)
+{
+	print_error3("bashbros: ", "exit: ", args[1], " numeric argument required");
+	free_memory(data, args);
+	exit(2);
 }
