@@ -49,8 +49,12 @@ int	main(void)
 		}
 		if (parse(&data, &parser))
 			continue ;
-		signal(SIGQUIT, handleq);
-		signal(SIGINT, handlec_process);
+		if (set_signal(SIGQUIT, handle_quit))
+		{
+			free_memory(&data, NULL);
+			print_error(ERR_SIGACTION, 1);
+			exit(g_status);
+		}
 		executor(&data, data.root);
 		free_tokens(data.tokens);
 	}
@@ -59,14 +63,19 @@ int	main(void)
 
 static void	read_line(t_data *data)
 {
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, handlec);
+	if (set_signal(SIGQUIT, SIG_IGN))
+	{
+		free_memory(data, NULL);
+		print_error(ERR_SIGACTION, 1);
+		exit(g_status);
+	}
 	if (data->debug)
 		data->parser->buffer = readline("debug > ");
 	else
 		data->parser->buffer = readline("bashbros > ");
 	if (data->parser->buffer == NULL)
 	{
+		ft_free_strs(data->env);
 		printf("exit\n");
 		exit(0);
 	}

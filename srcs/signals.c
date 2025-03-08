@@ -18,27 +18,35 @@
 #include <signal.h>
 #include <unistd.h>
 
-void	handlec(int s)
+void	handle_int(int s)
 {
+	extern unsigned long	rl_readline_state;
+
 	(void)s;
-	write(1, "\n", 1);
+	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
-	rl_redisplay();
+	if (rl_readline_state & RL_STATE_READCMD)
+		rl_redisplay();
 }
 
-void	handlec_process(int s)
+void	handle_quit(int s)
 {
 	(void)s;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-}
-
-void	handleq(int s)
-{
-	(void)s;
-	printf("Quit (core dumped)\n");
-	signal(SIGQUIT, SIG_IGN);
+	write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+	if (set_signal(SIGQUIT, SIG_IGN))
+		return ;
 	kill(0, SIGQUIT);
+}
+
+int	set_signal(int signal, void (*f)(int s))
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = f;
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
+	if (sigaction(signal, &sa, NULL) == -1)
+		return (1);
+	return (0);
 }

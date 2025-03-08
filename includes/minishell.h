@@ -22,6 +22,7 @@
 # define ERR_OPENDIR "bashbros: opening directory failed"
 # define ERR_UNLINK "bashbros: unlinking file failed"
 # define ERR_CLOSEFD "bashbros: closing file descriptor failed"
+# define ERR_SIGACTION "bashbros: setting signal handler failed"
 
 typedef struct s_data		t_data;
 typedef struct s_token		t_token;
@@ -101,11 +102,10 @@ void						init_operators(t_operators *operators);
 
 // Signal
 
-void						handlec(int s);
-void						handlec_process(int s);
-void						handleq(int s);
-void						handled(int s);
-void						handlec_heredoc(int s);
+void						handle_int(int s);
+void						handle_int_process(int s);
+void						handle_quit(int s);
+int							set_signal(int signal, void (*f)(int s));
 
 // Parse
 
