@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "minishell.h"
 // clang-format off
 #include <stdio.h>
@@ -45,10 +46,7 @@ void	handle_redirect(t_data *data, t_token *root)
 			g_status = WEXITSTATUS(g_status);
 	}
 	else
-	{
-		print_error("Failed to create process for redirection");
-		g_status = 1;
-	}
+		print_error("Failed to create process for redirection", 1);
 }
 
 void	handle_pipe(t_data *data, t_token *root)
@@ -96,4 +94,19 @@ static int	second_command(t_data *data, t_token *root, int *pipefd)
 	executor(data, root->right);
 	free_memory(data, NULL);
 	exit(g_status);
+}
+
+void	signal_setup(t_data *data, char **args, char *flag)
+{
+	if (ft_strcmp(flag, "CHILD") == 0 && set_signal(SIGQUIT, handle_quit))
+	{
+		free_memory(data, NULL);
+		exit(print_error(ERR_SIGACTION, 1));
+	}
+	if (ft_strcmp(flag, "PARENT") == 0 && (set_signal(SIGQUIT, SIG_IGN)
+			|| set_signal(SIGINT, SIG_IGN)))
+	{
+		free_memory(data, args);
+		exit(print_error(ERR_SIGACTION, 1));
+	}
 }

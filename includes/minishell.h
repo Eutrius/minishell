@@ -236,6 +236,10 @@ void						custom_unset(t_data *data, char **args);
 // Memory handling
 void						free_memory(t_data *data, char **args);
 
+// Signals
+
+void signal_setup(t_data *data, char **args, char *flag);
+
 // Utils
 
 int							print_error(char *msg, int status);

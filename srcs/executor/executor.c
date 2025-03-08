@@ -59,7 +59,7 @@ int	execute_cmd(t_token *root, t_data *data)
 	args = expand_cmd(args);
 	if (args == NULL)
 	{
-		print_error(ERR_MALLOC);
+		print_error(ERR_MALLOC, 1);
 		return (0);
 	}
 	if (is_builtin(args, data))
@@ -104,11 +104,7 @@ static int	fork_command(t_data *data, char *cmd_path, char **args)
 		return (0);
 	if (pid == 0)
 	{
-		if (set_signal(SIGQUIT, handle_quit))
-		{
-			free_memory(data, NULL);
-			exit(print_error(ERR_SIGACTION, 1));
-		}
+		signal_setup(data, args, "CHILD");
 		if (execve(cmd_path, args, data->env) == -1)
 		{
 			free(cmd_path);
@@ -118,11 +114,7 @@ static int	fork_command(t_data *data, char *cmd_path, char **args)
 	}
 	else
 	{
-		if (set_signal(SIGQUIT, SIG_IGN) || set_signal(SIGINT, SIG_IGN))
-		{
-			free_memory(data, args);
-			exit(print_error(ERR_SIGACTION, 1));
-		}
+		signal_setup(data, args, "PARENT");
 		waitpid(pid, &g_status, 0);
 		if (WIFEXITED(g_status))
 			g_status = WEXITSTATUS(g_status);
@@ -145,13 +137,13 @@ char	**fill_args_array(t_token *cmd, t_data *data)
 		i++;
 	args = ft_calloc(i - cmd->index + 2, sizeof(char *));
 	i = 0;
-	while (args && cmd_array[cmd->index + i]
-    && (cmd_array[cmd->index + i]->type & CMD))
+	while (args && cmd_array[cmd->index + i] && (cmd_array[cmd->index
+			+ i]->type & CMD))
 	{
 		args[i] = ft_strdup(cmd_array[cmd->index + i]->content);
 		if (!args[i])
 		{
-			print_error(ERR_MALLOC);
+			print_error(ERR_MALLOC, 1);
 			ft_free_strs(args);
 			return (NULL);
 		}

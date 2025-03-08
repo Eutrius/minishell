@@ -36,7 +36,7 @@ void	custom_unset(t_data *data, char **args)
 	new_env = reallocate_env(data, to_remove);
 	if (new_env == NULL)
 	{
-		print_error(ERR_MALLOC);
+		print_error(ERR_MALLOC, 1);
 		ft_free_strs(to_remove);
 		return ;
 	}
@@ -62,7 +62,7 @@ static char	**reallocate_env(t_data *data, char **to_remove)
 	new_env = ft_calloc(count + 1, sizeof(char *));
 	if (new_env == NULL)
 	{
-		print_error(ERR_MALLOC);
+		print_error(ERR_MALLOC, 1);
 		return (NULL);
 	}
 	return (new_env);
@@ -79,7 +79,7 @@ static char	**fill_to_remove(char **args)
 	to_remove = ft_calloc((ft_strslen(args)), sizeof(char *));
 	if (to_remove == NULL)
 	{
-		print_error(ERR_MALLOC);
+		print_error(ERR_MALLOC, 1);
 		return (NULL);
 	}
 	while (args[i])

@@ -47,7 +47,7 @@ void	value_checker(char **sorted_exp, int i)
 		if (sorted_exp[i] == NULL)
 		{
 			free(tmp);
-			print_error(ERR_MALLOC);
+			print_error(ERR_MALLOC, 1);
 			return ;
 		}
 		free(tmp);

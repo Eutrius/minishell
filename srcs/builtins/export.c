@@ -64,7 +64,7 @@ static void	export_with_args(t_data *data, char **args, int not_valid)
 			sizeof(char *));
 	if (!new_env)
 	{
-		print_error(ERR_MALLOC);
+		print_error(ERR_MALLOC, 1);
 		return ;
 	}
 	copy_env(data, new_env, &i);
@@ -117,7 +117,7 @@ static void	append_vars(t_data *data, char **args, int i)
 			to_sub = replace_or_append(data, current_token, &i);
 			if (data->env[to_sub] == NULL)
 			{
-				print_error(ERR_MALLOC);
+				print_error(ERR_MALLOC, 1);
 				return ;
 			}
 		}

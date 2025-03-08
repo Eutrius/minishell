@@ -37,14 +37,14 @@ void	handle_redirect_input(t_data *data, t_token *root, int *fd)
 	if (*fd == -1)
 	{
 		print_error2("Failed to redirect input: ", (char *)root->left->content,
-			"file not found");
+			"file not found", 1);
 		free_memory(data, NULL);
 		g_status = 1;
 		return ;
 	}
 	custom_dup2(*fd, "STDIN");
 	if (close(*fd) == -1)
-		print_error(ERR_CLOSEFD);
+		print_error(ERR_CLOSEFD, 1);
 }
 
 void	handle_redirect_output(t_data *data, t_token *root, int *fd)
@@ -61,14 +61,14 @@ void	handle_redirect_output(t_data *data, t_token *root, int *fd)
 	if (*fd == -1)
 	{
 		print_error2("Failed to redirect output: ", (char *)root->left->content,
-			"\n");
+			"\n", 1);
 		free_memory(data, NULL);
 		g_status = 1;
 		return ;
 	}
 	custom_dup2(*fd, "STDOUT");
 	if (close(*fd) == -1)
-		print_error(ERR_CLOSEFD);
+		print_error(ERR_CLOSEFD, 1);
 }
 
 void	handle_redirect_append(t_data *data, t_token *root, int *fd)
@@ -85,15 +85,14 @@ void	handle_redirect_append(t_data *data, t_token *root, int *fd)
 			0644);
 	if (*fd == -1)
 	{
-		print_error1("Failed to redirect output: ",
-			(char *)root->left->content);
+		print_error1("Failed to redirect output: ", (char *)root->left->content,
+			1);
 		free_memory(data, NULL);
-		g_status = 1;
 		return ;
 	}
 	custom_dup2(*fd, "STDOUT");
 	if (close(*fd) == -1)
-		print_error(ERR_CLOSEFD);
+		print_error(ERR_CLOSEFD, 1);
 }
 
 void	handle_redirect_heredoc(t_token *root, int *fd)
