@@ -14,83 +14,32 @@
 #include "minishell.h"
 #include <stdio.h>
 
-static void	print_without_flag(char **args);
-static void	print_with_flag(char **args);
+// static void	print_without_flag(char **args);
+// static void	print_with_flag(char **args);
 static int	is_flag(char *args);
 
-void	custom_echo(char **args)
+void custom_echo(char **args)
 {
-	if (!args || !args[0])
-		return ;
-	if (!args[1])
-  {
+    int i = 1;
+    int no_newline = 0;
+    
+    if (!args || !args[0])
+        return;
+    while (args[i] && is_flag(args[i]))
+    {
+        no_newline = 1;
+        i++;
+    }
+    while (args[i])
+    {
+        printf("%s", args[i]);
+        if (args[i + 1])
+            printf(" ");
+        i++;
+    }
+    if (!no_newline)
+        printf("\n");
     g_status = 0;
-		printf("\n");
-		return ;
-	}
-	if (args[1] && is_flag(args[1]) && !args[2])
-  {
-    g_status = 0;
-		return ;
-  }
-	if (args[1] && is_flag(args[1]))
-		print_with_flag(args);
-	else if (args[1] && !is_flag(args[1]))
-		print_without_flag(args);
-  g_status = 0;
-}
-
-static void	print_with_flag(char **args)
-{
-	int	tokens_count;
-	int	i;
-
-	i = 0;
-	if (!args || !args[0] || !args[1])
-		return ;
-	tokens_count = ft_strslen(args);
-	if (tokens_count >= 2)
-	{
-		i = 2;
-		while (i < tokens_count)
-		{
-			if (args[i])
-			{
-				printf("%s", args[i]);
-				if (args[i + 1])
-					printf(" ");
-			}
-			i++;
-		}
-		return ;
-	}
-}
-
-static void	print_without_flag(char **args)
-{
-	int	tokens_count;
-	int	i;
-
-	i = 0;
-	tokens_count = ft_strslen(args);
-	if (tokens_count >= 2)
-	{
-		i = 1;
-		while (i < tokens_count)
-		{
-			if (args[i])
-			{
-				printf("%s", args[i]);
-				if (args[i + 1])
-					printf(" ");
-			}
-			i++;
-		}
-		printf("\n");
-		return ;
-	}
-	if (tokens_count == 1)
-		printf("%s\n", args[1]);
 }
 
 static int	is_flag(char *args)
