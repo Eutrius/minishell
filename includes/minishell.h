@@ -13,6 +13,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <sys/types.h>
 # define NONEWLINE 'N'
 # define NEWLINE 'n'
 # define TMP_HERE_DOC "/tmp/bashbros_heredoc"
@@ -174,7 +175,7 @@ int							execute_cmd(t_token *root, t_data *data);
 void						executor(t_data *data, t_token *root);
 // Executor utils
 
-void						filter_redirects(t_token *root);
+void						filter_redirects(t_data *data, t_token *root);
 void						handle_basic_cmd(t_data *data, t_token *root);
 void						handle_pipe(t_data *data, t_token *root);
 void						handle_and_operator(t_data *data, t_token *root);
@@ -182,14 +183,18 @@ void						handle_or_operator(t_data *data, t_token *root);
 void						handle_redirect(t_data *data, t_token *root);
 
 void						handle_redirect_heredoc(t_token *root, int *fd);
-void						handle_redirect_append(t_token *root, int *fd);
-void						handle_redirect_output(t_token *root, int *fd);
-void						handle_redirect_input(t_token *root, int *fd);
+void						handle_redirect_append(t_data *data, t_token *root,
+								int *fd);
+void						handle_redirect_output(t_data *data, t_token *root,
+								int *fd);
+void						handle_redirect_input(t_data *data, t_token *root,
+								int *fd);
 
-void						custom_dup2(int fd, char *flag);
-void						custom_pipe(int fds[2]);
-void						close_fds(int wefd, int refd);
-void						custom_unlink(char *filepath);
+int							custom_fork(int *pid);
+int							custom_dup2(int fd, char *flag);
+int							custom_pipe(int fds[2]);
+int							close_fds(int wefd, int refd);
+int							custom_unlink(char *filepath);
 char						**fill_args_array(t_token *cmd, t_data *data);
 
 // Built in Utils
@@ -212,6 +217,9 @@ int							is_there_char(char *str, char c);
 int							check_var_existence(char **env, char *ptr);
 int							check_equal(char *ptr);
 int							iterate_vars(t_data *data, char **new_env, int i);
+void copy_env(t_data *data, char **new_env, int *i);
+
+int replace_or_append(t_data *data,char *current_token, int *i);
 // Pathfinder
 char						*pathfinder(const char *cmd, char **env);
 

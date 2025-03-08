@@ -23,29 +23,28 @@ static void	append_vars(t_data *data, char **new_env, int i);
 
 void	custom_export(t_data *data, char **args)
 {
-	int			tokens_count;
-	int			i;
+	size_t		i;
 	int			not_valid;
 	extern char	**environ;
 
 	i = 1;
 	not_valid = 0;
-	tokens_count = ft_strslen(args);
-	if (tokens_count >= 2)
+	if (ft_strslen(args) >= 2)
 	{
-		while (i < tokens_count)
+		while (i < ft_strslen(args))
 		{
-			if (!is_valid_identifier(args[i]))
+			if (is_valid_identifier(args[i]) == 0)
 			{
-				printf("bash: export: '%s': not a valid identifier\n", args[i]);
+				g_status = 255;
+				print_error3("bash: ", "export: ", args[i],
+					" not a valid identifier");
 				not_valid++;
 			}
-			g_status = 255;
 			i++;
 		}
 		export_with_args(data, args, not_valid);
 	}
-	if (tokens_count == 1)
+	if (ft_strslen(args) == 1)
 		export_no_args(data);
 	environ = data->env;
 }
@@ -55,27 +54,25 @@ static void	export_with_args(t_data *data, char **args, int not_valid)
 	int		tokens_count;
 	int		i;
 	char	**new_env;
-	int		strs;
 	char	**old_env;
 
-	strs = 0;
 	tokens_count = ft_strslen(args) - 1 - not_valid;
 	if (tokens_count <= 0)
 		return ;
 	i = 0;
-	strs = ft_strslen(data->env);
-	new_env = ft_calloc(strs + tokens_count + 1, sizeof(char *));
+	new_env = ft_calloc(ft_strslen(data->env) + tokens_count + 1,
+			sizeof(char *));
 	if (!new_env)
-		return ;
-	while (data->env && data->env[i])
 	{
-		new_env[i] = data->env[i];
-		i++;
+		print_error(ERR_MALLOC);
+		return ;
 	}
+	copy_env(data, new_env, &i);
 	old_env = data->env;
 	data->env = new_env;
 	append_vars(data, args, i);
 	sort_export(new_env);
+	g_status = 0;
 	free(old_env);
 }
 
@@ -102,6 +99,7 @@ static void	export_no_args(t_data *data)
 			printf("declare -x %s\n", data->env[i]);
 		i++;
 	}
+	g_status = 0;
 }
 
 static void	append_vars(t_data *data, char **args, int i)
@@ -116,17 +114,11 @@ static void	append_vars(t_data *data, char **args, int i)
 		current_token = args[j];
 		if (is_valid_identifier(current_token))
 		{
-			to_sub = check_var_existence(data->env, current_token);
-			if (to_sub < 0)
+			to_sub = replace_or_append(data, current_token, &i);
+			if (data->env[to_sub] == NULL)
 			{
-				to_sub = i;
-				data->env[to_sub] = ft_strdup(current_token);
-				i++;
-			}
-			else if (check_equal(current_token))
-			{
-				free(data->env[to_sub]);
-				data->env[to_sub] = ft_strdup(current_token);
+				print_error(ERR_MALLOC);
+				return ;
 			}
 		}
 		j++;

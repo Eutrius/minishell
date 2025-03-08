@@ -56,12 +56,14 @@ int	execute_cmd(t_token *root, t_data *data)
 	char	**args;
 
 	args = fill_args_array(root, data);
-	if (!args)
-		return (0);
 	args = expand_cmd(args);
+	if (args == NULL)
+	{
+		print_error(ERR_MALLOC);
+		return (0);
+	}
 	if (is_builtin(args, data))
 	{
-		g_status = 0;
 		ft_free_strs(args);
 		return (0);
 	}
@@ -75,7 +77,7 @@ int	execute_cmd(t_token *root, t_data *data)
 	return (fork_command(data, cmd_path, args));
 }
 
-void	filter_redirects(t_token *root)
+void	filter_redirects(t_data *data, t_token *root)
 {
 	int	fd;
 
@@ -84,11 +86,11 @@ void	filter_redirects(t_token *root)
 	if (root->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
 	{
 		if (root->sub_type & R_IN)
-			handle_redirect_input(root, &fd);
+			handle_redirect_input(data, root, &fd);
 		else if (root->sub_type & R_OUT)
-			handle_redirect_output(root, &fd);
+			handle_redirect_output(data, root, &fd);
 		else if (root->sub_type & APPEND)
-			handle_redirect_append(root, &fd);
+			handle_redirect_append(data, root, &fd);
 		else
 			handle_redirect_heredoc(root, &fd);
 	}
@@ -98,7 +100,8 @@ static int	fork_command(t_data *data, char *cmd_path, char **args)
 {
 	pid_t	pid;
 
-	pid = fork();
+	if (custom_fork(&pid) == -1)
+		return (0);
 	if (pid == 0)
 	{
 		if (set_signal(SIGQUIT, handle_quit))
@@ -141,14 +144,14 @@ char	**fill_args_array(t_token *cmd, t_data *data)
 	while (cmd_array[i] && (cmd_array[i]->type & CMD))
 		i++;
 	args = ft_calloc(i - cmd->index + 2, sizeof(char *));
-	if (!args)
-		return (NULL);
 	i = 0;
-	while (cmd_array[cmd->index + i] && (cmd_array[cmd->index + i]->type & CMD))
+	while (args && cmd_array[cmd->index + i]
+    && (cmd_array[cmd->index + i]->type & CMD))
 	{
 		args[i] = ft_strdup(cmd_array[cmd->index + i]->content);
 		if (!args[i])
 		{
+			print_error(ERR_MALLOC);
 			ft_free_strs(args);
 			return (NULL);
 		}

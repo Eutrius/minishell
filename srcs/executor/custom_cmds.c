@@ -19,16 +19,18 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 // clang-format on
+#include <string.h>
 #include <unistd.h>
 
-void	custom_dup2(int fd, char *flag)
+int	custom_dup2(int fd, char *flag)
 {
 	if (!ft_strcmp(flag, "STDIN"))
 	{
 		if (dup2(fd, STDIN_FILENO) == -1)
 		{
 			ft_putstr_fd(strerror(errno), 2);
-			exit(EXIT_FAILURE);
+			g_status = errno;
+			return (1);
 		}
 	}
 	else if (!ft_strcmp(flag, "STDOUT"))
@@ -36,31 +38,53 @@ void	custom_dup2(int fd, char *flag)
 		if (dup2(fd, STDOUT_FILENO) == -1)
 		{
 			ft_putstr_fd(strerror(errno), 2);
-			exit(EXIT_FAILURE);
+			g_status = errno;
+			return (0);
 		}
 	}
+	return (1);
 }
 
-void	custom_pipe(int fds[2])
+int	custom_pipe(int fds[2])
 {
 	if (pipe(fds) == -1)
 	{
 		ft_putstr_fd(strerror(errno), 2);
-		exit(EXIT_FAILURE);
+		g_status = errno;
+		return (0);
 	}
+	return (1);
 }
 
-void	close_fds(int wefd, int refd)
+int	close_fds(int wefd, int refd)
 {
-	close(wefd);
-	close(refd);
+	if (close(wefd) == -1 || close(refd) == -1)
+	{
+		ft_putstr_fd(strerror(errno), 2);
+		g_status = errno;
+		return (0);
+	}
+	return (1);
 }
 
-void	custom_unlink(char *filepath)
+int	custom_fork(int *pid)
+{
+	*pid = fork();
+	if (*pid == -1)
+	{
+		perror("fork failed");
+		g_status = errno;
+		return (-1);
+	}
+	return (1);
+}
+
+int	custom_unlink(char *filepath)
 {
 	if (unlink(filepath) == -1)
 	{
 		ft_putstr_fd(strerror(errno), 2);
-		exit(EXIT_FAILURE);
+		return (0);
 	}
+	return (1);
 }
