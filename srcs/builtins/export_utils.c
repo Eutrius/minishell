@@ -21,11 +21,11 @@ int	is_valid_identifier(char *str)
 	int	i;
 
 	i = 0;
+	if (!str[i] || (ft_isalpha(str[0]) == 0 && str[0] != '_'))
+		return (0);
 	while (str[i] && str[i] != '=')
 	{
-		if (ft_isalpha(str[0]) == 0)
-			return (0);
-		if (ft_isalnum(str[i]) == 0)
+		if (ft_isalnum(str[i]) == 0 && str[i] != '_')
 			return (0);
 		i++;
 	}
