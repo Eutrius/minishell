@@ -46,5 +46,5 @@ void	clean_exit(t_data *data, char **args)
 		exit(exit_value);
 	}
 	free_memory(data, args);
-	exit(0);
+	exit(g_status);
 }

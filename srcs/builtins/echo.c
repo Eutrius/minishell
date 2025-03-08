@@ -23,16 +23,21 @@ void	custom_echo(char **args)
 	if (!args || !args[0])
 		return ;
 	if (!args[1])
-	{
+  {
+    g_status = 0;
 		printf("\n");
 		return ;
 	}
 	if (args[1] && is_flag(args[1]) && !args[2])
+  {
+    g_status = 0;
 		return ;
+  }
 	if (args[1] && is_flag(args[1]))
 		print_with_flag(args);
 	else if (args[1] && !is_flag(args[1]))
 		print_without_flag(args);
+  g_status = 0;
 }
 
 static void	print_with_flag(char **args)

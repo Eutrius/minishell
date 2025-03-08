@@ -60,7 +60,6 @@ int	execute_cmd(t_token *root, t_data *data)
 	args = expand_cmd(args);
 	if (is_builtin(args, data))
 	{
-		g_status = 0;
 		ft_free_strs(args);
 		return (0);
 	}

@@ -35,12 +35,12 @@ void	custom_export(t_data *data, char **args)
 	{
 		while (i < tokens_count)
 		{
-			if (!is_valid_identifier(args[i]))
+			if (is_valid_identifier(args[i]) == 0)
 			{
-				printf("bash: export: '%s': not a valid identifier\n", args[i]);
+        g_status = 255;
+        print_error3("bash: ", "export: ",args[i], " not a valid identifier");
 				not_valid++;
 			}
-			g_status = 255;
 			i++;
 		}
 		export_with_args(data, args, not_valid);
@@ -66,7 +66,10 @@ static void	export_with_args(t_data *data, char **args, int not_valid)
 	strs = ft_strslen(data->env);
 	new_env = ft_calloc(strs + tokens_count + 1, sizeof(char *));
 	if (!new_env)
+  {
+    print_error(ERR_MALLOC);
 		return ;
+  }
 	while (data->env && data->env[i])
 	{
 		new_env[i] = data->env[i];
@@ -76,6 +79,7 @@ static void	export_with_args(t_data *data, char **args, int not_valid)
 	data->env = new_env;
 	append_vars(data, args, i);
 	sort_export(new_env);
+  g_status = 0;
 	free(old_env);
 }
 
@@ -102,6 +106,7 @@ static void	export_no_args(t_data *data)
 			printf("declare -x %s\n", data->env[i]);
 		i++;
 	}
+  g_status = 0;
 }
 
 static void	append_vars(t_data *data, char **args, int i)
@@ -128,6 +133,11 @@ static void	append_vars(t_data *data, char **args, int i)
 				free(data->env[to_sub]);
 				data->env[to_sub] = ft_strdup(current_token);
 			}
+      if (data->env[to_sub] == NULL)
+      {
+        print_error(ERR_MALLOC);
+        return;
+      }
 		}
 		j++;
 	}

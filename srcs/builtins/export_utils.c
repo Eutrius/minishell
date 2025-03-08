@@ -23,9 +23,9 @@ int	is_valid_identifier(char *str)
 	i = 0;
 	while (str[i] && str[i] != '=')
 	{
-		if (!ft_isalpha(str[0]))
+		if (ft_isalpha(str[0]) == 0)
 			return (0);
-		if (!ft_isalnum(str[i]))
+		if (ft_isalnum(str[i]) == 0)
 			return (0);
 		i++;
 	}
@@ -44,8 +44,12 @@ void	value_checker(char **sorted_exp, int i)
 	{
 		tmp = sorted_exp[i];
 		sorted_exp[i] = ft_strjoin(sorted_exp[i], "\"\"");
-		if (!sorted_exp[i])
+		if (sorted_exp[i] == NULL)
+    {
+      free(tmp);
+      print_error(ERR_MALLOC);
 			return ;
+    }
 		free(tmp);
 	}
 }
