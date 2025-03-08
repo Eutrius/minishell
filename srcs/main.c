@@ -13,11 +13,11 @@
 #include "libft.h"
 #include "minishell.h"
 // clang-format off
-#include <signal.h>
 #include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 // clang-format on
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>

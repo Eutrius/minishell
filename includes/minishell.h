@@ -229,9 +229,10 @@ void						free_memory(t_data *data, char **args);
 
 // Utils
 
-int							print_error(char *msg);
-int							print_error1(char *msg, char *msg1);
-int							print_error2(char *msg, char *msg1, char *msg2);
+int							print_error(char *msg, int status);
+int							print_error1(char *msg, char *msg1, int status);
+int							print_error2(char *msg, char *msg1, char *msg2,
+								int status);
 int							print_error3(char *msg, char *msg1, char *msg2,
 								char *msg3);
 

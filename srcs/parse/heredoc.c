@@ -32,22 +32,22 @@ int	heredoc(t_token *token)
 
 	filefd = open(TMP_HERE_DOC, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (filefd == -1)
-		return (print_error1(ERR_OPEN, TMP_HERE_DOC));
+		return (print_error1(ERR_OPEN, TMP_HERE_DOC, 1));
 	if (readline_doc(filefd, (char *)token->content))
 	{
 		free(token->content);
 		token->content = NULL;
 		if (close(filefd) == -1)
-			print_error(ERR_CLOSEFD);
+			print_error(ERR_CLOSEFD, 1);
 		if (unlink(TMP_HERE_DOC) == -1)
-			print_error1(ERR_UNLINK, TMP_HERE_DOC);
+			print_error1(ERR_UNLINK, TMP_HERE_DOC, 1);
 		return (1);
 	}
 	if (close(filefd) == -1)
-		print_error(ERR_CLOSEFD);
+		print_error(ERR_CLOSEFD, 1);
 	filefd = open(TMP_HERE_DOC, O_RDONLY);
 	if (filefd == -1)
-		return (print_error1(ERR_OPEN, TMP_HERE_DOC));
+		return (print_error1(ERR_OPEN, TMP_HERE_DOC, 1));
 	return (assign_fd(token, filefd));
 }
 
@@ -61,15 +61,15 @@ static int	assign_fd(t_token *token, int filefd)
 	if (fd == NULL)
 	{
 		if (close(filefd) == -1)
-			print_error(ERR_CLOSEFD);
+			print_error(ERR_CLOSEFD, 1);
 		if (unlink(TMP_HERE_DOC) == -1)
-			print_error1(ERR_UNLINK, TMP_HERE_DOC);
-		return (print_error(ERR_MALLOC));
+			print_error1(ERR_UNLINK, TMP_HERE_DOC, 1);
+		return (print_error(ERR_MALLOC, 1));
 	}
 	*fd = filefd;
 	token->content = fd;
 	if (unlink(TMP_HERE_DOC) == -1)
-		print_error1(ERR_UNLINK, TMP_HERE_DOC);
+		print_error1(ERR_UNLINK, TMP_HERE_DOC, 1);
 	return (0);
 }
 

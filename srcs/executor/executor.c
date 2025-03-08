@@ -67,9 +67,8 @@ int	execute_cmd(t_token *root, t_data *data)
 	cmd_path = pathfinder(args[0], data->env);
 	if (!cmd_path)
 	{
-		print_error2("B_bros ", args[0], " command not found");
+		print_error2("B_bros ", args[0], " command not found", 127);
 		ft_free_strs(args);
-		g_status = 127;
 		return (1);
 	}
 	return (fork_command(data, cmd_path, args));

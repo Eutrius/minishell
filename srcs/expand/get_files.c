@@ -35,7 +35,7 @@ char	**get_files(int hidden)
 	}
 	res = ft_calloc(1, sizeof(char *));
 	if (res == NULL)
-		print_error(ERR_MALLOC);
+		print_error(ERR_MALLOC, 1);
 	while (res != NULL)
 	{
 		entry = readdir(dir);
@@ -65,11 +65,11 @@ static int	check_entry(struct dirent *entry, char ***res, int hidden)
 		if (filename == NULL)
 		{
 			ft_free_strs(*res);
-			print_error(ERR_MALLOC);
+			print_error(ERR_MALLOC, 1);
 		}
 		*res = ft_strscat(*res, filename);
 		if (*res == NULL)
-			print_error(ERR_MALLOC);
+			print_error(ERR_MALLOC, 1);
 	}
 	return (0);
 }

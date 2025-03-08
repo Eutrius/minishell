@@ -11,7 +11,10 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+// clang-format off
+#include <stdio.h>
 #include <readline/readline.h>
+// clang-format on
 #include <signal.h>
 #include <unistd.h>
 

@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 // clang-format off
+#include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 // clang-format on
@@ -40,10 +41,7 @@ void	handle_redirect(t_data *data, t_token *root)
 			g_status = WEXITSTATUS(g_status);
 	}
 	else
-	{
-		print_error1("Failed to create process for redirection", "");
-		g_status = 1;
-	}
+		print_error1("Failed to create process for redirection", "", 1);
 }
 
 void	handle_pipe(t_data *data, t_token *root)

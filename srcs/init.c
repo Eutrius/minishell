@@ -25,7 +25,7 @@ void	init(t_data *data, t_parser *parser)
 	data->env = ft_strsdup(environ);
 	if (!data->env)
 	{
-		print_error(ERR_MALLOC);
+		print_error(ERR_MALLOC, 1);
 		exit(1);
 	}
 	data->stdin_orig = dup(STDIN_FILENO);
