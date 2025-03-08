@@ -11,31 +11,50 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+// clang-format off
+#include <stdio.h>
 #include <readline/readline.h>
+// clang-format on
 #include <signal.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-void	handlec(int s)
+void	handle_int(int s)
 {
+	extern unsigned long	rl_readline_state;
+
 	(void)s;
-	write(1, "\n", 1);
+	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
-	rl_redisplay();
+	if (rl_readline_state & RL_STATE_READCMD)
+		rl_redisplay();
 }
 
-void	handlec_process(int s)
+void	handle_quit(int s)
 {
 	(void)s;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-}
-
-void	handleq(int s)
-{
-	(void)s;
-	printf("Quit (core dumped)\n");
-	signal(SIGQUIT, SIG_IGN);
+	if (set_signal(SIGQUIT, SIG_IGN))
+		return ;
 	kill(0, SIGQUIT);
+	write(STDOUT_FILENO, "Quit (core dumped)\n\0", 20);
+}
+
+void	handle_heredoc(int s)
+{
+	(void)s;
+	rl_on_new_line();
+	exit(1);
+}
+
+int	set_signal(int signal, void (*f)(int s))
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = f;
+	sa.sa_flags = SA_RESTART;
+	sigemptyset(&sa.sa_mask);
+	if (sigaction(signal, &sa, NULL) == -1)
+		return (1);
+	return (0);
 }

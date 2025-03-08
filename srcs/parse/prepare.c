@@ -49,7 +49,7 @@ static int	prepare_redirect(t_parser *parser, int *index, t_token *current)
 {
 	if (current->sub_type & HERE_DOC)
 	{
-		if (heredoc(parser->tokens[*index + 1]))
+		if (heredoc(parser, parser->tokens[*index + 1]))
 			return (1);
 	}
 	current->type = REDIRECT;

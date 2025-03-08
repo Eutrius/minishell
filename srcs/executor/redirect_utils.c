@@ -36,8 +36,7 @@ void	handle_redirect_input(t_token *root, int *fd)
 	if (*fd == -1)
 	{
 		print_error2("Failed to redirect input: ", (char *)root->left->content,
-			"file not found");
-		g_status = 1;
+			"file not found", 1);
 		return ;
 	}
 	dup2(*fd, STDIN_FILENO);
@@ -58,8 +57,7 @@ void	handle_redirect_output(t_token *root, int *fd)
 	if (*fd == -1)
 	{
 		print_error2("Failed to redirect output: ", (char *)root->left->content,
-			"\n");
-		g_status = 1;
+			"\n", 1);
 		return ;
 	}
 	dup2(*fd, STDOUT_FILENO);
@@ -80,9 +78,8 @@ void	handle_redirect_append(t_token *root, int *fd)
 			0644);
 	if (*fd == -1)
 	{
-		print_error1("Failed to redirect output: ",
-			(char *)root->left->content);
-		g_status = 1;
+		print_error1("Failed to redirect output: ", (char *)root->left->content,
+			1);
 		return ;
 	}
 	dup2(*fd, STDOUT_FILENO);

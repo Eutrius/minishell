@@ -26,7 +26,7 @@ int	split_line(t_parser *parser)
 	parser->last_token = START;
 	parser->tokens = ft_calloc(1, sizeof(t_token *));
 	if (parser->tokens == NULL)
-		return (print_error(ERR_MALLOC));
+		return (print_error(ERR_MALLOC, 1));
 	while (parser->buffer[i] != '\0')
 	{
 		if (skip_space(parser, &i))

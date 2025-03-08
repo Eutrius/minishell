@@ -34,7 +34,7 @@ int	expand_vars(t_parser *parser)
 			tmp = expand_var(curr_token->content);
 			if (tmp == NULL)
 				return (1);
-			free(curr_token->content);
+			free((char *)curr_token->content);
 			curr_token->content = tmp;
 		}
 		i++;
@@ -85,7 +85,7 @@ static int	sub_var(char *str, int *i, int *j, char **res)
 	str[*i] = '\0';
 	*res = safe_join(*res, &str[*j]);
 	if (*res == NULL)
-		return (print_error(ERR_MALLOC));
+		return (print_error(ERR_MALLOC, 1));
 	(*i)++;
 	*j = *i;
 	while (str[*i] && is_valid(str[*i]))
@@ -94,7 +94,7 @@ static int	sub_var(char *str, int *i, int *j, char **res)
 	str[*i] = '\0';
 	*res = safe_join(*res, getenv(&str[*j]));
 	if (*res == NULL)
-		return (print_error(ERR_MALLOC));
+		return (print_error(ERR_MALLOC, 1));
 	str[*i] = tmp;
 	*j = *i;
 	(*i)--;
@@ -108,20 +108,20 @@ static int	sub_status(char *str, int *i, int *j, char **res)
 	str[*i] = '\0';
 	*res = safe_join(*res, &str[*j]);
 	if (*res == NULL)
-		return (print_error(ERR_MALLOC));
-	*i += 2;
-	*j = *i;
+		return (print_error(ERR_MALLOC, 1));
+	*i += 1;
+	*j = *i + 1;
 	status = ft_itoa(g_status);
 	if (status == NULL)
 	{
 		free(*res);
-		return (print_error(ERR_MALLOC));
+		return (print_error(ERR_MALLOC, 1));
 	}
 	*res = safe_join(*res, status);
 	if (*res == NULL)
 	{
 		free(status);
-		return (print_error(ERR_MALLOC));
+		return (print_error(ERR_MALLOC, 1));
 	}
 	free(status);
 	return (0);

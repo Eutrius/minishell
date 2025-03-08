@@ -22,6 +22,8 @@
 # define ERR_OPENDIR "bashbros: opening directory failed"
 # define ERR_UNLINK "bashbros: unlinking file failed"
 # define ERR_CLOSEFD "bashbros: closing file descriptor failed"
+# define ERR_SIGACTION "bashbros: setting signal handler failed"
+# define WAR_EOF "bashbros: warning: here-document delimited by end-of-file"
 
 typedef struct s_data		t_data;
 typedef struct s_token		t_token;
@@ -101,11 +103,10 @@ void						init_operators(t_operators *operators);
 
 // Signal
 
-void						handlec(int s);
-void						handlec_process(int s);
-void						handleq(int s);
-void						handled(int s);
-void						handlec_heredoc(int s);
+void						handle_int(int s);
+void						handle_quit(int s);
+void						handle_heredoc(int s);
+int							set_signal(int signal, void (*f)(int s));
 
 // Parse
 
@@ -115,7 +116,7 @@ int							split_line(t_parser *parser);
 int							check_line(t_parser *parser);
 t_token						*parse_line(t_token **tokens);
 
-int							heredoc(t_token *token);
+int							heredoc(t_parser *t_parser, t_token *token);
 int							gen_token(t_parser *parser, t_mode mode);
 int							is_special(int c);
 int							is_dquote(int c);
@@ -229,9 +230,10 @@ void						free_memory(t_data *data, char **args);
 
 // Utils
 
-int							print_error(char *msg);
-int							print_error1(char *msg, char *msg1);
-int							print_error2(char *msg, char *msg1, char *msg2);
+int							print_error(char *msg, int status);
+int							print_error1(char *msg, char *msg1, int status);
+int							print_error2(char *msg, char *msg1, char *msg2,
+								int status);
 int							print_error3(char *msg, char *msg1, char *msg2,
 								char *msg3);
 
