@@ -16,6 +16,7 @@
 #include <readline/readline.h>
 // clang-format on
 #include <signal.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 void	handle_int(int s)
@@ -33,10 +34,17 @@ void	handle_int(int s)
 void	handle_quit(int s)
 {
 	(void)s;
-	write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
 	if (set_signal(SIGQUIT, SIG_IGN))
 		return ;
 	kill(0, SIGQUIT);
+	write(STDOUT_FILENO, "Quit (core dumped)\n\0", 20);
+}
+
+void	handle_heredoc(int s)
+{
+	(void)s;
+	rl_on_new_line();
+	exit(1);
 }
 
 int	set_signal(int signal, void (*f)(int s))
@@ -44,7 +52,7 @@ int	set_signal(int signal, void (*f)(int s))
 	struct sigaction	sa;
 
 	sa.sa_handler = f;
-	sa.sa_flags = 0;
+	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
 	if (sigaction(signal, &sa, NULL) == -1)
 		return (1);

@@ -32,6 +32,7 @@ void	handle_redirect(t_data *data, t_token *root)
 		if (g_status != 0)
 			exit(g_status);
 		executor(data, root->right);
+		free_memory(data, NULL);
 		exit(g_status);
 	}
 	else if (pid3 > 0)

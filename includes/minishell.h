@@ -23,6 +23,7 @@
 # define ERR_UNLINK "bashbros: unlinking file failed"
 # define ERR_CLOSEFD "bashbros: closing file descriptor failed"
 # define ERR_SIGACTION "bashbros: setting signal handler failed"
+# define WAR_EOF "bashbros: warning: here-document delimited by end-of-file"
 
 typedef struct s_data		t_data;
 typedef struct s_token		t_token;
@@ -103,8 +104,8 @@ void						init_operators(t_operators *operators);
 // Signal
 
 void						handle_int(int s);
-void						handle_int_process(int s);
 void						handle_quit(int s);
+void						handle_heredoc(int s);
 int							set_signal(int signal, void (*f)(int s));
 
 // Parse
@@ -115,7 +116,7 @@ int							split_line(t_parser *parser);
 int							check_line(t_parser *parser);
 t_token						*parse_line(t_token **tokens);
 
-int							heredoc(t_token *token);
+int							heredoc(t_parser *t_parser, t_token *token);
 int							gen_token(t_parser *parser, t_mode mode);
 int							is_special(int c);
 int							is_dquote(int c);

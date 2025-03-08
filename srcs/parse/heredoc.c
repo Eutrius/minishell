@@ -22,18 +22,19 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-static int	readline_doc(int filefd, char *limiter);
+static int	readline_doc(int filefd, char *limiter, int expand_flag);
 static int	expand_line(char **line, int expand_flag);
+static int	fork_heredoc(t_parser *parser, int filefd, char *limiter);
 static int	assign_fd(t_token *token, int filefd);
 
-int	heredoc(t_token *token)
+int	heredoc(t_parser *parser, t_token *token)
 {
 	int	filefd;
 
 	filefd = open(TMP_HERE_DOC, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (filefd == -1)
 		return (print_error1(ERR_OPEN, TMP_HERE_DOC, 1));
-	if (readline_doc(filefd, (char *)token->content))
+	if (fork_heredoc(parser, filefd, (char *)token->content))
 	{
 		free(token->content);
 		token->content = NULL;
@@ -73,18 +74,18 @@ static int	assign_fd(t_token *token, int filefd)
 	return (0);
 }
 
-static int	readline_doc(int filefd, char *limiter)
+static int	readline_doc(int filefd, char *limiter, int expand_flag)
 {
 	char	*line;
-	int		expand_flag;
 
-	expand_flag = has_quotes(limiter);
-	remove_quotes(limiter);
 	while (1)
 	{
 		line = readline("> ");
 		if (!line)
+		{
+			print_error3(WAR_EOF, " (wanted `", limiter, "')");
 			break ;
+		}
 		if (ft_strcmp(line, limiter) == 0)
 			break ;
 		if (expand_line(&line, expand_flag))
@@ -95,6 +96,34 @@ static int	readline_doc(int filefd, char *limiter)
 	}
 	free(line);
 	return (0);
+}
+
+static int	fork_heredoc(t_parser *parser, int filefd, char *limiter)
+{
+	int		expand_flag;
+	pid_t	pid;
+	int		ret;
+
+	expand_flag = has_quotes(limiter);
+	remove_quotes(limiter);
+	pid = fork();
+	if (pid == 0)
+	{
+		if (set_signal(SIGINT, handle_heredoc))
+		{
+			ft_free_strs(parser->data->env);
+			free_tokens(parser->tokens);
+			rl_clear_history();
+			exit(print_error(ERR_SIGACTION, 1));
+		}
+		ret = readline_doc(filefd, limiter, expand_flag);
+		ft_free_strs(parser->data->env);
+		free_tokens(parser->tokens);
+		rl_clear_history();
+		exit(ret);
+	}
+	waitpid(pid, &ret, 0);
+	return (ret);
 }
 
 static int	expand_line(char **line, int expand_flag)
