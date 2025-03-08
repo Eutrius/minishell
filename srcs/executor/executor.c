@@ -128,19 +128,18 @@ static int	fork_command(t_data *data, char *cmd_path, char **args)
 char	**fill_args_array(t_token *cmd, t_data *data)
 {
 	int		i;
-	t_token	**cmd_array;
+	t_token	**cmds;
 	char	**args;
 
-	cmd_array = data->tokens;
+	cmds = data->tokens;
 	i = cmd->index;
-	while (cmd_array[i] && (cmd_array[i]->type & CMD))
+	while (cmds[i] && (cmds[i]->type & CMD))
 		i++;
 	args = ft_calloc(i - cmd->index + 2, sizeof(char *));
 	i = 0;
-	while (args && cmd_array[cmd->index + i] && (cmd_array[cmd->index
-			+ i]->type & CMD))
+	while (args && cmds[cmd->index + i] && (cmds[cmd->index + i]->type & CMD))
 	{
-		args[i] = ft_strdup(cmd_array[cmd->index + i]->content);
+		args[i] = ft_strdup(cmds[cmd->index + i]->content);
 		if (!args[i])
 		{
 			print_error(ERR_MALLOC, 1);
