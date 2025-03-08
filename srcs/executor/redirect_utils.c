@@ -98,5 +98,5 @@ void	handle_redirect_append(t_data *data, t_token *root, int *fd)
 void	handle_redirect_heredoc(t_token *root, int *fd)
 {
 	fd = (int *)root->left->content;
-	custom_dup2(*fd, STDIN_FILENO);
+  custom_dup2(*fd, "STDIN");
 }
