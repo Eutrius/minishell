@@ -51,7 +51,7 @@ static void	read_line(t_data *data)
 {
 	if (set_signal(SIGQUIT, SIG_IGN) || set_signal(SIGINT, handle_int))
 	{
-		free_memory(data, NULL);
+		ft_free_strs(data->env);
 		exit(print_error(ERR_SIGACTION, 1));
 	}
 	if (data->debug)
