@@ -32,11 +32,6 @@ void	free_token(t_token *token)
 {
 	if (!token)
 		return ;
-	if (token->sub_type & LIMITER)
-	{
-		if (token->content != NULL)
-			close(*(int *)token->content);
-	}
 	free(token->content);
 	free(token);
 }
@@ -54,4 +49,24 @@ void	free_tokens(t_token **tokens)
 		i++;
 	}
 	free(tokens);
+}
+
+void	close_limiters(t_token **tokens)
+{
+	int	i;
+
+	if (!tokens)
+		return ;
+	i = 0;
+	while (tokens[i] != NULL)
+	{
+		if (tokens[i]->sub_type & LIMITER)
+		{
+			if (tokens[i]->content != NULL)
+			{
+				close(*(int *)tokens[i]->content);
+			}
+		}
+		i++;
+	}
 }

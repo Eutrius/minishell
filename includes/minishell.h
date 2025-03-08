@@ -168,6 +168,7 @@ void						free_token(t_token *token);
 void						free_tokens(t_token **tokens);
 t_token						*create_token(void *content, t_type type);
 t_token						**add_token(t_token **tokens, t_token *token);
+void						close_limiters(t_token **tokens);
 
 // Execute
 char						*pathfinder(const char *cmd, char **env);

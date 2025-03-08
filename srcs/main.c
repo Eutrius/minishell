@@ -41,6 +41,7 @@ int	main(void)
 		if (toggle_debug(&data) || parse(&data, &parser))
 			continue ;
 		executor(&data, data.root);
+		close_limiters(data.tokens);
 		free_tokens(data.tokens);
 	}
 	exit(0);

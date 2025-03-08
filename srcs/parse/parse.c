@@ -69,6 +69,7 @@ static int	reset_parser(t_parser *parser, int return_value)
 {
 	if (return_value)
 	{
+		close_limiters(parser->tokens);
 		free_tokens(parser->tokens);
 		free(parser->str);
 	}
