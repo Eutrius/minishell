@@ -217,9 +217,10 @@ int							is_there_char(char *str, char c);
 int							check_var_existence(char **env, char *ptr);
 int							check_equal(char *ptr);
 int							iterate_vars(t_data *data, char **new_env, int i);
-void copy_env(t_data *data, char **new_env, int *i);
+void						copy_env(t_data *data, char **new_env, int *i);
 
-int replace_or_append(t_data *data,char *current_token, int *i);
+int							replace_or_append(t_data *data, char *current_token,
+								int *i);
 // Pathfinder
 char						*pathfinder(const char *cmd, char **env);
 
@@ -238,7 +239,7 @@ void						free_memory(t_data *data, char **args);
 
 // Signals
 
-void signal_setup(t_data *data, char **args, char *flag);
+void						signal_setup(t_data *data, char **args, char *flag);
 
 // Utils
 
