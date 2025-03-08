@@ -63,8 +63,7 @@ static void	export_with_args(t_data *data, char **args, int not_valid)
 	if (tokens_count <= 0)
 		return ;
 	i = 0;
-	if (data->env)
-		strs = ft_strslen(data->env);
+	strs = ft_strslen(data->env);
 	new_env = ft_calloc(strs + tokens_count + 1, sizeof(char *));
 	if (!new_env)
 		return ;
@@ -76,6 +75,7 @@ static void	export_with_args(t_data *data, char **args, int not_valid)
 	old_env = data->env;
 	data->env = new_env;
 	append_vars(data, args, i);
+	sort_export(new_env);
 	free(old_env);
 }
 
@@ -85,6 +85,7 @@ static void	export_no_args(t_data *data)
 	char	*equal_sign;
 
 	i = 0;
+	sort_export(data->env);
 	while (data->env[i])
 	{
 		equal_sign = ft_strchr(data->env[i], '=');
@@ -101,7 +102,6 @@ static void	export_no_args(t_data *data)
 			printf("declare -x %s\n", data->env[i]);
 		i++;
 	}
-	sort_export(data->env);
 }
 
 static void	append_vars(t_data *data, char **args, int i)

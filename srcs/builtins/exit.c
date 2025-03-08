@@ -19,10 +19,13 @@
 
 void	clean_exit(t_data *data, char **args)
 {
+	int	exit_value;
+
+	exit_value = 0;
 	printf("exit\n");
 	if (ft_strslen(args) > 2)
 	{
-		printf("B_bros: exit: too many arguments\n");
+		print_error2("bashbros: ", "exit: ", "too many arguments");
 		g_status = 255;
 		return ;
 	}
@@ -30,15 +33,17 @@ void	clean_exit(t_data *data, char **args)
 	{
 		if (!check_exit_value(args[1]))
 		{
+			print_error3("bashbros: ", "exit: ", args[1],
+				" numeric argument required");
 			free_memory(data, args);
-			printf("B_Bros: exit: %s: numeric argument required\n", args[1]);
 			exit(2);
 		}
 	}
 	if (args[1])
 	{
+		exit_value = ft_atoi(args[1]);
 		free_memory(data, args);
-		exit(ft_atoi(args[1]));
+		exit(exit_value);
 	}
 	free_memory(data, args);
 	exit(0);

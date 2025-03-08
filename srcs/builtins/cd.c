@@ -38,4 +38,5 @@ void	custom_chdir(char **args)
 		g_status = 1;
 		perror("Error");
 	}
+	g_status = 0;
 }

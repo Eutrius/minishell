@@ -45,7 +45,7 @@ void	executor(t_data *data, t_token *root)
 		if (g_status != 0)
 			executor(data, root->right);
 	}
-	else if (root->sub_type & (R_IN | R_OUT | APPEND))
+	else if (root->sub_type & (R_IN | R_OUT | APPEND | HERE_DOC))
 		handle_redirect(data, root);
 }
 

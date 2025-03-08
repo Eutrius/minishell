@@ -15,7 +15,6 @@ SRCS_DIR = srcs
 SRC = srcs/main.c \
 	  srcs/init.c \
 	  srcs/signals.c \
-	  srcs/pathfinder.c \
 	  srcs/parse/parse.c \
 	  srcs/parse/utils.c \
 	  srcs/parse/split.c \
