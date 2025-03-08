@@ -22,6 +22,7 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <termios.h>
 
 static int	fork_command(t_data *data, char *cmd_path, char **args);
 
@@ -100,6 +101,11 @@ static int	fork_command(t_data *data, char *cmd_path, char **args)
 	pid = fork();
 	if (pid == 0)
 	{
+		if (set_signal(SIGQUIT, handle_quit))
+		{
+			free_memory(data, NULL);
+			exit(print_error(ERR_SIGACTION, 1));
+		}
 		if (execve(cmd_path, args, data->env) == -1)
 		{
 			free(cmd_path);
@@ -109,6 +115,11 @@ static int	fork_command(t_data *data, char *cmd_path, char **args)
 	}
 	else
 	{
+		if (set_signal(SIGQUIT, SIG_IGN) || set_signal(SIGINT, SIG_IGN))
+		{
+			free_memory(data, args);
+			exit(print_error(ERR_SIGACTION, 1));
+		}
 		waitpid(pid, &g_status, 0);
 		if (WIFEXITED(g_status))
 			g_status = WEXITSTATUS(g_status);

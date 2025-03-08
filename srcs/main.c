@@ -40,11 +40,6 @@ int	main(void)
 			continue ;
 		if (toggle_debug(&data) || parse(&data, &parser))
 			continue ;
-		if (set_signal(SIGQUIT, handle_quit))
-		{
-			free_memory(&data, NULL);
-			exit(print_error(ERR_SIGACTION, 1));
-		}
 		executor(&data, data.root);
 		free_tokens(data.tokens);
 	}
@@ -53,7 +48,7 @@ int	main(void)
 
 static void	read_line(t_data *data)
 {
-	if (set_signal(SIGQUIT, SIG_IGN))
+	if (set_signal(SIGQUIT, SIG_IGN) || set_signal(SIGINT, handle_int))
 	{
 		free_memory(data, NULL);
 		exit(print_error(ERR_SIGACTION, 1));
