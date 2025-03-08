@@ -82,7 +82,7 @@ char	*expand_files(char *file)
 	num_strings = ft_strslen(new_files);
 	if (num_strings > 1)
 	{
-		print_error2("bashbros: ", file, " Ambigous redirect");
+		print_error2("bashbros: ", file, " Ambigous redirect", 1);
 		return (NULL);
 	}
 	else if (num_strings == 1)

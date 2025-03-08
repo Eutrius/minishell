@@ -35,7 +35,7 @@ int	join_last(t_parser *parser)
 	old_content = parser->token->content;
 	new_content = ft_strjoin(old_content, parser->str);
 	if (new_content == NULL)
-		return (print_error(ERR_MALLOC));
+		return (print_error(ERR_MALLOC, 1));
 	parser->token->content = new_content;
 	free(old_content);
 	free(parser->str);
@@ -57,7 +57,7 @@ int	gen_token(t_parser *parser, t_mode mode)
 	else
 		gen_op_token(parser);
 	if (parser->token == NULL)
-		return (print_error(ERR_MALLOC));
+		return (print_error(ERR_MALLOC, 1));
 	parser->str = NULL;
 	return (0);
 }

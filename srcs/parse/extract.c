@@ -50,7 +50,7 @@ static int	append_token(t_parser *parser)
 	{
 		free(parser->token);
 		parser->token = NULL;
-		return (print_error(ERR_MALLOC));
+		return (print_error(ERR_MALLOC, 1));
 	}
 	res[len] = parser->token;
 	len--;
@@ -76,13 +76,13 @@ static int	extract_str(t_parser *parser, int *index, int (*ctrl)(int),
 	while (parser->buffer[i] != '\0' && !(*ctrl)(parser->buffer[i]))
 		i++;
 	if (parser->buffer[i] == '\0' && mode != NORMAL)
-		return (print_error1(ERR_SYNTAX, " unclosed quotes"));
+		return (print_error1(ERR_SYNTAX, " unclosed quotes", 2));
 	if (mode != NORMAL)
 		i++;
 	parser->str = ft_strndup(&parser->buffer[*index], i - *index);
 	*index = i;
 	if (parser->str == NULL)
-		return (print_error(ERR_MALLOC));
+		return (print_error(ERR_MALLOC, 1));
 	return (0);
 }
 
@@ -104,9 +104,9 @@ static int	extract_op(t_parser *parser, int *index)
 		parser->str = ft_strdup("&&");
 	}
 	else
-		return (print_error1(ERR_SYNTAX, " near unexpected token `&'"));
+		return (print_error1(ERR_SYNTAX, " near unexpected token `&'", 2));
 	(*index)++;
 	if (parser->str == NULL)
-		return (print_error(ERR_MALLOC));
+		return (print_error(ERR_MALLOC, 1));
 	return (0);
 }

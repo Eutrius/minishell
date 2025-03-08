@@ -13,28 +13,31 @@
 #include "libft.h"
 #include "minishell.h"
 
-int	print_error(char *msg)
+int	print_error(char *msg, int status)
 {
 	ft_putstr_fd(msg, 2);
 	ft_putstr_fd("\n", 2);
-	return (1);
+	g_status = status;
+	return (status);
 }
 
-int	print_error1(char *msg, char *msg1)
+int	print_error1(char *msg, char *msg1, int status)
 {
 	ft_putstr_fd(msg, 2);
 	ft_putstr_fd(msg1, 2);
 	ft_putstr_fd("\n", 2);
-	return (1);
+	g_status = status;
+	return (status);
 }
 
-int	print_error2(char *msg, char *msg1, char *msg2)
+int	print_error2(char *msg, char *msg1, char *msg2, int status)
 {
 	ft_putstr_fd(msg, 2);
 	ft_putstr_fd(msg1, 2);
 	ft_putstr_fd(msg2, 2);
 	ft_putstr_fd("\n", 2);
-	return (1);
+	g_status = status;
+	return (status);
 }
 
 int	print_error3(char *msg, char *msg1, char *msg2, char *msg3)

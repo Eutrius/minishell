@@ -39,7 +39,7 @@ int	check_line(t_parser *parser)
 		i++;
 	}
 	if (parser->parentesis > 0)
-		return (print_error1(ERR_SYNTAX, ": unexpected end of file"));
+		return (print_error1(ERR_SYNTAX, ": unexpected end of file", 2));
 	return (expand_vars(parser));
 }
 
@@ -71,5 +71,6 @@ static int	check_type(t_token *c_token, t_token *n_token)
 
 static int	unexpected_error(char *content)
 {
+	g_status = 2;
 	return (print_error3(ERR_SYNTAX, " near unexpected token `", content, "'"));
 }

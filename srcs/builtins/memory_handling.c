@@ -12,8 +12,12 @@
 
 #include "libft.h"
 #include "minishell.h"
-#include <limits.h>
+// clang-format off
 #include <stdio.h>
+#include <readline/history.h>
+#include <readline/readline.h>
+// clang-format on
+#include <limits.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -25,4 +29,5 @@ void	free_memory(t_data *data, char **args)
 		ft_free_strs(args);
 	if (data->tokens)
 		free_tokens(data->tokens);
+	rl_clear_history();
 }

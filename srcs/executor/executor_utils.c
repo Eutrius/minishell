@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 // clang-format off
+#include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 // clang-format on

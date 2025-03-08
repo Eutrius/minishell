@@ -27,8 +27,7 @@ void	clean_exit(t_data *data, char **args)
 	printf("exit\n");
 	if (ft_strslen(args) > 2)
 	{
-		print_error2("bashbros: ", "exit: ", "too many arguments");
-		g_status = 255;
+		print_error2("bashbros: ", "exit: ", "too many arguments", 255);
 		return ;
 	}
 	if (ft_strslen(args) == 2 && args[1])
