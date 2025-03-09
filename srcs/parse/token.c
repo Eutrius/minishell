@@ -64,7 +64,8 @@ void	close_limiters(t_token **tokens)
 		{
 			if (tokens[i]->content != NULL)
 			{
-				close(*(int *)tokens[i]->content);
+				if (close(*(int *)tokens[i]->content) == -1)
+					print_error(ERR_CLOSEFD, 1);
 			}
 		}
 		i++;
