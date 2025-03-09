@@ -155,6 +155,7 @@ int							match_wildcard(char *pattern, char *filename,
 								int in_quote);
 char						*safe_join(char *s1, char *s2);
 int							is_valid(char c);
+int							is_open_quote(int c, int in_quote);
 
 // Debug
 

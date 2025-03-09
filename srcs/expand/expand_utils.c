@@ -35,6 +35,16 @@ int	is_valid(char c)
 	return (0);
 }
 
+int	is_open_quote(int c, int in_quote)
+{
+	if (in_quote == 0)
+	{
+		if (is_dquote(c) || is_quote(c))
+			return (1);
+	}
+	return (0);
+}
+
 int	check_quotes(int c, int *in_quote)
 {
 	if (*in_quote == 0 && is_dquote(c))

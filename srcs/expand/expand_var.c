@@ -56,7 +56,8 @@ char	*expand_var(char *str)
 		{
 			if (str[i + 1] == '?')
 				sub_status(str, &i, &j, &res);
-			else if (str[i + 1] != '\0' && str[i + 1] != '$')
+			else if (is_valid(str[i + 1]) || is_open_quote(str[i + 1],
+					in_quote))
 			{
 				if (sub_var(str, &i, &j, &res))
 					break ;
