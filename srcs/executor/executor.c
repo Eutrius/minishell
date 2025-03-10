@@ -70,7 +70,7 @@ int	execute_cmd(t_token *root, t_data *data)
 	cmd_path = pathfinder(args[0], data->env);
 	if (!cmd_path)
 	{
-		print_error2("B_bros ", args[0], " command not found", 127);
+		print_error2("bashbros: ", args[0], " command not found", 127);
 		ft_free_strs(args);
 		return (1);
 	}

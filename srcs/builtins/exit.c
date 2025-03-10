@@ -38,9 +38,11 @@ void	clean_exit(t_data *data, char **args)
 	if (args[1])
 	{
 		exit_value = ft_atoi(args[1]);
+		close_limiters(data->tokens);
 		free_memory(data, args);
 		exit(exit_value);
 	}
+	close_limiters(data->tokens);
 	free_memory(data, args);
 	exit(g_status);
 }
@@ -48,6 +50,7 @@ void	clean_exit(t_data *data, char **args)
 static void	print_error_and_free(t_data *data, char **args)
 {
 	print_error3("bashbros: ", "exit: ", args[1], " numeric argument required");
+	close_limiters(data->tokens);
 	free_memory(data, args);
 	exit(2);
 }

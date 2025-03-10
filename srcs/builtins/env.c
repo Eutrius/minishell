@@ -39,4 +39,5 @@ void	custom_env(t_data *data)
 			printf("%s\n", data->env[i]);
 		i++;
 	}
+	g_status = 0;
 }

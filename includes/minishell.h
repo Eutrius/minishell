@@ -155,6 +155,7 @@ int							match_wildcard(char *pattern, char *filename,
 								int in_quote);
 char						*safe_join(char *s1, char *s2);
 int							is_valid(char c);
+int							is_open_quote(int c, int in_quote);
 
 // Debug
 
@@ -168,6 +169,7 @@ void						free_token(t_token *token);
 void						free_tokens(t_token **tokens);
 t_token						*create_token(void *content, t_type type);
 t_token						**add_token(t_token **tokens, t_token *token);
+void						close_limiters(t_token **tokens);
 
 // Execute
 char						*pathfinder(const char *cmd, char **env);
