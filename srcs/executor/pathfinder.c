@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "minishell.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -19,9 +20,9 @@
 void		free_paths(char **path, char *error);
 int			is_path_given(char *full_path);
 static int	check_absolute_path(const char *cmd);
-static char	**get_paths(char **env);
+static char	**get_paths(void);
 
-char	*pathfinder(const char *cmd, char **env)
+char	*pathfinder(const char *cmd)
 {
 	char	**path;
 	int		i;
@@ -31,7 +32,7 @@ char	*pathfinder(const char *cmd, char **env)
 	if (check_absolute_path(cmd))
 		return (ft_strdup(cmd));
 	i = 0;
-	path = get_paths(env);
+	path = get_paths();
 	while (path && path[i])
 	{
 		temp = ft_strjoin(path[i], "/");
@@ -49,14 +50,23 @@ char	*pathfinder(const char *cmd, char **env)
 	return (NULL);
 }
 
-static char	**get_paths(char **env)
+static char	**get_paths(void)
 {
-	char	**path;
+	char	**paths;
+	char	*path;
 
-	while (!ft_strnstr((*env), "PATH=", 5))
-		env++;
-	path = ft_split(*env + 5, ':');
-	return (path);
+	path = getenv("PATH");
+	if (path != NULL)
+	{
+		paths = ft_split(path, ':');
+		if (paths == NULL)
+		{
+			print_error(ERR_MALLOC, 1);
+			return (NULL);
+		}
+		return (paths);
+	}
+	return (NULL);
 }
 
 static int	check_absolute_path(const char *cmd)

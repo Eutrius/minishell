@@ -108,6 +108,7 @@ void						handle_int(int s);
 void						handle_quit(int s);
 void						handle_heredoc(int s);
 int							set_signal(int signal, void (*f)(int s));
+void						signal_setup(t_data *data, char **args, char *flag);
 
 // Parse
 
@@ -172,9 +173,11 @@ t_token						**add_token(t_token **tokens, t_token *token);
 void						close_limiters(t_token **tokens);
 
 // Execute
-char						*pathfinder(const char *cmd, char **env);
+
+char						*pathfinder(const char *cmd);
 int							execute_cmd(t_token *root, t_data *data);
 void						executor(t_data *data, t_token *root);
+
 // Executor utils
 
 void						filter_redirects(t_data *data, t_token *root);
@@ -223,9 +226,6 @@ void						copy_env(t_data *data, char **new_env, int *i);
 
 int							replace_or_append(t_data *data, char *current_token,
 								int *i);
-// Pathfinder
-char						*pathfinder(const char *cmd, char **env);
-
 // Built in
 
 void						custom_echo(char **args);
@@ -237,11 +237,8 @@ void						custom_export(t_data *data, char **args);
 void						custom_unset(t_data *data, char **args);
 
 // Memory handling
+
 void						free_memory(t_data *data, char **args);
-
-// Signals
-
-void						signal_setup(t_data *data, char **args, char *flag);
 
 // Utils
 
