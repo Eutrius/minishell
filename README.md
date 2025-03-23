@@ -28,6 +28,11 @@ make
 ./minishell
 ```
 
+### 💧 Check Leaks
+```bash
+make valgrind
+```
+
 ### 🔍 Debug Mode
 To visualize the execution tree:
 ```
