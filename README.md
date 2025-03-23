@@ -73,7 +73,7 @@ ls       wc -l
 ✅ **Debug mode for easy visualization**  
 ✅ **Supports complex shell behaviors including logical operators and parentheses**  
 
-## 📝 License
+## 📝 License 
 This project is open-source and free to use for educational purposes.
 
 ---
